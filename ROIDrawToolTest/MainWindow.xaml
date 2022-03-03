@@ -1,0 +1,26 @@
+﻿<Window x:Class="ROIDrawToolTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ROIDrawToolTest"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="42*"/>
+            <RowDefinition Height="377*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Image  Source="SEOUL.jpg" Stretch="Fill" />
+            <Grid x:Name="CanvasGrid"></Grid>
+            <Viewbox Stretch="Fill" >
+                <Canvas x:Name="ROICanvas" Width="1000" Height="1000" />
+            </Viewbox>
+            
+        </Grid>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button Content="폴리곤 추가" Click="AddPolygon_ButtonClick"/>
+        </StackPanel>
+    </Grid>
+</Window>

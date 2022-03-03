@@ -1,0 +1,111 @@
+﻿<UserControl x:Class="LayoutTest1.CameraCell"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LayoutTest1"
+             xmlns:mipsdk="clr-namespace:VideoOS.Platform.Client;assembly=VideoOS.Platform"
+                           
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Background="Transparent">
+        <Image Source="jmon_gray_alpha.png" />
+        <TextBlock x:Name="tbtemp" FontSize="20"  VerticalAlignment="Center" HorizontalAlignment="Center" ></TextBlock>
+        <Grid x:Name="ContentGrid" Background="Transparent" Visibility="Collapsed" >
+            <Grid x:Name="VideoGrid" Background="Transparent" IsHitTestVisible="False">
+                <mipsdk:ImageViewerWpfControl x:Name="_v" IsHitTestVisible="False" FontFamily="Pretendard Variable"  />
+            </Grid>
+            <Grid x:Name="ThermalGrid"  Background="Transparent" IsHitTestVisible="False" Visibility="Visible"></Grid>
+            <Grid x:Name="BoxGrid" Background="Transparent" IsHitTestVisible="False" Visibility="Visible" ></Grid>
+            <Grid x:Name="MetaGrid" Background="Transparent" IsHitTestVisible="False" Visibility="Visible" ></Grid>
+            <Grid x:Name="SensorGrid" Background="Transparent"  IsHitTestVisible="False" Visibility="Visible"></Grid>
+            <Grid x:Name="OverlayGrid" Background="Transparent" IsHitTestVisible="True" Visibility="Visible"  >
+                <Grid.RowDefinitions  >
+                    <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
+                    <RowDefinition Height="115*" ></RowDefinition>
+                    <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
+                </Grid.RowDefinitions>
+               
+                <Grid Grid.Row="0" x:Name="TitleGrid" Background="Black" Opacity="0.5" Visibility="Collapsed" >
+                    
+                </Grid>
+                <!--
+                <Grid Grid.Row="2" x:Name="ToolbarHoverGrid" Background="LightBlue" IsHitTestVisible="True" Visibility="Visible" MouseEnter="ToolbarHoverGrid_MouseEnter" MouseLeave="ToolbarHoverGrid_MouseLeave">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="8*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="1" IsHitTestVisible="True" x:Name="ToolbarGrid" Background="Black" Opacity="0.5" Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Click="Button_Click" Content="테스트" />
+                        </StackPanel>
+                    </Grid>
+
+                </Grid>
+                -->
+
+                <Viewbox  HorizontalAlignment="Left"  Stretch="Uniform"  >
+                    <!-- <local:OutlinedTextBlock x:Name="TitleText"  Stroke="Black" StrokeThickness="1" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center"  />-->
+                    <TextBlock x:Name="TitleText" Text="sadggggggggggg" Foreground="White" TextWrapping="WrapWithOverflow" Background="Transparent" Visibility="Collapsed" Margin="2"
+                               FontFamily="Pretendard Variable" FontWeight="Normal" RenderOptions.BitmapScalingMode="NearestNeighbor"
+                               />
+
+                </Viewbox>
+                
+                <Grid Grid.Row="0" Background="Transparent" x:Name="IndicatorGrid">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="88*" />
+                        <ColumnDefinition Width="5*" MinWidth="20" />
+                        <ColumnDefinition Width="5*" MinWidth="20" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Background="Red" Grid.Column="1" />
+                    <Grid Background="green" Grid.Column="2" />
+                </Grid>
+            </Grid>
+            <Grid x:Name="PTZGrid" Background="Transparent" IsHitTestVisible="true" Visibility="Collapsed"></Grid>
+        </Grid>
+        <Grid x:Name="HighlightGrid" IsHitTestVisible="False" Background="Blue" Opacity="0.5" Visibility="Collapsed"></Grid>
+        <Grid x:Name="MouseHoverGrid" Background="Transparent" IsHitTestVisible="True" AllowDrop="True" MouseEnter="MouseHoverGrid_MouseEnter" MouseLeave="MouseHoverGrid_MouseLeave"
+              Drop="MouseHoverGrid_Drop" DragEnter="MouseHoverGrid_DragEnter" DragOver="MouseHoverGrid_DragOver" DragLeave="MouseHoverGrid_DragLeave" MouseMove="MouseHoverGrid_MouseMove"
+              
+              >
+            <Grid.Triggers>
+                <EventTrigger RoutedEvent="Grid.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard x:Name="ShowTitleGridStoryboard"
+                                    Storyboard.TargetName="TitleGrid" Storyboard.TargetProperty="Opacity" >
+                            <DoubleAnimation Duration="0:0:0.1" From="0.0" To="1.0" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Grid.Triggers>
+            <Grid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header = "load video" Click="LoadVideo_Click"/>
+                    <MenuItem x:Name="VideoClose" Header = "close" Click="VideoClose_Click"/>
+                    <MenuItem Header = "Menu item 3"/>
+                </ContextMenu>
+            </Grid.ContextMenu>
+            <Grid.ColumnDefinitions>
+                
+                <ColumnDefinition Width="7*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions  >
+                <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
+                <RowDefinition Height="115*" ></RowDefinition>
+                <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Column="0" Grid.Row="2" IsHitTestVisible="True" x:Name="ToolbarGrid" Background="Black" Opacity="0.5" Visibility="Collapsed" >
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
+                    <Button Click="Button_Click" Content="테스트" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Border x:Name="CellBorder" Background="Transparent" BorderBrush="Lime" BorderThickness="1" IsHitTestVisible="False" Visibility="Collapsed" >
+            <Grid Background="Transparent"/>
+        </Border>
+    </Grid>
+</UserControl>
