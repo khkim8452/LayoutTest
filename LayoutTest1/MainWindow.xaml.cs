@@ -14,6 +14,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VideoOS.Platform;
 using VideoOS.Platform.SDK.UI.LoginDialog;
+using System.IO;
+
+// JSON 파일 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LayoutTest1
 {
@@ -31,6 +36,9 @@ namespace LayoutTest1
         public MainWindow()
         {
             InitializeComponent();
+            //원래의 속성을 json 파일로부터 가지고 와서 설정 복구한다.
+            //???
+
             VideoOS.Platform.SDK.Environment.Initialize();			// General initialize.  Always required
             VideoOS.Platform.SDK.UI.Environment.Initialize();		// Initialize UI
             VideoOS.Platform.SDK.Export.Environment.Initialize();   // Initialize recordings access
@@ -107,6 +115,11 @@ namespace LayoutTest1
       
         private void LoadAllCamera(object sender, RoutedEventArgs e)
         {
+            ///싱글테이크상태일때 전체 카메라 부르기 X
+            if(Layout.Instance.IsSingle)
+            {
+                return;
+            }
             for(int i = 0; i < CameraList.Count; i++)
             {
                 int r = Layout.Instance.Row;
@@ -179,6 +192,76 @@ namespace LayoutTest1
         {
             V.ShowTitleAlways = false;
             l.UpdateTitleStatus();
+        }
+
+        private void Test_Button_Click(object sender, RoutedEventArgs e)
+        {
+            if(ListGrid.IsVisible)
+            {
+                ListGrid.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ListGrid.Visibility=Visibility.Visible;
+            }
+        }
+
+        private void Save_Settings(object sender, RoutedEventArgs e)
+        {
+            //설정 저장을 위해 json 파일에 현재 설정값을 저장하는 버튼
+            WriteJson();
+        }
+
+        private void CreateJson(string path)
+        {
+            if(!File.Exists(path))
+            {
+                using (File.Create(path))
+                {
+                    MessageBox.Show("파일 생성 성공.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("이미 파일이 존재합니다.");
+            }
+        }
+        private void WriteJson()
+        {
+            string path = @"C:\Users\9junb\source\repos\LayoutTest\saved_settings.json";
+
+            if(File.Exists(path))
+            {
+                InputJson(path);
+            }
+            else
+            {
+                CreateJson(path);
+            }
+        }
+        private void InputJson(string path)
+        {
+            //사용자 정보 배열로 선언
+            var users = new[] { "USER1", "USER2", "USER3", "USER4" };
+
+            JObject dbSpec = new JObject(
+                new JProperty("a", "1"),
+                new JProperty("b", "0"),
+                new JProperty("c", "1"),
+                new JProperty("d", "1"),
+                new JProperty("e", "0")
+                );
+
+            //Jarray 로 추가
+            dbSpec.Add("USERS", JArray.FromObject(users));
+
+            File.WriteAllText(path, dbSpec.ToString());
+
+        }
+
+        private void ToggleSwitch_Loaded(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
