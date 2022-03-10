@@ -119,5 +119,21 @@
   <ItemGroup>
     <Resource Include="jmon_gray_alpha.png" />
   </ItemGroup>
+<<<<<<< Updated upstream
+=======
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\power button image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\button-off-on-power-switch-icon-189097.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\WalkEdit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\CarEdit.png" />
+  </ItemGroup>
+>>>>>>> Stashed changes
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
