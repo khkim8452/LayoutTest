@@ -25,9 +25,20 @@
                     <RowDefinition Height="115*" ></RowDefinition>
                     <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
                 </Grid.RowDefinitions>
-               
-                <Grid Grid.Row="0" x:Name="TitleGrid" Background="Black" Opacity="0.5" Visibility="Collapsed" >
-                    
+
+                <Grid Grid.Row="0" x:Name="TitleGrid" Background="Black" Opacity="0.7" >
+                    <!-- <local:OutlinedTextBlock x:Name="TitleText"  Stroke="Black" StrokeThickness="1" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center"  />-->
+                    <TextBlock x:Name="TitleText" 
+                               Text="" 
+                               Foreground="White" 
+                               TextWrapping="WrapWithOverflow" 
+                               Background="Transparent" 
+                               Visibility="Collapsed" 
+                               Margin="2"
+                               FontFamily="Pretendard Variable" 
+                               RenderOptions.BitmapScalingMode="NearestNeighbor" TextTrimming="CharacterEllipsis"
+                               
+                               />
                 </Grid>
                 <!--
                 <Grid Grid.Row="2" x:Name="ToolbarHoverGrid" Background="LightBlue" IsHitTestVisible="True" Visibility="Visible" MouseEnter="ToolbarHoverGrid_MouseEnter" MouseLeave="ToolbarHoverGrid_MouseLeave">
@@ -45,14 +56,6 @@
                 </Grid>
                 -->
 
-                <Viewbox  HorizontalAlignment="Left"  Stretch="Uniform"  >
-                    <!-- <local:OutlinedTextBlock x:Name="TitleText"  Stroke="Black" StrokeThickness="1" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center"  />-->
-                    <TextBlock x:Name="TitleText" Text="sadggggggggggg" Foreground="White" TextWrapping="WrapWithOverflow" Background="Transparent" Visibility="Collapsed" Margin="2"
-                               FontFamily="Pretendard Variable" FontWeight="Normal" RenderOptions.BitmapScalingMode="NearestNeighbor"
-                               />
-
-                </Viewbox>
-                
                 <Grid Grid.Row="0" Background="Transparent" x:Name="IndicatorGrid">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="88*" />
@@ -63,20 +66,39 @@
                     <Grid Background="Red" Grid.Column="1" />
                     <Grid Background="green" Grid.Column="2" />
                 </Grid>
+                
             </Grid>
             <Grid x:Name="PTZGrid" Background="Transparent" IsHitTestVisible="true" Visibility="Collapsed"></Grid>
         </Grid>
         <Grid x:Name="HighlightGrid" IsHitTestVisible="False" Background="Blue" Opacity="0.5" Visibility="Collapsed"></Grid>
-        <Grid x:Name="MouseHoverGrid" Background="Transparent" IsHitTestVisible="True" AllowDrop="True" MouseEnter="MouseHoverGrid_MouseEnter" MouseLeave="MouseHoverGrid_MouseLeave"
-              Drop="MouseHoverGrid_Drop" DragEnter="MouseHoverGrid_DragEnter" DragOver="MouseHoverGrid_DragOver" DragLeave="MouseHoverGrid_DragLeave" MouseMove="MouseHoverGrid_MouseMove"
+        <Grid x:Name="MouseHoverGrid" 
+              Background="Transparent" 
+              IsHitTestVisible="True" 
+              AllowDrop="True" 
+              Drop="MouseHoverGrid_Drop" 
+              DragEnter="MouseHoverGrid_DragEnter" 
+              DragOver="MouseHoverGrid_DragOver" 
+              DragLeave="MouseHoverGrid_DragLeave" 
+              MouseMove="MouseHoverGrid_MouseMove"
               
               >
+            <!--마우스 오버시 title bar 애니메이션 구현-->
             <Grid.Triggers>
-                <EventTrigger RoutedEvent="Grid.MouseEnter">
+                <EventTrigger RoutedEvent="MouseEnter">
                     <BeginStoryboard>
-                        <Storyboard x:Name="ShowTitleGridStoryboard"
-                                    Storyboard.TargetName="TitleGrid" Storyboard.TargetProperty="Opacity" >
-                            <DoubleAnimation Duration="0:0:0.1" From="0.0" To="1.0" />
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="TitleGrid"
+                                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                                             From="{Binding ElementName=TitleText}" To="1" Duration="0:0:0.6" RepeatBehavior="1x"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetName="TitleGrid"
+                                             Storyboard.TargetProperty="(UIElement.Opacity)"
+                                             From="{Binding ElementName=TitleText}" To="0" Duration="0:0:0.6" RepeatBehavior="1x"/>
                         </Storyboard>
                     </BeginStoryboard>
                 </EventTrigger>
@@ -89,18 +111,18 @@
                 </ContextMenu>
             </Grid.ContextMenu>
             <Grid.ColumnDefinitions>
-                
-                <ColumnDefinition Width="7*" />
-                <ColumnDefinition Width="3*" />
+
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions  >
                 <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
                 <RowDefinition Height="115*" ></RowDefinition>
                 <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
             </Grid.RowDefinitions>
-            <Grid Grid.Column="0" Grid.Row="2" IsHitTestVisible="True" x:Name="ToolbarGrid" Background="Black" Opacity="0.5" Visibility="Collapsed" >
+            <Grid Grid.Column="0" Grid.Row="2" IsHitTestVisible="True" x:Name="ToolbarGrid" Background="Black" Opacity="0.5" Visibility="Collapsed" Margin="0,0,0,0" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
-                    <Button Click="Button_Click" Content="테스트" />
+                    <Button Click="Maintain_Ratio_Click" Content="비율고정" />
+                    <Button Click="Button_Click" Content="test" />
                 </StackPanel>
             </Grid>
         </Grid>

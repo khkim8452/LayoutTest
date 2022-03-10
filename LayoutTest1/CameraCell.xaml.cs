@@ -32,6 +32,7 @@ namespace LayoutTest1
     {
         int _mode = 0;
         bool _isSingleMode = false;
+        bool Maintain_R = false;
 
         public int Mode
         {
@@ -41,7 +42,7 @@ namespace LayoutTest1
         }
 
         public Item _cameraitem=null;
-        public Item CameraItem
+        public Item CameraItem //property 프로퍼티 
         {
             get { return _cameraitem; }
             set { ChangeCamera(value); }
@@ -274,9 +275,22 @@ namespace LayoutTest1
             HighlightGrid.Visibility = Visibility.Collapsed;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Maintain_Ratio_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("adgad");
+            //bool Maintain_R = false; 전역변수 추가
+
+            if(Maintain_R)//고정상태이면 풀어주기
+            {
+                Maintain_R = false;
+                //MessageBox.Show("이미지 고정을 해제합니다.");
+                _v.MaintainImageAspectRatio = false;
+            }
+            else//풀린 상태이면 고정하기
+            {
+                Maintain_R = true;
+                //MessageBox.Show("이미지를 고정합니다.");
+                _v.MaintainImageAspectRatio = true;
+            }
         }
 
         private void ToolbarHoverGrid_MouseEnter(object sender, MouseEventArgs e)
@@ -313,6 +327,11 @@ namespace LayoutTest1
         {
             if (V.ShowTitleAlways) ShowTitle();
             else HideTitle();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

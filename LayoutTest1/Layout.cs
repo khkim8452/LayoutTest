@@ -199,17 +199,15 @@ namespace LayoutTest1
         }
         public void UpdateTitleStatus()
         {
+            //Title 항상 보이기 / 보이지 않기 누르면 그 속성 변경하는 부분.
             for (int i = 0; i < Row; i++)
+            {
                 for (int j = 0; j < Col; j++)
                 {
-
-
+                    //모든 카메라 셀에 대해 각각 상태 변경
                     Cells[i, j].UpdateTitleStatus();
                 }
+            }
         }
-
     }
-   
-
-   
 }
