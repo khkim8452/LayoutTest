@@ -24,7 +24,7 @@ namespace LayoutTest1
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private bool on_off_status; // 꺼짐 - 켜짐 상태를 담는 bool 변수
+        private bool on_off_status = false; // 꺼짐 - 켜짐 상태를 담는 bool 변수
         private bool is_on;
         private bool is_off;
 
@@ -60,7 +60,7 @@ namespace LayoutTest1
                 if (is_on)
                 {
                     Off = false;
-                    Back.Fill = new SolidColorBrush(Color.FromRgb(249, 199, 106));
+                    Back.Fill = new SolidColorBrush(Color.FromRgb(71, 200, 62));
                     EllOn.Visibility = Visibility.Visible;
                 }
                 else
@@ -83,7 +83,7 @@ namespace LayoutTest1
                 if (is_off)
                 {
                     On = false;
-                    Back.Fill = new SolidColorBrush(Color.FromRgb(155, 230, 170));
+                    Back.Fill = new SolidColorBrush(Color.FromRgb(189, 189, 189));
                     EllOff.Visibility = Visibility.Visible;
                 }
                 else
@@ -99,10 +99,12 @@ namespace LayoutTest1
         {
             if(on_off_status)
             {
+                on_off_status = false;
                 On = true;
             }
             else
             {
+                on_off_status = true;
                 Off = true;
             }
         }
