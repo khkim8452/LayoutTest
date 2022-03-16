@@ -5,22 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LayoutTest1"
              mc:Ignorable="d">
-    <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2">
+    <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2"> 
         <Grid HorizontalAlignment="Left" VerticalAlignment="Top" >
             <!-- 배경 컨트롤 -->
             <Rectangle x:Name="Back" Fill="#FFBEBEBE" HorizontalAlignment="Center" Height="80" Margin="10" VerticalAlignment="Top" Width="210" RadiusX="35" RadiusY="42.75" MouseLeftButtonDown="Back_MouseLeftButtonDown" Cursor="Hand"/>
             <!-- OFF 스위치 -->
-            <Ellipse x:Name="EllOff" Fill="White" HorizontalAlignment="Center" Height="70" VerticalAlignment="Center" Width="70" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown" Margin="-180 0 0 0" Visibility="Collapsed" Cursor="Hand" ToolTip="OFF"/>
+            <Ellipse x:Name="EllOff" Fill="White" HorizontalAlignment="Center" Height="70" VerticalAlignment="Center" Width="70" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown" Margin="-120 0 0 0" Visibility="Collapsed" Cursor="Hand" ToolTip="OFF"/>
             <!-- On 스위치 -->
-            <Ellipse x:Name="EllOn" HorizontalAlignment="Center" Height="70" VerticalAlignment="Center" Width="70" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown" Margin="0" Visibility="Collapsed" Cursor="Hand" ToolTip="On">
-                <Ellipse.Fill>
-                    <ImageBrush Stretch="Uniform">
-                        <ImageBrush.ImageSource>
-                            <BitmapImage UriSource="/Resources/button-off-on-power-switch-icon-189097.png"/>
-                        </ImageBrush.ImageSource>
-                    </ImageBrush>
-                </Ellipse.Fill>
-            </Ellipse>
+            <Ellipse x:Name="EllOn" Fill="White" HorizontalAlignment="Center" Height="70" VerticalAlignment="Center" Width="70" MouseLeftButtonDown="Ellipse_MouseLeftButtonDown" Margin="120 0 0 0" Visibility="Visible" Cursor="Hand" ToolTip="OFF"/>
+
         </Grid>
     </Viewbox>
 </UserControl>

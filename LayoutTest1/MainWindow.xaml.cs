@@ -48,7 +48,7 @@ namespace LayoutTest1
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            //여기서 왜 오류나냐? 시작하자마자 끄니까 오류나네
             CameraGrid.Children.Add(l.MainGrid);
             l.SetRowCol(5, 5);
             LoadAllCamera(null, null);
