@@ -263,5 +263,11 @@ namespace LayoutTest1
         {
 
         }
+
+        private void PlayBack_Viewer(object sender, RoutedEventArgs e)
+        {
+            LayoutTest1.Playback_Viewer pb = new LayoutTest1.Playback_Viewer();
+            pb.ShowDialog();
+        }
     }
 }

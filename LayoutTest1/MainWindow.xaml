@@ -32,9 +32,8 @@
             <RadioButton GroupName="TitleVisibility" x:Name="rbHideTitle" Content="카메라 이름 숨기기" Click="rbHideTitle_Click"/>
             -->
             <!--사용자 정의 컨트롤로 만들기 -->
-            <local:ToggleSwitch Loaded="ToggleSwitch_Loaded">
-                
-            </local:ToggleSwitch>
+
+            <Button Content="녹화 기록" Margin="5" Click="PlayBack_Viewer" Width="Auto"/>
         </StackPanel>
         <Grid Grid.Row="1" x:Name="big">
             <Grid.ColumnDefinitions>

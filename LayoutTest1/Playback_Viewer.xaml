@@ -1,0 +1,90 @@
+﻿<Window x:Class="LayoutTest1.Playback_Viewer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:winformHost="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+        xmlns:winform="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        xmlns:platformclient="clr-namespace:VideoOS.Platform.Client;assembly=VideoOS.Platform"
+        
+        xmlns:local="clr-namespace:LayoutTest1"
+        mc:Ignorable="d"
+        Title="Playback_Viewer" Height="650" Width="900" MinHeight="650" MinWidth="800">
+    <Grid>
+        <!--전체적인 와꾸 설정-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+        
+        <!--메인 화면 (영상)-->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--영상-->
+            <platformclient:ImageViewerWpfControl x:Name="_imageViewerControl" />
+           </Grid>
+        
+        <!--좌측 메뉴바-->
+        <StackPanel Grid.Column="0">
+
+            <GroupBox x:Name="groupBox0" Header="녹화 날짜" Margin="3">
+                <Calendar x:Name="calendar" DatePicker.SelectedDateChanged="groupBox0_SelectedDateChanged"/>
+
+            </GroupBox>
+            <GroupBox x:Name="groupBox1" Header="영상 정보 확인 설정" Margin="3">
+                <StackPanel Orientation="Vertical">
+                    <CheckBox x:Name="_digitalZoomCheckBox" Content="디지털 줌" Margin="3" Click="_digitalZoomCheckBox_Click"/>
+                    <CheckBox x:Name="_maintainAspectRatioCheckBox" Content="화면비율 유지하기" Margin="3" Click="_maintainAspectRatioCheckBox_Click"/>
+                    <CheckBox x:Name="_visibleHeaderCheckBox" Content="상태 바 활성화" Margin="3" Click="_visibleHeaderCheckBox_Click" IsChecked="True"/>
+                    <CheckBox x:Name="_visibleCameraNameCheckBox" Content="카메라 이름 보이기" Margin="20,3, 3, 3" Click="_visibleCameraNameCheckBox_Click" IsChecked="True"/>
+                    <CheckBox x:Name="_visibleLiveIndicatorCheckBox" Content="실시간 정보 표시" Margin="20,3, 3, 3" Click="_visibleLiveIndicatorCheckBox_Click" IsChecked="True"/>
+                    <CheckBox x:Name="_visibleTimeStampCheckBox" Content="시간 정보 표시" Margin="20,3, 3, 3" Click="_visibleTimeStampCheckBox_Click" IsChecked="True"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox x:Name="groupBox2" Header="동작 이벤트 설정" Margin="3">
+                <StackPanel>
+                    <RadioButton x:Name="_skipRadioButton" Content="다음 이벤트로 건너뛰기" Margin="3" Checked="_checkAllRadioButtonsChecked" IsChecked="True"/>
+                    <RadioButton x:Name="_noSkipRadioButton" Content="다음 이벤트로 건너뛰지 않기" Margin="3" Checked="_checkAllRadioButtonsChecked"/>
+                    <RadioButton x:Name="_stopRadioButton" Content="이벤트 마지막에서 정지" Margin="3" Checked="_checkAllRadioButtonsChecked"/>
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox x:Name="groupBox4" Header="카메라 정보" Margin="3">
+                <StackPanel>
+                    <CheckBox x:Name="_diagnosticsCheckBox" Content="상세정보 표시" Margin="3" Click="_diagnosticsCheckBox_Click"/>
+                </StackPanel>
+            </GroupBox>
+
+        </StackPanel>
+        
+        
+        
+        
+        
+        
+        
+        <!--좌측 하단-->
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button x:Name="_change_cam" Content="카메라 변경" Width="75" Height="23" Margin="3" Click="_selectCameraButton_Click"/>
+            <Button x:Name="_closeButton" Content="나가기" Width="75" Height="23" Margin="3" Click="_closeButton_Click"/>
+        </StackPanel>
+
+        <!--우측 하단-->
+        <!--제어 컨트롤러-->
+        <Grid Grid.Column="1" Grid.Row="1">
+
+            <platformclient:PlaybackWpfUserControl x:Name="_playbackUserControl" Grid.Row="1" Margin="0 3 0 0"/>
+
+        </Grid>
+
+
+
+    </Grid>
+</Window>
