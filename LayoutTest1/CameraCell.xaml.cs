@@ -33,6 +33,7 @@ namespace LayoutTest1
         int _mode = 0;
         bool _isSingleMode = false;
         bool Maintain_R = false;
+        bool ptz_control_mode = false;//ptz 제어 보드 처음에는 안나옴
 
         public int Mode
         {
@@ -336,8 +337,18 @@ namespace LayoutTest1
 
         private void activate_PTZ(object sender, RoutedEventArgs e)
         {
-            //PTZ 컨트롤을 활성화 합니다.
-            ptz_controller.
+            //PTZ 컨트롤을 활성화 하고 비활성화 합니다.
+            if(ptz_control_mode)
+            {
+                ptz_control_mode = false;//ptz 비활성화
+                PTZGrid.Visibility = Visibility.Collapsed;
+
+            }
+            else
+            {
+                ptz_control_mode = true;//ptz 활성화
+                PTZGrid.Visibility = Visibility.Visible;
+            }    
         }
     }
 }

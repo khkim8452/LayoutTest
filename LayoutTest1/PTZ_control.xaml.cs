@@ -44,29 +44,39 @@ namespace LayoutTest1
 
         private void PTZ_L_Click(object sender, RoutedEventArgs e)
         {
-
+            //왼쪽 버튼
+            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Left);
+            //EnvironmentManager.Instance.SendMessage(msg, _camera.FQID);
         }
 
         private void PTZ_R_Click(object sender, RoutedEventArgs e)
         {
-
+            //오른쪽 버튼 
+            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Right);
+            //EnvironmentManager.Instance.SendMessage(msg, _camera.FQID);
         }
 
 
         private void PTZ_B_Click(object sender, RoutedEventArgs e)
         {
-
+            //아래로 버튼
+            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Down);
+            //EnvironmentManager.Instance.PostMessage(msg, _camera.FQID);
         }
 
 
         private void PTZ_ZO_Click(object sender, RoutedEventArgs e)
         {
-
+            //줌 아웃
+            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.ZoomOut);
+            //EnvironmentManager.Instance.PostMessage(msg, _camera.FQID);
         }
 
         private void PTZ_ZI_Click(object sender, RoutedEventArgs e)
         {
-
+            //줌 인
+            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.ZoomIn);
+            //EnvironmentManager.Instance.PostMessage(msg, _camera.FQID);
         }
     }
 }

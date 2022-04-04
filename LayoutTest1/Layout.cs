@@ -52,7 +52,6 @@ namespace LayoutTest1
 
                     Grid.SetRow(Cells[i, j], i);
                     Grid.SetColumn(Cells[i, j], j);
-                    Cells[i, j].tbtemp.Text = $"{i},{j}";
                     MainGrid.Children.Add(Cells[i, j]);
                 }
             

@@ -34,7 +34,6 @@
             <!--사용자 정의 컨트롤로 만들기 -->
 
             <Button Content="녹화 기록" Margin="5" Click="PlayBack_Viewer" Width="Auto"/>
-            <Button Content="PTZ 제어" Margin="5" Click="PTZ_C" />
         </StackPanel>
         <Grid Grid.Row="1" x:Name="big">
             <Grid.ColumnDefinitions>
@@ -43,7 +42,6 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="200"/>
             </Grid.RowDefinitions>
 
             <Grid x:Name="ListGrid" Grid.Column="0" >
@@ -53,8 +51,8 @@
                          PreviewMouseLeftButtonUp="CameraListBox_PreviewMouseLeftButtonUp"
                          PreviewMouseMove="CameraListBox_PreviewMouseMove" HorizontalAlignment="Left"/>
             </Grid>
-            <Grid x:Name="CameraGrid" Grid.Column="1" HorizontalAlignment="Stretch" Grid.RowSpan="2"/>
-            <local:PTZ_control x:Name="ptz_controller" Grid.Row="1" Loaded="PTZ_control_Loaded" Margin="0" Visibility="Collapsed"/>
+            <Grid x:Name="CameraGrid" Grid.Column="1" HorizontalAlignment="Stretch" />
+            
         </Grid>
     </Grid>
 </Window>

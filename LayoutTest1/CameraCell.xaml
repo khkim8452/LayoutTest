@@ -5,28 +5,36 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:LayoutTest1"
              xmlns:mipsdk="clr-namespace:VideoOS.Platform.Client;assembly=VideoOS.Platform"
-                           
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="Transparent">
+    
+    <Grid Background="#FF131313">
         <Image Source="jmon_gray_alpha.png" />
-        <TextBlock x:Name="tbtemp" FontSize="20"  VerticalAlignment="Center" HorizontalAlignment="Center" ></TextBlock>
-        <Grid x:Name="ContentGrid" Background="Transparent" Visibility="Collapsed" >
+        <Grid x:Name="ContentGrid" Background="Transparent" Visibility="Visible" >
+            
             <Grid x:Name="VideoGrid" Background="Transparent" IsHitTestVisible="False">
                 <mipsdk:ImageViewerWpfControl x:Name="_v" IsHitTestVisible="False" FontFamily="Pretendard Variable"  />
             </Grid>
+            <!--
             <Grid x:Name="ThermalGrid"  Background="Transparent" IsHitTestVisible="False" Visibility="Visible"></Grid>
             <Grid x:Name="BoxGrid" Background="Transparent" IsHitTestVisible="False" Visibility="Visible" ></Grid>
             <Grid x:Name="MetaGrid" Background="Transparent" IsHitTestVisible="False" Visibility="Visible" ></Grid>
             <Grid x:Name="SensorGrid" Background="Transparent"  IsHitTestVisible="False" Visibility="Visible"></Grid>
+            -->
             <Grid x:Name="OverlayGrid" Background="Transparent" IsHitTestVisible="True" Visibility="Visible"  >
-                <Grid.RowDefinitions  >
-                    <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
-                    <RowDefinition Height="115*" ></RowDefinition>
-                    <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*" MinHeight="20" ></RowDefinition><!--TOP overlay-->
+                    <RowDefinition Height="100*" ></RowDefinition>
+                    <RowDefinition Height="100" ></RowDefinition>
+                    <RowDefinition Height="5*" MinHeight="20" ></RowDefinition><!--BOTTOM overlay-->
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" x:Name="TitleGrid" Background="Black" Opacity="0.7" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
+                </Grid.ColumnDefinitions>
+                
+                <Grid Grid.Row="0" x:Name="TitleGrid" Background="Black" Opacity="0.75" >
                     <!-- <local:OutlinedTextBlock x:Name="TitleText"  Stroke="Black" StrokeThickness="1" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center"  />-->
                     <TextBlock x:Name="TitleText" 
                                Text="" 
@@ -37,7 +45,6 @@
                                Margin="2"
                                FontFamily="Pretendard Variable" 
                                RenderOptions.BitmapScalingMode="NearestNeighbor" TextTrimming="CharacterEllipsis"
-                               
                                />
                 </Grid>
                 <!--
@@ -66,9 +73,14 @@
                     <Grid Background="Red" Grid.Column="1" />
                     <Grid Background="green" Grid.Column="2" />
                 </Grid>
-                
+
+                <Grid x:Name="PTZGrid" Grid.Row="2" Grid.Column="1" Background="Transparent" Visibility="Collapsed">
+
+                    <local:PTZ_control />
+                </Grid>
             </Grid>
-            <Grid x:Name="PTZGrid" Background="Transparent" IsHitTestVisible="true" Visibility="Collapsed"></Grid>
+            
+            <!--ptzgrid 위치 변경-->
         </Grid>
         <Grid x:Name="HighlightGrid" IsHitTestVisible="False" Background="Blue" Opacity="0.5" Visibility="Collapsed"></Grid>
         <Grid x:Name="MouseHoverGrid" 
@@ -79,7 +91,7 @@
               DragEnter="MouseHoverGrid_DragEnter" 
               DragOver="MouseHoverGrid_DragOver" 
               DragLeave="MouseHoverGrid_DragLeave" 
-              MouseMove="MouseHoverGrid_MouseMove"
+              MouseMove="MouseHoverGrid_MouseMove" Margin="1685,225,-1685,-225"
               
               >
             <!--마우스 오버시 title bar 애니메이션 구현-->
@@ -110,10 +122,8 @@
                     <MenuItem Header = "Menu item 3"/>
                 </ContextMenu>
             </Grid.ContextMenu>
-            <Grid.ColumnDefinitions>
 
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+
             <Grid.RowDefinitions  >
                 <RowDefinition Height="5*" MinHeight="25" ></RowDefinition>
                 <RowDefinition Height="115*" ></RowDefinition>
@@ -130,5 +140,6 @@
         <Border x:Name="CellBorder" Background="Transparent" BorderBrush="Lime" BorderThickness="1" IsHitTestVisible="False" Visibility="Collapsed" >
             <Grid Background="Transparent"/>
         </Border>
+        
     </Grid>
 </UserControl>
