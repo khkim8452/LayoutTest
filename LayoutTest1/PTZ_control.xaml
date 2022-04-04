@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="LayoutTest1.PTZ_control"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:LayoutTest1"
+             mc:Ignorable="d" 
+             d:DesignHeight="50" d:DesignWidth="50">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+
+        <Ellipse x:Name="PTZ_T" Grid.Row="0" Grid.Column="1" Margin="1" Fill="Black" ButtonBase.Click="PTZ_T_Click"/>
+        <Ellipse x:Name="PTZ_L" Grid.Row="1" Grid.Column="0" Margin="1" Fill="Black" ButtonBase.Click="PTZ_L_Click"/>
+        <Ellipse x:Name="PTZ_R" Grid.Row="1" Grid.Column="2" Margin="1" Fill="Black" ButtonBase.Click="PTZ_R_Click"/>
+        <Ellipse x:Name="PTZ_B" Grid.Row="2" Grid.Column="1" Margin="1" Fill="Black" ButtonBase.Click="PTZ_B_Click"/>
+        <Ellipse x:Name="PTZ_ZI" Grid.Row="0" Grid.Column="4" Margin="1" Fill="Black" ButtonBase.Click="PTZ_ZI_Click"/>
+        <Ellipse x:Name="PTZ_ZO" Grid.Row="2" Grid.Column="4" Margin="1" Fill="Black" ButtonBase.Click="PTZ_ZO_Click"/>
+
+    </Grid>
+</UserControl>

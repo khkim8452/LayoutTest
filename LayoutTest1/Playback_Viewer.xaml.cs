@@ -228,6 +228,17 @@ namespace LayoutTest1
 
         }
 
+        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
+                                                        MessageId.SmartClient.PlaybackCommand,
+                                                        new PlaybackCommandData() { Command = PlaybackData.PlayStop }), _playbackFQID);
+            EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
+                                                        MessageId.SmartClient.PlaybackCommand,
+                                                        new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = _dateTimePicker.SelectedDate.Value.ToUniversalTime() }), _playbackFQID);
+
+        }
         #endregion
 
         #region Commands to Playback Controller
@@ -271,6 +282,8 @@ namespace LayoutTest1
         }
         #endregion
 
+
+        #region helper method
         private void SetPlaybackSkipMode()
         {
             if (_skipRadioButton.IsChecked.Value)
@@ -293,16 +306,6 @@ namespace LayoutTest1
             }
         }
 
-        private void groupBox0_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //새로운 캘린더로 검색할거니까 여기다가 기존의 것 구현하기
-            Calendar calendar = sender as Calendar;
-            EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
-                                                        MessageId.SmartClient.PlaybackCommand,
-                                                        new PlaybackCommandData() { Command = PlaybackData.PlayStop }), _playbackFQID);
-            EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
-                                                        MessageId.SmartClient.PlaybackCommand,
-                                                        new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = calendar.SelectedDate.Value.ToUniversalTime() }), _playbackFQID);
-        }
+        #endregion
     }
 }

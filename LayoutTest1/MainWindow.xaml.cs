@@ -269,5 +269,18 @@ namespace LayoutTest1
             LayoutTest1.Playback_Viewer pb = new LayoutTest1.Playback_Viewer();
             pb.ShowDialog();
         }
+
+        private void PTZ_C(object sender, RoutedEventArgs e)
+        {
+            PTZ_control ptz = new PTZ_control();
+            ptz.lo = l; //카메라 레이아웃 넘겨주고
+
+
+        }
+
+        private void PTZ_control_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

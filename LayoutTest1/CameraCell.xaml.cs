@@ -333,5 +333,11 @@ namespace LayoutTest1
         {
 
         }
+
+        private void activate_PTZ(object sender, RoutedEventArgs e)
+        {
+            //PTZ 컨트롤을 활성화 합니다.
+            ptz_controller.
+        }
     }
 }

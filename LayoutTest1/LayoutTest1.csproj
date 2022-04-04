@@ -69,6 +69,9 @@
     <Compile Include="Playback_Viewer.xaml.cs">
       <DependentUpon>Playback_Viewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PTZ_control.xaml.cs">
+      <DependentUpon>PTZ_control.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ToggleSwitch.xaml.cs">
       <DependentUpon>ToggleSwitch.xaml</DependentUpon>
     </Compile>
@@ -90,6 +93,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Playback_Viewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PTZ_control.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

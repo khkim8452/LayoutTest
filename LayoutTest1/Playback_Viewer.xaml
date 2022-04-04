@@ -34,8 +34,9 @@
         <StackPanel Grid.Column="0">
 
             <GroupBox x:Name="groupBox0" Header="녹화 날짜" Margin="3">
-                <Calendar x:Name="calendar" DatePicker.SelectedDateChanged="groupBox0_SelectedDateChanged"/>
-
+                <StackPanel>
+                    <DatePicker x:Name="_dateTimePicker" SelectedDateChanged="DatePicker_SelectedDateChanged"/>
+                </StackPanel>
             </GroupBox>
             <GroupBox x:Name="groupBox1" Header="영상 정보 확인 설정" Margin="3">
                 <StackPanel Orientation="Vertical">
