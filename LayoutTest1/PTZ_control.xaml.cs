@@ -26,10 +26,11 @@ namespace LayoutTest1
     public partial class PTZ_control : UserControl
     {
         Item item = null;
+        PTZMoveStartCommandData PTZ_Data = new PTZMoveStartCommandData();
+
         public PTZ_control()
         {
             InitializeComponent();
-            
         }
 
         public void set_ptz_item(Item i)
@@ -37,11 +38,20 @@ namespace LayoutTest1
             item = i;
         }
 
+        public void set_PTZ_Data(float pan, double speed, float tilt, float zoom)
+        {
+            PTZ_Data.Pan = pan;
+            PTZ_Data.Speed = speed;
+            PTZ_Data.Tilt = tilt;
+            PTZ_Data.Zoom = zoom;
+        }
+
         private void PTZ_T_Click(object sender, RoutedEventArgs e)
         {
             //위로 버튼
             Console.WriteLine("up button clicked");
-            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Up);
+            set_PTZ_Data(0, 0.5, -1, 0);
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveStartCommand, PTZ_Data);
             EnvironmentManager.Instance.PostMessage(msg, item.FQID);
         }
 
@@ -49,7 +59,8 @@ namespace LayoutTest1
         {
             //왼쪽 버튼
             Console.WriteLine("left button clicked");
-            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Left);
+            set_PTZ_Data(-1, 0.5, 0, 0);
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveStartCommand, PTZ_Data);
             EnvironmentManager.Instance.SendMessage(msg, item.FQID);
         }
 
@@ -57,7 +68,8 @@ namespace LayoutTest1
         {
             //오른쪽 버튼 
             Console.WriteLine("right button clicked");
-            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Right);
+            set_PTZ_Data(1, 0.5, 0, 0);
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveStartCommand, PTZ_Data);
             EnvironmentManager.Instance.SendMessage(msg, item.FQID);
         }
 
@@ -66,7 +78,8 @@ namespace LayoutTest1
         {
             //아래로 버튼
             Console.WriteLine("down button clicked");
-            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Down);
+            set_PTZ_Data(0, 0.5, 1, 0);
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveStartCommand, PTZ_Data);
             EnvironmentManager.Instance.PostMessage(msg, item.FQID);
         }
 
@@ -74,16 +87,27 @@ namespace LayoutTest1
         private void PTZ_ZO_Click(object sender, RoutedEventArgs e)
         {
             //줌 아웃
+            
             Console.WriteLine("zoom out button clicked");
-            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.ZoomOut);
+            set_PTZ_Data(0, 0.5, 0, -1);
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveStartCommand, PTZ_Data);
             EnvironmentManager.Instance.PostMessage(msg, item.FQID);
+
         }
 
         private void PTZ_ZI_Click(object sender, RoutedEventArgs e)
         {
             //줌 인
             Console.WriteLine("zoom in button clicked");
-            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.ZoomIn);
+            set_PTZ_Data(0, 0.5, 0, 1);
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveStartCommand, PTZ_Data);
+            EnvironmentManager.Instance.PostMessage(msg, item.FQID);
+        }
+
+        private void PTZ_ST_Click(object sender, RoutedEventArgs e)
+        {
+
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveStopCommand);
             EnvironmentManager.Instance.PostMessage(msg, item.FQID);
         }
     }
