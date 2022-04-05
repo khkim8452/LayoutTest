@@ -72,9 +72,12 @@
         
         
         <!--좌측 하단-->
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Button x:Name="_change_cam" Content="카메라 변경" Width="75" Height="23" Margin="3" Click="_selectCameraButton_Click"/>
-            <Button x:Name="_closeButton" Content="나가기" Width="75" Height="23" Margin="3" Click="_closeButton_Click"/>
+        <StackPanel Grid.Row="1" Grid.Column="0" >
+            <Button x:Name="_save_video_file" Content="동영상 저장" Width="75" Height="23" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center" Click="_save_video_file_Click"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="_change_cam" Content="카메라 변경" Width="75" Height="23" Margin="3" Click="_selectCameraButton_Click"/>
+                <Button x:Name="_closeButton" Content="나가기" Width="75" Height="23" Margin="3" Click="_closeButton_Click"/>
+            </StackPanel>
         </StackPanel>
 
         <!--우측 하단-->

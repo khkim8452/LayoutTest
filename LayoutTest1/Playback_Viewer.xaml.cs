@@ -307,5 +307,11 @@ namespace LayoutTest1
         }
 
         #endregion
+
+        private void _save_video_file_Click(object sender, RoutedEventArgs e)
+        {
+            //동영상 저장하는 기능 제공.
+
+        }
     }
 }

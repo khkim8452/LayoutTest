@@ -76,6 +76,9 @@
       <DependentUpon>ToggleSwitch.xaml</DependentUpon>
     </Compile>
     <Compile Include="V.cs" />
+    <Compile Include="VideoExport.xaml.cs">
+      <DependentUpon>VideoExport.xaml</DependentUpon>
+    </Compile>
     <Page Include="CameraCell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -101,6 +104,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ToggleSwitch.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VideoExport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
