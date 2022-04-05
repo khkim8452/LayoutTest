@@ -350,5 +350,11 @@ namespace LayoutTest1
                 PTZGrid.Visibility = Visibility.Visible;
             }    
         }
+
+        private void PTZ_control_Loaded(object sender, RoutedEventArgs e)
+        {
+            //ptz에게 item 전달
+            ptzptz.set_ptz_item(this.CameraItem);
+        }
     }
 }

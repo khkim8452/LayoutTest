@@ -18,12 +18,14 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
 
-        <Ellipse x:Name="PTZ_T" Grid.Row="0" Grid.Column="1" Margin="1" Fill="#FFE0E0E0" ButtonBase.Click="PTZ_T_Click" />
-        <Ellipse x:Name="PTZ_L" Grid.Row="1" Grid.Column="0" Margin="1" Fill="#FFE0E0E0" ButtonBase.Click="PTZ_L_Click"/>
-        <Ellipse x:Name="PTZ_R" Grid.Row="1" Grid.Column="2" Margin="1" Fill="#FFE0E0E0" ButtonBase.Click="PTZ_R_Click"/>
-        <Ellipse x:Name="PTZ_B" Grid.Row="2" Grid.Column="1" Margin="1" Fill="#FFE0E0E0" ButtonBase.Click="PTZ_B_Click"/>
-        <Ellipse x:Name="PTZ_ZI" Grid.Row="0" Grid.Column="4" Margin="1" Fill="#FFE0E0E0" ButtonBase.Click="PTZ_ZI_Click"/>
-        <Ellipse x:Name="PTZ_ZO" Grid.Row="2" Grid.Column="4" Margin="1" Fill="#FFE0E0E0" ButtonBase.Click="PTZ_ZO_Click"/>
+
+
+        <Button x:Name="PTZ_T"  Grid.Row="0" Grid.Column="1" Margin="1" Click="PTZ_T_Click" />
+        <Button x:Name="PTZ_L"  Grid.Row="1" Grid.Column="0" Margin="1" Click="PTZ_L_Click"/>
+        <Button x:Name="PTZ_R"  Grid.Row="1" Grid.Column="2" Margin="1" Click="PTZ_R_Click"/>
+        <Button x:Name="PTZ_B"  Grid.Row="2" Grid.Column="1" Margin="1" Click="PTZ_B_Click"/>
+        <Button x:Name="PTZ_ZI" Grid.Row="0" Grid.Column="4" Margin="1" Click="PTZ_ZI_Click"/>
+        <Button x:Name="PTZ_ZO" Grid.Row="2" Grid.Column="4" Margin="1" Click="PTZ_ZO_Click"/>
 
     </Grid>
 </UserControl>

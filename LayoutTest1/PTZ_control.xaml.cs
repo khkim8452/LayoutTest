@@ -25,58 +25,66 @@ namespace LayoutTest1
     /// </summary>
     public partial class PTZ_control : UserControl
     {
-        public Layout lo;
+        Item item = null;
         public PTZ_control()
         {
             InitializeComponent();
+            
         }
 
-        public void toss_params(Layout layout)
+        public void set_ptz_item(Item i)
         {
-            lo = layout;
+            item = i;
         }
+
         private void PTZ_T_Click(object sender, RoutedEventArgs e)
         {
             //위로 버튼
-            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Up);
-            //EnvironmentManager.Instance.PostMessage(msg, _camera.FQID);
+            Console.WriteLine("up button clicked");
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Up);
+            EnvironmentManager.Instance.PostMessage(msg, item.FQID);
         }
 
         private void PTZ_L_Click(object sender, RoutedEventArgs e)
         {
             //왼쪽 버튼
-            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Left);
-            //EnvironmentManager.Instance.SendMessage(msg, _camera.FQID);
+            Console.WriteLine("left button clicked");
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Left);
+            EnvironmentManager.Instance.SendMessage(msg, item.FQID);
         }
 
         private void PTZ_R_Click(object sender, RoutedEventArgs e)
         {
             //오른쪽 버튼 
-            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Right);
-            //EnvironmentManager.Instance.SendMessage(msg, _camera.FQID);
+            Console.WriteLine("right button clicked");
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Right);
+            EnvironmentManager.Instance.SendMessage(msg, item.FQID);
         }
 
 
         private void PTZ_B_Click(object sender, RoutedEventArgs e)
         {
             //아래로 버튼
-            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Down);
-            //EnvironmentManager.Instance.PostMessage(msg, _camera.FQID);
+            Console.WriteLine("down button clicked");
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.Down);
+            EnvironmentManager.Instance.PostMessage(msg, item.FQID);
         }
 
 
         private void PTZ_ZO_Click(object sender, RoutedEventArgs e)
         {
             //줌 아웃
-            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.ZoomOut);
-            //EnvironmentManager.Instance.PostMessage(msg, _camera.FQID);
+            Console.WriteLine("zoom out button clicked");
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.ZoomOut);
+            EnvironmentManager.Instance.PostMessage(msg, item.FQID);
         }
 
         private void PTZ_ZI_Click(object sender, RoutedEventArgs e)
         {
             //줌 인
-            //VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.ZoomIn);
-            //EnvironmentManager.Instance.PostMessage(msg, _camera.FQID);
+            Console.WriteLine("zoom in button clicked");
+            VideoOS.Platform.Messaging.Message msg = new VideoOS.Platform.Messaging.Message(MessageId.Control.PTZMoveCommand, VideoOS.Platform.Messaging.PTZMoveCommandData.ZoomIn);
+            EnvironmentManager.Instance.PostMessage(msg, item.FQID);
         }
     }
 }

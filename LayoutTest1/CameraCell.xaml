@@ -74,9 +74,8 @@
                     <Grid Background="green" Grid.Column="2" />
                 </Grid>
 
-                <Grid x:Name="PTZGrid" Grid.Row="2" Grid.Column="1" Background="Transparent" Visibility="Collapsed">
-
-                    <local:PTZ_control />
+                <Grid x:Name="PTZGrid" Grid.Row="2" Grid.Column="1" Background="Transparent" Visibility="Collapsed" IsEnabled="True">
+                    <local:PTZ_control x:Name="ptzptz" Loaded="PTZ_control_Loaded" Panel.ZIndex="0"/>
                 </Grid>
             </Grid>
             
@@ -91,7 +90,7 @@
               DragEnter="MouseHoverGrid_DragEnter" 
               DragOver="MouseHoverGrid_DragOver" 
               DragLeave="MouseHoverGrid_DragLeave" 
-              MouseMove="MouseHoverGrid_MouseMove" Margin="1685,225,-1685,-225"
+              MouseMove="MouseHoverGrid_MouseMove"
               
               >
             <!--마우스 오버시 title bar 애니메이션 구현-->

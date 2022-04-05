@@ -273,7 +273,6 @@ namespace LayoutTest1
         private void PTZ_C(object sender, RoutedEventArgs e)
         {
             PTZ_control ptz = new PTZ_control();
-            ptz.lo = l; //카메라 레이아웃 넘겨주고
 
 
         }
