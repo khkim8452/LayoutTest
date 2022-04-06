@@ -311,7 +311,8 @@ namespace LayoutTest1
         private void _save_video_file_Click(object sender, RoutedEventArgs e)
         {
             //동영상 저장하는 기능 제공.
-
+            LayoutTest1.Video_Export video_Export = new LayoutTest1.Video_Export();
+            video_Export.ShowDialog();
         }
     }
 }

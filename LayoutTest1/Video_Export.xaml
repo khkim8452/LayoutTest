@@ -1,0 +1,28 @@
+﻿<Window x:Class="LayoutTest1.Video_Export"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LayoutTest1"
+        mc:Ignorable="d"
+        Title="Video_Export" Height="250" Width="300">
+    <Grid>
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="selected_cam_to_save" Width="200" Height="25" Margin="5" />
+                <Button x:Name="select_cam_button" Content="카메라 선택"  Width="80" Height="25" Margin="5" Click="select_cam_button_Click" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock x:Name="selected_folder_to_save" Width="200" Height="25" Margin="5" />
+                <Button x:Name="select_folder_button" Content="폴더 선택"  Width="80" Height="25" Margin="5" Click="select_folder_button_Click" />
+            </StackPanel>
+
+            <DatePicker x:Name="start_Time" Margin="5"/>
+            <DatePicker x:Name="end_Time" Margin="5"/>
+            
+            <Button x:Name="export_Btn" Content="영상 추출 하기" Width="150" Height="25" Margin="5" Click="export_Btn_Click" />
+            <ProgressBar x:Name="progressBar" Height="20" />
+        </StackPanel>
+    </Grid>
+</Window>
