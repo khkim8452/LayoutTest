@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LayoutTest1"
         mc:Ignorable="d"
-        Title="Video_Export" Height="250" Width="300">
+        ResizeMode="NoResize"
+        Title="Video_Export" Height="300" Width="300">
     <Grid>
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
@@ -18,11 +19,36 @@
                 <Button x:Name="select_folder_button" Content="폴더 선택"  Width="80" Height="25" Margin="5" Click="select_folder_button_Click" />
             </StackPanel>
 
-            <DatePicker x:Name="start_Time" Margin="5"/>
-            <DatePicker x:Name="end_Time" Margin="5"/>
+
+            <local:DateTimePicker x:Name="dateTimePickerStart" Margin="5"/>
+            <local:DateTimePicker x:Name="dateTimePickerEnd" Margin="5"/>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="파일 명:" />
+                <TextBox x:Name="textBoxVideoFilename"  Width="240"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Label Content="코덱 :"/>
+                <ComboBox x:Name="comboBoxCodec" Width="140"/>
+                <Label Content="샘플링 :"/>
+                <ComboBox x:Name="comboBoxSampleRate" Width="60">
+                    <ComboBoxItem Content="8000" />
+                    <ComboBoxItem Content="16000"/>
+                    <ComboBoxItem Content="44100"/>
+                </ComboBox>
+            </StackPanel>
             
             <Button x:Name="export_Btn" Content="영상 추출 하기" Width="150" Height="25" Margin="5" Click="export_Btn_Click" />
-            <ProgressBar x:Name="progressBar" Height="20" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Button x:Name="Cancel_Btn" Content="취소" Width="70" Margin="5" />
+                <Button x:Name="Close_Btn" Content="나가기" Width="70" Margin="5" />
+            </StackPanel>
+            
+            <StackPanel Orientation="Horizontal" >
+                <ProgressBar x:Name="progressBar" Height="20" Width="230"/>
+                <TextBlock x:Name="labelError" HorizontalAlignment="Right" Width="70" Height="20"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </Window>

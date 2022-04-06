@@ -3,85 +3,119 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:LayoutTest1"
+            
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d">
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <local:InvertBoolConverter x:Key="InvertBoolConverter" />
-        </ResourceDictionary>
+        <ControlTemplate x:Key="IconButton" TargetType="{x:Type ToggleButton}">
+            <Border>
+                <ContentPresenter/>
+            </Border>
+        </ControlTemplate>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <ToggleButton Grid.Column="0" MinHeight="25" MinWidth="25" Name="PopUpCalendarButton" IsChecked="False" IsHitTestVisible="{Binding IsOpen, ElementName=CalendarPopup, Mode=OneWay, Converter={StaticResource InvertBoolConverter}}">
-            <ToggleButton.Style>
-                <Style TargetType="{x:Type ToggleButton}">
-                    <Setter Property="Background" Value="White" />
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type ToggleButton}">
-                                <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1">
-                                    <ContentPresenter />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Style>
-            </ToggleButton.Style>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <TextBox BorderThickness="0" Height="26" x:Name="DateDisplay" VerticalAlignment="Center"
-                         HorizontalAlignment="Left" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"
-                         IsHitTestVisible="False" IsReadOnly="True" IsUndoEnabled="False" />
-                <Image Grid.Column="1" Name="CalIco" Stretch="Fill" HorizontalAlignment="Right" />
-            </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TextBox BorderThickness="2" VerticalAlignment="Top" x:Name="DateDisplay"
+                     HorizontalAlignment="Stretch"
+                     VerticalContentAlignment="Center"
+                     HorizontalContentAlignment="Center"
+                     Height="26" IsReadOnly="True" IsUndoEnabled="False" Text="{Binding Source={x:Static sys:DateTime.Today}, StringFormat='{}{0:yyyy-MM-dd hh:mm tt}', Mode=OneWay}"  >
+        </TextBox>
+        <ToggleButton Grid.Column="1" Template="{StaticResource IconButton}" MinHeight="25" MinWidth="25" Name="PopUpCalendarButton" IsChecked="False">
+            <Image Name="CalIco" Stretch="Fill" HorizontalAlignment="Left" Source="DateTimePicker.png" Height="25" Width="25"/>
         </ToggleButton>
-
-        <Popup IsOpen="{Binding Path=IsChecked, ElementName=PopUpCalendarButton}" x:Name="CalendarPopup" PopupAnimation="Fade" StaysOpen="False" Width="180">
-            <Border Padding="2" Background="White">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="3*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <Calendar Grid.ColumnSpan="3" Margin="0,-3,0,0" x:Name="CalDisplay" DisplayDateStart="{Binding Source={x:Static sys:DateTime.Today}, Mode=OneWay}" SelectedDate="{x:Static sys:DateTime.Now}" PreviewMouseUp="CalDisplay_PreviewMouseUp" />
-                    <ComboBox Grid.Row="1" Grid.Column="0" Name="Hours" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" SelectedIndex="8" SelectionChanged="Time_SelectionChanged">
-                        <ComboBoxItem Content="6" />
-                        <ComboBoxItem Content="7" />
-                        <ComboBoxItem Content="8" />
-                        <ComboBoxItem Content="9" />
-                        <ComboBoxItem Content="10" />
-                        <ComboBoxItem Content="11" />
-                        <ComboBoxItem Content="12" />
-                        <ComboBoxItem Content="13" />
-                        <ComboBoxItem Content="14" />
-                        <ComboBoxItem Content="15" />
-                        <ComboBoxItem Content="16" />
-                        <ComboBoxItem Content="17" />
-                        <ComboBoxItem Content="18" />
-                    </ComboBox>
-                    <ComboBox Grid.Row="1" Grid.Column="1" Name="Min" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" SelectedIndex="0" SelectionChanged="Time_SelectionChanged">
-                        <ComboBoxItem Content="0" />
-                        <ComboBoxItem Content="10" />
-                        <ComboBoxItem Content="20" />
-                        <ComboBoxItem Content="30" />
-                        <ComboBoxItem Content="40" />
-                        <ComboBoxItem Content="50" />
-                    </ComboBox>
-                    <Button Grid.Row="1" Grid.Column="2" Name="SaveTime" Content="OK" Click="SaveTime_Click" />
-                </Grid>
+        <Popup IsOpen="{Binding Path=IsChecked, ElementName=PopUpCalendarButton}" x:Name="CalendarPopup" PopupAnimation="Fade" StaysOpen="False">
+            <Border Padding="2" Background="LightGray">
+                <StackPanel Orientation="Vertical" Background="LightGray">
+                    <Calendar Margin="0,-3,0,0" x:Name="CalDisplay" DisplayDateStart="{Binding Source={x:Static sys:DateTime.Today}, Mode=OneWay}" SelectedDate="{x:Static sys:DateTime.Now}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,-1,0,0">
+                        <ComboBox Width="45" Name="Hours" HorizontalContentAlignment="Right" SelectedIndex="0">
+                            <ComboBoxItem Content="0" />
+                            <ComboBoxItem Content="1" />
+                            <ComboBoxItem Content="2" />
+                            <ComboBoxItem Content="3" />
+                            <ComboBoxItem Content="4" />
+                            <ComboBoxItem Content="5" />
+                            <ComboBoxItem Content="6" />
+                            <ComboBoxItem Content="7" />
+                            <ComboBoxItem Content="8" />
+                            <ComboBoxItem Content="9" />
+                            <ComboBoxItem Content="10" />
+                            <ComboBoxItem Content="11" />
+                        </ComboBox>
+                        <ComboBox Width="45" Name="Min" HorizontalContentAlignment="Right" SelectedIndex="0">
+                            <ComboBoxItem Content="0" />
+                            <ComboBoxItem Content="1" />
+                            <ComboBoxItem Content="2" />
+                            <ComboBoxItem Content="3" />
+                            <ComboBoxItem Content="4" />
+                            <ComboBoxItem Content="5" />
+                            <ComboBoxItem Content="6" />
+                            <ComboBoxItem Content="7" />
+                            <ComboBoxItem Content="8" />
+                            <ComboBoxItem Content="9" />
+                            <ComboBoxItem Content="10" />
+                            <ComboBoxItem Content="11" />
+                            <ComboBoxItem Content="12" />
+                            <ComboBoxItem Content="13" />
+                            <ComboBoxItem Content="14" />
+                            <ComboBoxItem Content="15" />
+                            <ComboBoxItem Content="16" />
+                            <ComboBoxItem Content="17" />
+                            <ComboBoxItem Content="18" />
+                            <ComboBoxItem Content="19" />
+                            <ComboBoxItem Content="20" />
+                            <ComboBoxItem Content="21" />
+                            <ComboBoxItem Content="22" />
+                            <ComboBoxItem Content="23" />
+                            <ComboBoxItem Content="24" />
+                            <ComboBoxItem Content="25" />
+                            <ComboBoxItem Content="26" />
+                            <ComboBoxItem Content="27" />
+                            <ComboBoxItem Content="28" />
+                            <ComboBoxItem Content="29" />
+                            <ComboBoxItem Content="30" />
+                            <ComboBoxItem Content="31" />
+                            <ComboBoxItem Content="32" />
+                            <ComboBoxItem Content="33" />
+                            <ComboBoxItem Content="34" />
+                            <ComboBoxItem Content="35" />
+                            <ComboBoxItem Content="36" />
+                            <ComboBoxItem Content="37" />
+                            <ComboBoxItem Content="38" />
+                            <ComboBoxItem Content="39" />
+                            <ComboBoxItem Content="40" />
+                            <ComboBoxItem Content="41" />
+                            <ComboBoxItem Content="42" />
+                            <ComboBoxItem Content="43" />
+                            <ComboBoxItem Content="44" />
+                            <ComboBoxItem Content="45" />
+                            <ComboBoxItem Content="46" />
+                            <ComboBoxItem Content="47" />
+                            <ComboBoxItem Content="48" />
+                            <ComboBoxItem Content="49" />
+                            <ComboBoxItem Content="50" />
+                            <ComboBoxItem Content="51" />
+                            <ComboBoxItem Content="52" />
+                            <ComboBoxItem Content="53" />
+                            <ComboBoxItem Content="54" />
+                            <ComboBoxItem Content="55" />
+                            <ComboBoxItem Content="56" />
+                            <ComboBoxItem Content="57" />
+                            <ComboBoxItem Content="58" />
+                            <ComboBoxItem Content="59" />
+                        </ComboBox>
+                        <ComboBox Width="45" Name="AMPM" HorizontalContentAlignment="Right" SelectedIndex="0">
+                            <ComboBoxItem Content="AM"/>
+                            <ComboBoxItem Content="PM"/>
+                        </ComboBox>
+                        <Button Name="SaveTime" Content="Save" Width="45" Click="SaveTime_Click"/>
+                    </StackPanel>
+                </StackPanel>
             </Border>
         </Popup>
     </Grid>

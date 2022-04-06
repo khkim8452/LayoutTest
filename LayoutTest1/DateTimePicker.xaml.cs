@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 using System.Drawing;
 using System.Windows.Controls.Primitives;
 
-
 namespace LayoutTest1
 {
     /// <summary>
@@ -24,30 +23,11 @@ namespace LayoutTest1
 
     public partial class DateTimePicker : UserControl
     {
-        private const string DateTimeFormat = "dd.MM.yyyy HH:mm";
-
-        #region "Properties"
-
-        public DateTime SelectedDate
-        {
-            get => (DateTime)GetValue(SelectedDateProperty);
-            set => SetValue(SelectedDateProperty, value);
-        }
-
-        #endregion
-
-        #region "DependencyProperties"
-
-        public static readonly DependencyProperty SelectedDateProperty = DependencyProperty.Register("SelectedDate",
-            typeof(DateTime), typeof(DateTimePicker), new FrameworkPropertyMetadata(DateTime.Now, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
-
-        #endregion
-
+        DateTime output_Date;
         public DateTimePicker()
         {
             InitializeComponent();
             CalDisplay.SelectedDatesChanged += CalDisplay_SelectedDatesChanged;
-            CalDisplay.SelectedDate = DateTime.Now.AddDays(1);
 
             BitmapSource ConvertGDI_To_WPF(Bitmap bm)
             {
@@ -68,57 +48,93 @@ namespace LayoutTest1
 
         private void CalDisplay_SelectedDatesChanged(object sender, EventArgs e)
         {
-            var hours = (Hours?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "0";
-            var minutes = (Min?.SelectedItem as ComboBoxItem)?.Content?.ToString() ?? "0";
-            TimeSpan timeSpan = TimeSpan.Parse(hours + ":" + minutes);
-            if (CalDisplay.SelectedDate.Value.Date == DateTime.Today.Date && timeSpan.CompareTo(DateTime.Now.TimeOfDay) < 0)
+            PopUpCalendarButton.IsChecked = true;
+            if (Hours.SelectedIndex == -1 || Min.SelectedIndex == -1 || AMPM.SelectedIndex == -1)
             {
-                timeSpan = TimeSpan.FromHours(DateTime.Now.Hour + 1);
+                var date = CalDisplay.SelectedDate.Value.Date + DateTime.Now.TimeOfDay;
+                DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
+                return;
             }
-            var date = CalDisplay.SelectedDate.Value.Date + timeSpan;
-            DateDisplay.Text = date.ToString(DateTimeFormat);
-            SelectedDate = date;
+            if (AMPM.Text == "PM")
+            {
+                int hours = Convert.ToInt32(Hours.Text) + 12;
+                TimeSpan timeSpan = TimeSpan.Parse(hours.ToString() + ":" + Min.Text);
+                if (CalDisplay.SelectedDate.Value.Date == DateTime.Today.Date && timeSpan.CompareTo(DateTime.Now.TimeOfDay) < 0)
+                {
+                    var date = CalDisplay.SelectedDate.Value.Date + DateTime.Now.TimeOfDay;
+                    DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
+
+                    output_Date.AddYears(date.Year);
+                    output_Date.AddMonths(date.Month);
+                    output_Date.AddDays(date.Day);
+                    output_Date.AddHours(date.Hour);
+                    output_Date.AddMinutes(date.Minute);
+                    output_Date.AddSeconds(date.Second);
+                }
+                else
+                {
+                    var date = CalDisplay.SelectedDate.Value.Date + timeSpan;
+                    DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
+                    
+                    output_Date.AddYears(date.Year);
+                    output_Date.AddMonths(date.Month);
+                    output_Date.AddDays(date.Day);
+                    output_Date.AddHours(date.Hour);
+                    output_Date.AddMinutes(date.Minute);
+                    output_Date.AddSeconds(date.Second);
+                }
+            }
+            else //AM
+            {
+                TimeSpan timeSpan = TimeSpan.Parse(Hours.Text + ":" + Min.Text);
+                if (CalDisplay.SelectedDate.Value.Date == DateTime.Today.Date && timeSpan.CompareTo(DateTime.Now.TimeOfDay) < 0)
+                {
+                    var date = CalDisplay.SelectedDate.Value.Date + DateTime.Now.TimeOfDay;
+                    DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
+
+                    output_Date.AddYears(date.Year);
+                    output_Date.AddMonths(date.Month);
+                    output_Date.AddDays(date.Day);
+                    output_Date.AddHours(date.Hour);
+                    output_Date.AddMinutes(date.Minute);
+                    output_Date.AddSeconds(date.Second);
+                }
+                else
+                {
+                    var date = CalDisplay.SelectedDate.Value.Date + timeSpan;
+                    DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
+
+                    output_Date.AddYears(date.Year);
+                    output_Date.AddMonths(date.Month);
+                    output_Date.AddDays(date.Day);
+                    output_Date.AddHours(date.Hour);
+                    output_Date.AddMinutes(date.Minute);
+                    output_Date.AddSeconds(date.Second);
+                }
+            }
         }
 
         private void SaveTime_Click(object sender, RoutedEventArgs e)
         {
-            CalDisplay_SelectedDatesChanged(SaveTime, EventArgs.Empty);
+            if (CalDisplay.SelectedDate.Value.Date == null)
+            {
+                CalDisplay.SelectedDate = DateTime.Today.Date;
+                CalDisplay.DisplayDate = DateTime.Today.Date;
+            }
+            if (Hours.SelectedIndex == -1 || Min.SelectedIndex == -1 || AMPM.SelectedIndex == -1) { }
+            else
+            {
+                CalDisplay_SelectedDatesChanged(SaveTime, EventArgs.Empty);
+            }
             PopUpCalendarButton.IsChecked = false;
         }
 
-        private void Time_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            CalDisplay_SelectedDatesChanged(sender, e);
-        }
-
-        private void CalDisplay_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {   // that it's not necessary to click twice after opening the calendar  https://stackoverflow.com/q/6024372
-            if (Mouse.Captured is CalendarItem)
-            {
-                Mouse.Capture(null);
-            }
-        }
-
         #endregion
-    }
 
-    [ValueConversion(typeof(bool), typeof(bool))]
-    public class InvertBoolConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public DateTime returnDT()
         {
-            if (targetType != typeof(bool))
-                throw new InvalidOperationException("The target must be a boolean");
-
-            return !(bool)value;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            if (targetType != typeof(bool))
-                throw new InvalidOperationException("The target must be a boolean");
-
-            return !(bool)value;
+            return this.output_Date;
         }
     }
+
 }

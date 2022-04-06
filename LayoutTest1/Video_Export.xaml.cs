@@ -34,6 +34,8 @@ namespace LayoutTest1
         public Video_Export()
         {
             InitializeComponent();
+            BuildCodecList();
+            comboBoxSampleRate.SelectedIndex = 0;
         }
 
         private void select_cam_button_Click(object sender, RoutedEventArgs e)
@@ -93,98 +95,43 @@ namespace LayoutTest1
             var audioSources = new List<Item>();
             var metadataSources = new List<Item>();
 
-
-            if (dateTimePickerStart.Value > dateTimePickerEnd.Value)
+            if (dateTimePickerStart.returnDT() > dateTimePickerEnd.returnDT())
             {
-                MessageBox.Show("Start time need to be lower than end time");
+                System.Windows.MessageBox.Show("Start time need to be lower than end time");
                 return;
             }
-
-            if (radioButtonAVI.Checked)
+            //AVI 만 출력함.
+            if (textBoxVideoFilename.Text == "")
             {
-                if (textBoxVideoFilename.Text == "")
-                {
-                    MessageBox.Show("Please enter a filename for the AVI file.", "Enter Filename");
-                    return;
-                }
-                AVIExporter aviExporter = new AVIExporter
-                {
-                    Filename = textBoxVideoFilename.Text,
-                    Codec = (string)comboBoxCodec.SelectedItem,
-                    AudioSampleRate = int.Parse(comboBoxSampleRate.SelectedItem.ToString())
-                };
-
-                if (checkBoxIncludeOverlayImage.Checked)
-                {
-                    if (_overlayImageFileName == null)
-                    {
-                        MessageBox.Show("Please select an image file for the overlay image.", "Select image file");
-                        return;
-                    }
-
-                    Bitmap overlayImage = (Bitmap)Image.FromFile(_overlayImageFileName);
-                    if (aviExporter.SetOverlayImage(overlayImage,
-                            AVIExporter.VerticalOverlayPositionTop,
-                            AVIExporter.HorizontalOverlayPositionLeft,
-                            0.1,
-                            false) == false)
-                    {
-                        MessageBox.Show("Failed to set overlay image, error: " + aviExporter.LastErrorString, "Overlay image");
-                    }
-                }
-                _exporter = aviExporter;
-
-                destPath = Path.Combine(_path, "Exported Images\\" + MakeStringPathValid(_cameraItems.FirstOrDefault().Name));
+                System.Windows.MessageBox.Show("Please enter a filename for the AVI file.", "Enter Filename");
+                return;
             }
-            else if (radioButtonMKV.Checked)
+            AVIExporter aviExporter = new AVIExporter
             {
-                if (textBoxVideoFilename.Text == "")
-                {
-                    MessageBox.Show("Please enter a filename for the MKV file.", "Enter Filename");
-                    return;
-                }
+                Filename = textBoxVideoFilename.Text,
+                Codec = (string)comboBoxCodec.SelectedItem,
+                AudioSampleRate = int.Parse(comboBoxSampleRate.SelectedItem.ToString())
+            };
 
-                if (_cameraItems.Count > 1)
-                    MessageBox.Show("Warning, the MKV Exporter will only export the data from the first camera in the list");
+            _exporter = aviExporter;
 
-                _exporter = new MKVExporter { Filename = textBoxVideoFilename.Text };
-                destPath = Path.Combine(_path, "Exported Images\\" + MakeStringPathValid(_cameraItems.FirstOrDefault().Name));
-            }
-            else
-            {
-                if (checkBoxEncrypt.Checked && textBoxEncryptPassword.Text == "")
-                {
-                    MessageBox.Show("Please enter password to encrypt with.", "Enter Password");
-                    return;
-                }
-                var dbExporter = new DBExporter(true)
-                {
-                    Encryption = checkBoxEncrypt.Checked,
-                    EncryptionStrength = EncryptionStrength.AES128,
-                    Password = textBoxEncryptPassword.Text,
-                    SignExport = checkBoxSign.Checked,
-                    PreventReExport = checkBoxReExport.Checked,
-                    IncludeBookmarks = checkBoxIncludeBookmark.Checked
-                };
-                dbExporter.MetadataList.AddRange(metadataSources);
-
-                _exporter = dbExporter;
-            }
+            destPath = System.IO.Path.Combine(_path, "Exported Images\\" + MakeStringPathValid(_cameraItem.Name));
+            
 
             _exporter.Init();
             _exporter.Path = destPath;
-            _exporter.CameraList.AddRange(_cameraItems);
+          //  _exporter.CameraList.AddRange(_cameraItem);//??
             _exporter.AudioList.AddRange(audioSources);
 
             try
             {
-                if (_exporter.StartExport(dateTimePickerStart.Value.ToUniversalTime(), dateTimePickerEnd.Value.ToUniversalTime()))
+                if (_exporter.StartExport(dateTimePickerStart.returnDT().ToUniversalTime(), dateTimePickerEnd.returnDT().ToUniversalTime()))
                 {
                     _timer.Tick += ShowProgress;
                     _timer.Start();
 
-                    export_Btn.Enabled = false;
-                    buttonCancel.Enabled = true;
+                    export_Btn.IsEnabled = false;
+                    Cancel_Btn.IsEnabled = true;
                 }
                 else
                 {
@@ -196,12 +143,72 @@ namespace LayoutTest1
             }
             catch (NoVideoInTimeSpanMIPException ex)
             {
-                MessageBox.Show(ex.Message, "Start Export");
+                System.Windows.MessageBox.Show(ex.Message, "Start Export");
             }
             catch (Exception ex)
             {
                 EnvironmentManager.Instance.ExceptionDialog("Start Export", ex);
             }
+        }
+
+        private void ShowProgress(object sender, EventArgs e)
+        {
+            if (_exporter != null)
+            {
+                int progress = _exporter.Progress;
+                int lastError = _exporter.LastError;
+                string lastErrorString = _exporter.LastErrorString;
+                if (progress >= 0)
+                {
+                    progressBar.Value = progress;
+                    if (progress == 100)
+                    {
+                        _timer.Stop();
+                        labelError.Text = "Done";
+                        _exporter.EndExport();
+                        _exporter = null;
+                        Cancel_Btn.IsEnabled = false;
+                    }
+                }
+                if (lastError > 0)
+                {
+                    progressBar.Value = 0;
+                    labelError.Text = lastErrorString + "  ( " + lastError + " )";
+                    if (_exporter != null)
+                    {
+                        _exporter.EndExport();
+                        _exporter = null;
+                        Cancel_Btn.IsEnabled = false;
+                    }
+                }
+            }
+        }
+
+
+        private void BuildCodecList()
+        {
+            comboBoxCodec.Items.Clear();
+
+            AVIExporter tempExporter = new AVIExporter { Width = 320, Height = 240, Filename = textBoxVideoFilename.Text };
+            tempExporter.Init();
+            string[] codecList = tempExporter.CodecList;
+            tempExporter.Close();
+            foreach (var name in codecList)
+            {
+                comboBoxCodec.Items.Add(name);
+            }
+            comboBoxCodec.SelectedIndex = 0;
+
+        }
+        private static string MakeStringPathValid(string unsafeString)
+        {
+            char[] invalidCharacters = System.IO.Path.GetInvalidFileNameChars();
+            string result = unsafeString;
+            foreach (var invalidCharacter in invalidCharacters)
+            {
+                result = result.Replace(invalidCharacter, '_');
+            }
+            return result;
         }
     }
 }
