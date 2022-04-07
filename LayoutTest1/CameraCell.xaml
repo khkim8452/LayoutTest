@@ -127,7 +127,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
                     <Button Click="Maintain_Ratio_Click" Content="비율고정" />
                     <Button Click="Button_Click" Content="test" />
-                    <Button Click="activate_PTZ" Content="PTZ제어 활성화"/>
+                    <Button Click="activate_PTZ" Content="PTZ제어 활성화" />
                 </StackPanel>
             </Grid>
         </Grid>
@@ -136,7 +136,7 @@
         </Border>
 
         <Grid x:Name="PTZGrid" Grid.Row="2" Grid.Column="1" Background="Transparent" Visibility="Collapsed" Width="100" Height="100" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-            <local:PTZ_control x:Name="ptzptz" Loaded="PTZ_control_Loaded" />
+            <local:PTZ_control x:Name="ptzptz" />
         </Grid>
     </Grid>
 </UserControl>

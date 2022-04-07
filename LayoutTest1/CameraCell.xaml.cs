@@ -338,7 +338,12 @@ namespace LayoutTest1
         private void activate_PTZ(object sender, RoutedEventArgs e)
         {
             //PTZ 컨트롤을 활성화 하고 비활성화 합니다.
-            if(ptz_control_mode)
+            if (_cameraitem.Name.Contains("PTZ"))
+            {
+                ptzptz.set_ptz_item(this.CameraItem);
+            }
+
+            if (ptz_control_mode)
             {
                 ptz_control_mode = false;//ptz 비활성화
                 PTZGrid.Visibility = Visibility.Collapsed;
@@ -351,10 +356,5 @@ namespace LayoutTest1
             }    
         }
 
-        private void PTZ_control_Loaded(object sender, RoutedEventArgs e)
-        {
-            //ptz에게 item 전달
-            ptzptz.set_ptz_item(this.CameraItem);
-        }
     }
 }

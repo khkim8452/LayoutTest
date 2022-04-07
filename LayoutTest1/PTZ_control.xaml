@@ -20,12 +20,12 @@
 
 
 
-        <Button x:Name="PTZ_T"  Grid.Row="0" Grid.Column="1" Margin="1" MouseDown="PTZ_T_Click" PreviewMouseUp="PTZ_ST_Click" />
-        <Button x:Name="PTZ_L"  Grid.Row="1" Grid.Column="0" Margin="1" MouseDown="PTZ_L_Click" PreviewMouseUp="PTZ_ST_Click" />
-        <Button x:Name="PTZ_R"  Grid.Row="1" Grid.Column="2" Margin="1" MouseDown="PTZ_R_Click" PreviewMouseUp="PTZ_ST_Click" />
-        <Button x:Name="PTZ_B"  Grid.Row="2" Grid.Column="1" Margin="1" MouseDown="PTZ_B_Click" PreviewMouseUp="PTZ_ST_Click" />
-        <Button x:Name="PTZ_ZI" Grid.Row="0" Grid.Column="3" Margin="1" MouseDown="PTZ_ZI_Click" PreviewMouseUp="PTZ_ST_Click" />
-        <Button x:Name="PTZ_ZO" Grid.Row="2" Grid.Column="3" Margin="1" MouseDown="PTZ_ZO_Click" PreviewMouseUp="PTZ_ST_Click" />
+        <Button x:Name="PTZ_T"  Grid.Row="0" Grid.Column="1" Margin="1" PreviewMouseDown="PTZ_T_Click" PreviewMouseUp="PTZ_ST_Click" />
+        <Button x:Name="PTZ_L"  Grid.Row="1" Grid.Column="0" Margin="1" PreviewMouseDown="PTZ_L_Click" PreviewMouseUp="PTZ_ST_Click" />
+        <Button x:Name="PTZ_R"  Grid.Row="1" Grid.Column="2" Margin="1" PreviewMouseDown="PTZ_R_Click" PreviewMouseUp="PTZ_ST_Click" />
+        <Button x:Name="PTZ_B"  Grid.Row="2" Grid.Column="1" Margin="1" PreviewMouseDown="PTZ_B_Click" PreviewMouseUp="PTZ_ST_Click" />
+        <Button x:Name="PTZ_ZI" Grid.Row="0" Grid.Column="3" Margin="1" PreviewMouseDown="PTZ_ZI_Click" PreviewMouseUp="PTZ_ST_Click" />
+        <Button x:Name="PTZ_ZO" Grid.Row="2" Grid.Column="3" Margin="1" PreviewMouseDown="PTZ_ZO_Click" PreviewMouseUp="PTZ_ST_Click" />
 
     </Grid>
 </UserControl>
