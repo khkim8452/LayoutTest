@@ -93,7 +93,7 @@ namespace LayoutTest1
             // Get the related audio devices
             var audioSources = new List<Item>();
 
-            if (dateTimePickerStart.SelectedDate > dateTimePickerEnd.SelectedDate)
+            if (dateTimePickerStart.returnDT().ToUniversalTime() > dateTimePickerEnd.returnDT().ToUniversalTime())
             {
                 System.Windows.MessageBox.Show("Start time need to be lower than end time");
                 return;
@@ -122,7 +122,7 @@ namespace LayoutTest1
 
             try
             {
-                if (_exporter.StartExport(dateTimePickerStart.SelectedDate.ToUniversalTime(), dateTimePickerEnd.SelectedDate.ToUniversalTime()))
+                if (_exporter.StartExport(dateTimePickerStart.returnDT().ToUniversalTime(), dateTimePickerEnd.returnDT().ToUniversalTime()))
                 {
                     _timer.Tick += ShowProgress;
                     _timer.Start();

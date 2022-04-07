@@ -64,24 +64,14 @@ namespace LayoutTest1
                     var date = CalDisplay.SelectedDate.Value.Date + DateTime.Now.TimeOfDay;
                     DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
 
-                    output_Date.AddYears(date.Year);
-                    output_Date.AddMonths(date.Month);
-                    output_Date.AddDays(date.Day);
-                    output_Date.AddHours(date.Hour);
-                    output_Date.AddMinutes(date.Minute);
-                    output_Date.AddSeconds(date.Second);
+                    output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
                 }
                 else
                 {
                     var date = CalDisplay.SelectedDate.Value.Date + timeSpan;
                     DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
-                    
-                    output_Date.AddYears(date.Year);
-                    output_Date.AddMonths(date.Month);
-                    output_Date.AddDays(date.Day);
-                    output_Date.AddHours(date.Hour);
-                    output_Date.AddMinutes(date.Minute);
-                    output_Date.AddSeconds(date.Second);
+
+                    output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
                 }
             }
             else //AM
@@ -92,24 +82,14 @@ namespace LayoutTest1
                     var date = CalDisplay.SelectedDate.Value.Date + DateTime.Now.TimeOfDay;
                     DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
 
-                    output_Date.AddYears(date.Year);
-                    output_Date.AddMonths(date.Month);
-                    output_Date.AddDays(date.Day);
-                    output_Date.AddHours(date.Hour);
-                    output_Date.AddMinutes(date.Minute);
-                    output_Date.AddSeconds(date.Second);
+                    output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
                 }
                 else
                 {
                     var date = CalDisplay.SelectedDate.Value.Date + timeSpan;
                     DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
 
-                    output_Date.Date.AddYears(date.Year);
-                    output_Date.Date.AddMonths(date.Month);
-                    output_Date.Date.AddDays(date.Day);
-                    output_Date.Date.AddHours(date.Hour);
-                    output_Date.Date.AddMinutes(date.Minute);
-                    output_Date.Date.AddSeconds(date.Second);
+                    output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
                 }
             }
         }

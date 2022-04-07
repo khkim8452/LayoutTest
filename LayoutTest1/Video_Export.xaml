@@ -19,8 +19,8 @@
             </StackPanel>
 
 
-            <local:new_DateTimePicker x:Name="dateTimePickerStart" Margin="5"/>
-            <local:new_DateTimePicker x:Name="dateTimePickerEnd" Margin="5"/>
+            <local:DateTimePicker x:Name="dateTimePickerStart" Margin="5"/>
+            <local:DateTimePicker x:Name="dateTimePickerEnd" Margin="5"/>
 
             <StackPanel Orientation="Horizontal">
                 <Label Content="파일 명:" />
