@@ -259,27 +259,11 @@ namespace LayoutTest1
 
         }
 
-        private void ToggleSwitch_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
         private void PlayBack_Viewer(object sender, RoutedEventArgs e)
         {
             LayoutTest1.Playback_Viewer pb = new LayoutTest1.Playback_Viewer();
             pb.ShowDialog();
         }
 
-        private void PTZ_C(object sender, RoutedEventArgs e)
-        {
-            PTZ_control ptz = new PTZ_control();
-
-
-        }
-
-        private void PTZ_control_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

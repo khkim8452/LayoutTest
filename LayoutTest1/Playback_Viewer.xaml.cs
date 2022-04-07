@@ -313,6 +313,8 @@ namespace LayoutTest1
             //동영상 저장하는 기능 제공.
             LayoutTest1.Video_Export video_Export = new LayoutTest1.Video_Export();
             video_Export.ShowDialog();
+
+            video_Export.Close();
         }
     }
 }

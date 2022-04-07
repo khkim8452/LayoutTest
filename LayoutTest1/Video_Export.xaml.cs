@@ -26,7 +26,7 @@ namespace LayoutTest1
     /// </summary>
     public partial class Video_Export : Window
     {
-        private Item _cameraItem = new Item();
+        private readonly List<Item> _cameraItem = new List<Item>();
         private string _path;
         private IExporter _exporter;
         private readonly Timer _timer = new Timer { Interval = 100 };
@@ -51,7 +51,7 @@ namespace LayoutTest1
             if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var cameraItem = form.SelectedItem;
-                _cameraItem = cameraItem;
+                _cameraItem.Add(cameraItem);
                 selected_cam_to_save.Text = cameraItem.Name;
 
                 EnableExport();
@@ -85,17 +85,15 @@ namespace LayoutTest1
         }
 
         private void export_Btn_Click(object sender, RoutedEventArgs e)
-        {
-
-            //받아온 정보를 기준으로 추출을 시작
+        {            
+                //받아온 정보를 기준으로 추출을 시작
 
             string destPath = _path;
 
             // Get the related audio devices
             var audioSources = new List<Item>();
-            var metadataSources = new List<Item>();
 
-            if (dateTimePickerStart.returnDT() > dateTimePickerEnd.returnDT())
+            if (dateTimePickerStart.SelectedDate > dateTimePickerEnd.SelectedDate)
             {
                 System.Windows.MessageBox.Show("Start time need to be lower than end time");
                 return;
@@ -106,26 +104,25 @@ namespace LayoutTest1
                 System.Windows.MessageBox.Show("Please enter a filename for the AVI file.", "Enter Filename");
                 return;
             }
-            AVIExporter aviExporter = new AVIExporter
-            {
-                Filename = textBoxVideoFilename.Text,
-                Codec = (string)comboBoxCodec.SelectedItem,
-                AudioSampleRate = int.Parse(comboBoxSampleRate.SelectedItem.ToString())
-            };
+            AVIExporter aviExporter = new AVIExporter();
+            aviExporter.Filename = textBoxVideoFilename.Text;
+            aviExporter.Codec = (string)comboBoxCodec.SelectedItem;
+            aviExporter.AudioSampleRate = int.Parse(comboBoxSampleRate.Text);
+
 
             _exporter = aviExporter;
 
-            destPath = System.IO.Path.Combine(_path, "Exported Images\\" + MakeStringPathValid(_cameraItem.Name));
-            
+            destPath = System.IO.Path.Combine(_path, "Exported Images\\" + MakeStringPathValid(_cameraItem.First().Name));
+
 
             _exporter.Init();
             _exporter.Path = destPath;
-          //  _exporter.CameraList.AddRange(_cameraItem);//??
+            _exporter.CameraList.AddRange(_cameraItem);//??
             _exporter.AudioList.AddRange(audioSources);
 
             try
             {
-                if (_exporter.StartExport(dateTimePickerStart.returnDT().ToUniversalTime(), dateTimePickerEnd.returnDT().ToUniversalTime()))
+                if (_exporter.StartExport(dateTimePickerStart.SelectedDate.ToUniversalTime(), dateTimePickerEnd.SelectedDate.ToUniversalTime()))
                 {
                     _timer.Tick += ShowProgress;
                     _timer.Start();
@@ -209,6 +206,23 @@ namespace LayoutTest1
                 result = result.Replace(invalidCharacter, '_');
             }
             return result;
+        }
+
+        private void Close_Btn_Click(object sender, RoutedEventArgs e)
+        {
+            if (_exporter != null)
+            {
+                _exporter.Cancel();
+                _exporter.EndExport();
+                _exporter.Close();
+            }
+            VideoOS.Platform.SDK.Environment.RemoveAllServers();
+            Close();
+        }
+
+        private void Cancel_Btn_Click(object sender, RoutedEventArgs e)
+        {
+            _exporter?.Cancel();
         }
     }
 }
