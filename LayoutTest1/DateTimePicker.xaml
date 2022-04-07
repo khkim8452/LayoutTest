@@ -31,7 +31,7 @@
         <Popup IsOpen="{Binding Path=IsChecked, ElementName=PopUpCalendarButton}" x:Name="CalendarPopup" PopupAnimation="Fade" StaysOpen="False">
             <Border Padding="2" Background="LightGray">
                 <StackPanel Orientation="Vertical" Background="LightGray">
-                    <Calendar Margin="0,-3,0,0" x:Name="CalDisplay" DisplayDateStart="{Binding Source={x:Static sys:DateTime.Today}, Mode=OneWay}" SelectedDate="{x:Static sys:DateTime.Now}"/>
+                    <Calendar Margin="0,-3,0,0" x:Name="CalDisplay" SelectedDate="{x:Static sys:DateTime.Now}"/>
                     <StackPanel Orientation="Horizontal" Margin="0,-1,0,0">
                         <ComboBox Width="45" Name="Hours" HorizontalContentAlignment="Right" SelectedIndex="0">
                             <ComboBoxItem Content="0" />
