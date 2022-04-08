@@ -320,41 +320,36 @@ namespace LayoutTest1
             }
         }
 
-        private void ToolbarGrid_MouseEnter(object sender, MouseEventArgs e)
-        {
-          
-        }
         public void UpdateTitleStatus()
         {
             if (V.ShowTitleAlways) ShowTitle();
             else HideTitle();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         private void activate_PTZ(object sender, RoutedEventArgs e)
         {
             //PTZ 컨트롤을 활성화 하고 비활성화 합니다.
-            if (_cameraitem.Name.Contains("PTZ"))
+            if (_cameraitem.Name.Contains("PTZ")) // 카메라 이름에 PTZ 글자가 들어가야 실행
             {
                 ptzptz.set_ptz_item(this.CameraItem);
-            }
 
-            if (ptz_control_mode)
-            {
-                ptz_control_mode = false;//ptz 비활성화
-                PTZGrid.Visibility = Visibility.Collapsed;
+                if (ptz_control_mode)
+                {
+                    ptz_control_mode = false;//ptz 비활성화
+                    PTZGrid.Visibility = Visibility.Collapsed;
 
+                }
+                else
+                {
+                    ptz_control_mode = true;//ptz 활성화
+                    PTZGrid.Visibility = Visibility.Visible;
+                }
             }
             else
             {
-                ptz_control_mode = true;//ptz 활성화
-                PTZGrid.Visibility = Visibility.Visible;
-            }    
+                MessageBox.Show("PTZ 카메라가 아닙니다.");
+            }
         }
-
     }
 }

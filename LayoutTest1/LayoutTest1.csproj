@@ -67,32 +67,32 @@
     <Compile Include="CameraCell.xaml.cs">
       <DependentUpon>CameraCell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DateTimePicker.xaml.cs">
+    <Compile Include="UserControl\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="ListBoxItemsBag.cs" />
     <Compile Include="Layout.cs" />
-    <Compile Include="new_DateTimePicker.xaml.cs">
+    <Compile Include="UserControl\new_DateTimePicker.xaml.cs">
       <DependentUpon>new_DateTimePicker.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Playback_Viewer.xaml.cs">
+    <Compile Include="Video_playback\Playback_Viewer.xaml.cs">
       <DependentUpon>Playback_Viewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PTZ_control.xaml.cs">
+    <Compile Include="UserControl\PTZ_control.xaml.cs">
       <DependentUpon>PTZ_control.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ToggleSwitch.xaml.cs">
+    <Compile Include="UserControl\ToggleSwitch.xaml.cs">
       <DependentUpon>ToggleSwitch.xaml</DependentUpon>
     </Compile>
     <Compile Include="V.cs" />
-    <Compile Include="Video_Export.xaml.cs">
+    <Compile Include="Video_playback\Video_Export.xaml.cs">
       <DependentUpon>Video_Export.xaml</DependentUpon>
     </Compile>
     <Page Include="CameraCell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DateTimePicker.xaml">
+    <Page Include="UserControl\DateTimePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -108,23 +108,23 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="new_DateTimePicker.xaml">
+    <Page Include="UserControl\new_DateTimePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Playback_Viewer.xaml">
+    <Page Include="Video_playback\Playback_Viewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PTZ_control.xaml">
+    <Page Include="UserControl\PTZ_control.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToggleSwitch.xaml">
+    <Page Include="UserControl\ToggleSwitch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Video_Export.xaml">
+    <Page Include="Video_playback\Video_Export.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

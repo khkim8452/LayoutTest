@@ -26,17 +26,7 @@
                 <Label Content="파일 명:" />
                 <TextBox x:Name="textBoxVideoFilename"  Width="240"/>
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                <Label Content="코덱 :"/>
-                <ComboBox x:Name="comboBoxCodec" Width="140"/>
-                <Label Content="샘플링 :"/>
-                <ComboBox x:Name="comboBoxSampleRate" Width="60">
-                    <ComboBoxItem Content="8000" />
-                    <ComboBoxItem Content="16000"/>
-                    <ComboBoxItem Content="44100"/>
-                </ComboBox>
-            </StackPanel>
-            
+
             <Button x:Name="export_Btn" Content="영상 추출 하기" Width="150" Height="25" Margin="5" Click="export_Btn_Click" />
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">

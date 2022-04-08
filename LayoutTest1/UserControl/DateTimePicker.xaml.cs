@@ -24,6 +24,8 @@ namespace LayoutTest1
     public partial class DateTimePicker : UserControl
     {
         DateTime output_Date;
+        public delegate void DatetimeChangeEventDelegate(object sender, EventArgs e);
+        public event DatetimeChangeEventDelegate DatetimeChangeEvent;
         public DateTimePicker()
         {
             InitializeComponent();
@@ -92,6 +94,10 @@ namespace LayoutTest1
                     output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
                 }
             }
+            if(DatetimeChangeEvent != null)
+            {
+                DatetimeChangeEvent(this, new EventArgs());
+            }
         }
 
         private void SaveTime_Click(object sender, RoutedEventArgs e)
@@ -115,6 +121,8 @@ namespace LayoutTest1
         {
             return this.output_Date;
         }
+        
+
     }
 
 }

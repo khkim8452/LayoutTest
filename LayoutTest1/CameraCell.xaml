@@ -126,7 +126,6 @@
             <Grid Grid.Column="0" Grid.Row="2" IsHitTestVisible="True" x:Name="ToolbarGrid" Background="Black" Opacity="0.5" Visibility="Collapsed" Margin="0,0,0,0" >
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
                     <Button Click="Maintain_Ratio_Click" Content="비율고정" />
-                    <Button Click="Button_Click" Content="test" />
                     <Button Click="activate_PTZ" Content="PTZ제어 활성화" />
                 </StackPanel>
             </Grid>

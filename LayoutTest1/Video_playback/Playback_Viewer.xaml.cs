@@ -32,33 +32,13 @@ namespace LayoutTest1
         public Playback_Viewer()
         {
             InitializeComponent();
-            //하단 제어바 시작하자마자 모든 설정 보여주는 것으로 고정.
-            _playbackUserControl.ShowTallUserControl = true;
-            _playbackUserControl.ShowSpeedControl = true;
-            _playbackUserControl.ShowTimeSpanControl = true;
         }
 
-        private object IPAddressResponseHandler(VideoOS.Platform.Messaging.Message message, FQID destination, FQID sender)
-        {
-            string ip = (string)message.Data;
-            System.Windows.MessageBox.Show(ip, _selectItem.Name);
-            return null;
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            SetupControls();
-        }
 
         private void _closeButton_Click(object sender, RoutedEventArgs e)
         {
             VideoOS.Platform.SDK.Environment.RemoveAllServers();
             Close();
-        }
-
-        private void liftPrivacyMask_Click(object sender, RoutedEventArgs e)
-        {
-            Configuration.Instance.ServerFQID.ServerId.UserContext.SetPrivacyMaskLifted(!Configuration.Instance.ServerFQID.ServerId.UserContext.PrivacyMaskLifted);
         }
 
         #region Select camera and setup controls
@@ -156,7 +136,6 @@ namespace LayoutTest1
         }
         #endregion
 
-
         #region Image Viewer properties
         private void _digitalZoomCheckBox_Click(object sender, RoutedEventArgs e)
         {
@@ -172,6 +151,45 @@ namespace LayoutTest1
         {
             _imageViewerControl.EnableVisibleHeader = _visibleHeaderCheckBox.IsChecked.Value;
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         private void _visibleCameraNameCheckBox_Click(object sender, RoutedEventArgs e)
         {
@@ -211,24 +229,9 @@ namespace LayoutTest1
         }
         #endregion
 
-
         #region Direct Playback Commands(Playback Controller via message communication direct) 
-        private void _stopButton_Click(object sender, RoutedEventArgs e)
-        {
-            EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
-                                            MessageId.SmartClient.PlaybackCommand,
-                                            new PlaybackCommandData() { Command = PlaybackData.PlayStop }), _playbackFQID);
-        }
 
-        private void _forwardButton_Click(object sender, RoutedEventArgs e)
-        {
-            EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
-                                            MessageId.SmartClient.PlaybackCommand,
-                                            new PlaybackCommandData() { Command = PlaybackData.PlayForward, Speed = 1.0 }), _playbackFQID);
-
-        }
-
-        private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        private void DatePicker_SelectedDateChanged(object sender, EventArgs e)
         {
 
             EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
@@ -236,52 +239,10 @@ namespace LayoutTest1
                                                         new PlaybackCommandData() { Command = PlaybackData.PlayStop }), _playbackFQID);
             EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
                                                         MessageId.SmartClient.PlaybackCommand,
-                                                        new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = _dateTimePicker.SelectedDate.Value.ToUniversalTime() }), _playbackFQID);
+                                                        new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = _dateTimePicker.returnDT().ToUniversalTime() }), _playbackFQID);
 
         }
         #endregion
-
-        #region Commands to Playback Controller
-        private void _maxForwardSpeedButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_playbackFQID != null)
-            {
-                PlaybackCommandData data = new PlaybackCommandData() { Command = PlaybackData.PlayForward, Speed = 32 };
-                EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
-                                                    MessageId.SmartClient.PlaybackCommand,
-                                                    data), _playbackFQID);
-            }
-        }
-
-        private void _maxTimespanButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_playbackUserControl != null && _playbackUserControl.TimeSpan.Days != 28)
-            {
-                _playbackUserControl.TimeSpan = new TimeSpan(28, 0, 0, 0);
-            }
-        }
-        #endregion
-
-        #region Get the IP
-
-
-        private void _IpButton_Click(object sender, RoutedEventArgs e)
-        {
-            EnsureMessageCommunicationInitialized();
-            _mc.TransmitMessage(new VideoOS.Platform.Messaging.Message(MessageId.Server.GetIPAddressRequest, _selectItem.FQID), null, null, null);
-        }
-
-        private void EnsureMessageCommunicationInitialized()
-        {
-            if (_mc == null)
-            {
-                MessageCommunicationManager.Start(EnvironmentManager.Instance.MasterSite.ServerId);
-                _mc = MessageCommunicationManager.Get(EnvironmentManager.Instance.MasterSite.ServerId);
-                _mc.RegisterCommunicationFilter(IPAddressResponseHandler, new CommunicationIdFilter(MessageId.Server.GetIPAddressResponse));
-            }
-        }
-        #endregion
-
 
         #region helper method
         private void SetPlaybackSkipMode()
@@ -311,10 +272,12 @@ namespace LayoutTest1
         private void _save_video_file_Click(object sender, RoutedEventArgs e)
         {
             //동영상 저장하는 기능 제공.
+            //여기서도 문제
             LayoutTest1.Video_Export video_Export = new LayoutTest1.Video_Export();
             video_Export.ShowDialog();
 
             video_Export.Close();
         }
+
     }
 }

@@ -34,8 +34,6 @@ namespace LayoutTest1
         public Video_Export()
         {
             InitializeComponent();
-            BuildCodecList();
-            comboBoxSampleRate.SelectedIndex = 0;
         }
 
         private void select_cam_button_Click(object sender, RoutedEventArgs e)
@@ -95,24 +93,18 @@ namespace LayoutTest1
 
             if (dateTimePickerStart.returnDT().ToUniversalTime() > dateTimePickerEnd.returnDT().ToUniversalTime())
             {
-                System.Windows.MessageBox.Show("Start time need to be lower than end time");
+                System.Windows.MessageBox.Show("시작 시간은 끝나는 시간보다 이른 시간이어야 합니다.");
                 return;
             }
             //AVI 만 출력함.
             if (textBoxVideoFilename.Text == "")
             {
-                System.Windows.MessageBox.Show("Please enter a filename for the AVI file.", "Enter Filename");
+                System.Windows.MessageBox.Show("파일 이름을 입력해주세요.");
                 return;
             }
-            AVIExporter aviExporter = new AVIExporter();
-            aviExporter.Filename = textBoxVideoFilename.Text;
-            aviExporter.Codec = (string)comboBoxCodec.SelectedItem;
-            aviExporter.AudioSampleRate = int.Parse(comboBoxSampleRate.Text);
 
-
-            _exporter = aviExporter;
-
-            destPath = System.IO.Path.Combine(_path, "Exported Images\\" + MakeStringPathValid(_cameraItem.First().Name));
+            _exporter = new MKVExporter { Filename = textBoxVideoFilename.Text };
+            destPath = System.IO.Path.Combine(_path, "Exported Images\\" + MakeStringPathValid(_cameraItem.FirstOrDefault().Name));
 
 
             _exporter.Init();
@@ -182,21 +174,6 @@ namespace LayoutTest1
         }
 
 
-        private void BuildCodecList()
-        {
-            comboBoxCodec.Items.Clear();
-
-            AVIExporter tempExporter = new AVIExporter { Width = 320, Height = 240, Filename = textBoxVideoFilename.Text };
-            tempExporter.Init();
-            string[] codecList = tempExporter.CodecList;
-            tempExporter.Close();
-            foreach (var name in codecList)
-            {
-                comboBoxCodec.Items.Add(name);
-            }
-            comboBoxCodec.SelectedIndex = 0;
-
-        }
         private static string MakeStringPathValid(string unsafeString)
         {
             char[] invalidCharacters = System.IO.Path.GetInvalidFileNameChars();
@@ -224,5 +201,6 @@ namespace LayoutTest1
         {
             _exporter?.Cancel();
         }
+
     }
 }

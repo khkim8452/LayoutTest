@@ -9,7 +9,7 @@
         
         xmlns:local="clr-namespace:LayoutTest1"
         mc:Ignorable="d"
-        Title="Playback_Viewer" Height="650" Width="900" MinHeight="650" MinWidth="800">
+        Title="Playback_Viewer" Height="700" Width="1000" MinHeight="650" MinWidth="800">
     <Grid>
         <!--전체적인 와꾸 설정-->
         <Grid.ColumnDefinitions>
@@ -22,21 +22,16 @@
         </Grid.RowDefinitions>
         
         <!--메인 화면 (영상)-->
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
+        <Grid Grid.Column="1" Grid.Row="0">
             <!--영상-->
             <platformclient:ImageViewerWpfControl x:Name="_imageViewerControl" />
-           </Grid>
+        </Grid>
         
         <!--좌측 메뉴바-->
         <StackPanel Grid.Column="0">
 
             <GroupBox x:Name="groupBox0" Header="녹화 날짜" Margin="3">
-                <StackPanel>
-                    <DatePicker x:Name="_dateTimePicker" SelectedDateChanged="DatePicker_SelectedDateChanged"/>
-                </StackPanel>
+                <local:DateTimePicker x:Name="_dateTimePicker" DatetimeChangeEvent="DatePicker_SelectedDateChanged"/>
             </GroupBox>
             <GroupBox x:Name="groupBox1" Header="영상 정보 확인 설정" Margin="3">
                 <StackPanel Orientation="Vertical">
@@ -65,14 +60,8 @@
 
         </StackPanel>
         
-        
-        
-        
-        
-        
-        
         <!--좌측 하단-->
-        <StackPanel Grid.Row="1" Grid.Column="0" >
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center">
             <Button x:Name="_save_video_file" Content="동영상 저장" Width="75" Height="23" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center" Click="_save_video_file_Click"/>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Button x:Name="_change_cam" Content="카메라 변경" Width="75" Height="23" Margin="3" Click="_selectCameraButton_Click"/>
@@ -84,7 +73,7 @@
         <!--제어 컨트롤러-->
         <Grid Grid.Column="1" Grid.Row="1">
 
-            <platformclient:PlaybackWpfUserControl x:Name="_playbackUserControl" Grid.Row="1" Margin="0 3 0 0"/>
+            <platformclient:PlaybackWpfUserControl x:Name="_playbackUserControl" Grid.Row="1" Margin="0 3 0 0" ShowSpeedControl="True" ShowTallUserControl="True" ShowTimeSpanControl="True" />
 
         </Grid>
 
