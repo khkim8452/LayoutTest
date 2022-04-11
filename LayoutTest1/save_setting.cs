@@ -1,0 +1,130 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
+using System.IO;
+
+namespace LayoutTest1
+{
+    internal class save_setting
+    {
+        //세이브 파일 저장할 경로
+        string save_path ;
+        //Json 객체 생성
+        JObject save_obj = new JObject();
+        save_file_container sfc = new save_file_container();
+
+        public void set_path(string path)
+        {
+            save_path = path;
+        }
+        public void save_MainWindow(int arr_cam, bool full_display)
+        {
+            save_obj = new JObject(
+                new JProperty("array_of_cam", arr_cam),// 카메라 배치 (ex. 3x3 4x4)
+                new JProperty("full_display", full_display)//전체 화면
+                );
+
+            File.WriteAllText(save_path, save_obj.ToString());
+
+        }
+
+        public void save_playback(bool pb_1, bool pb_2, bool pb_3, bool pb_4, bool pb_5, bool pb_6, bool pb_7, bool pb_8, bool pb_9, bool pb_10)
+        {
+            //10가지 설정 모두 저장
+            save_obj = new JObject(
+                new JProperty("pb_save_1", pb_1),//디지털줌
+                new JProperty("pb_save_2", pb_2),//화면 비율 유지
+                new JProperty("pb_save_3", pb_3),//상태바 활성화
+                new JProperty("pb_save_4", pb_4),//카메라 이름 보이기
+                new JProperty("pb_save_5", pb_5),//실시간 정보 표시
+                new JProperty("pb_save_6", pb_6),//시간 정보 표시
+                new JProperty("pb_save_7", pb_7),//다음 이벤트로 건너뛰기
+                new JProperty("pb_save_8", pb_8),//다음 이벤트로 건너뛰지 않기
+                new JProperty("pb_save_9", pb_9),//이벤트 마지막에서 정지
+                new JProperty("pb_save_10", pb_10)//상세 정보 표시
+
+                );
+
+            File.WriteAllText(save_path, save_obj.ToString());
+        }
+
+        public int load_MainWindow_1() //스케일
+        {
+            int arr_cam = 0;
+
+            try
+            {
+                string json = File.ReadAllText(save_path); //파일을 가지고 와서 
+                JObject jobj = new JObject(json); //파싱
+                arr_cam = int.Parse(jobj["array_of_cam"].ToString());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return arr_cam;
+            
+        }
+        
+        
+        public bool load_MainWindow_2() //전체화면
+        {
+            string is_full_screen = "";
+
+            try
+            {
+                string json = File.ReadAllText(save_path); //파일을 가지고 와서 
+                JObject jobj = new JObject(json); //파싱
+                is_full_screen = jobj["full_display"].ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            if (is_full_screen == "0")
+            {
+                return false;
+            }
+            else 
+            {
+                return true;
+            }
+        }
+
+        public save_file_container load_playback()
+        {
+            string json = File.ReadAllText(save_path);
+            JObject jobj = new JObject(json);
+
+            sfc.a = string_to_bool(jobj["pb_save_1"].ToString());
+            sfc.b = string_to_bool(jobj["pb_save_2"].ToString());
+            sfc.c = string_to_bool(jobj["pb_save_3"].ToString());
+            sfc.d = string_to_bool(jobj["pb_save_4"].ToString());
+            sfc.e = string_to_bool(jobj["pb_save_5"].ToString());
+            sfc.f = string_to_bool(jobj["pb_save_6"].ToString());
+            sfc.g = string_to_bool(jobj["pb_save_7"].ToString());
+            sfc.h = string_to_bool(jobj["pb_save_8"].ToString());
+            sfc.i = string_to_bool(jobj["pb_save_9"].ToString());
+            sfc.j = string_to_bool(jobj["pb_save_10"].ToString());
+
+            return sfc;
+
+        }
+
+        private bool string_to_bool(string str)
+        {
+            if(str == "true")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+}

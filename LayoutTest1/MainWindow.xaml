@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:LayoutTest1"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="MainWindow" Height="650" Width="1000"
+        Title="JMON DOMINIC" Height="650" Width="1000"
         FontFamily="Pretendard Variable"
         RenderOptions.ClearTypeHint="Enabled">
     
@@ -37,7 +37,7 @@
         </StackPanel>
         <Grid Grid.Row="1" x:Name="big">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="200" x:Name="left_grid"/>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>

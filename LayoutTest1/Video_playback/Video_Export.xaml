@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LayoutTest1"
         mc:Ignorable="d"
-        Title="Video_Export" Height="350" Width="350">
+        Title="영상 추출" Height="300" Width="300">
     <Grid>
         <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Orientation="Vertical">
             <StackPanel Orientation="Horizontal">
@@ -34,8 +34,8 @@
                 <Button x:Name="Close_Btn" Content="나가기" Width="70" Margin="5" Click="Close_Btn_Click" />
             </StackPanel>
             
-            <StackPanel Orientation="Horizontal" >
-                <ProgressBar x:Name="progressBar" Height="20" Width="230"/>
+            <StackPanel Orientation="Vertical" >
+                <ProgressBar x:Name="progressBar" Height="20" Width="Auto"/>
                 <TextBlock x:Name="labelError" HorizontalAlignment="Right" Height="20"/>
             </StackPanel>
         </StackPanel>

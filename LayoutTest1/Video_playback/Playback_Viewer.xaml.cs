@@ -23,6 +23,9 @@ namespace LayoutTest1
         private const string Version = "1.0";
         private const string ManufacturerName = "Sample Manufacturer";
 
+        save_file_container sfc = new save_file_container();
+        save_setting ss = new save_setting();
+
         private FQID _playbackFQID;
         private AudioPlayerControl _microphonePlayer;
         private AudioPlayerControl _speakerPlayer;
@@ -32,8 +35,29 @@ namespace LayoutTest1
         public Playback_Viewer()
         {
             InitializeComponent();
+            ss.set_path(System.IO.Directory.GetCurrentDirectory() + @"save_setting_file_2");
+            load_playback();//저장된 설정 불러오기
         }
 
+
+        private void load_playback()
+        {
+            try
+            {
+                int a = ss.load_MainWindow_1();
+                bool b = ss.load_MainWindow_2();
+
+            }
+            catch (Exception ex)
+            {
+                //저장된 파일이 없을때,
+                System.Windows.MessageBox.Show("저장된 파일이 없거나, 불러오는데 오류가 발생했습니다.\n");
+                System.Windows.MessageBox.Show(ex.Message);
+                return;
+            }
+
+
+        }
 
         private void _closeButton_Click(object sender, RoutedEventArgs e)
         {
@@ -277,6 +301,23 @@ namespace LayoutTest1
             video_Export.ShowDialog();
 
             video_Export.Close();
+        }
+
+        private void save_setting_playback_Click(object sender, RoutedEventArgs e)
+        {
+            ss.save_playback(
+                _digitalZoomCheckBox.IsChecked.Value,
+                _maintainAspectRatioCheckBox.IsChecked.Value,
+                _visibleHeaderCheckBox.IsChecked.Value,
+                _visibleCameraNameCheckBox.IsChecked.Value,
+                _visibleLiveIndicatorCheckBox.IsChecked.Value,
+                _visibleTimeStampCheckBox.IsChecked.Value,
+                _skipRadioButton.IsChecked.Value,
+                _noSkipRadioButton.IsChecked.Value,
+                _stopRadioButton.IsChecked.Value,
+                _diagnosticsCheckBox.IsChecked.Value
+                );
+
         }
 
     }

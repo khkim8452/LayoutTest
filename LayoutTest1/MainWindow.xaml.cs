@@ -31,14 +31,18 @@ namespace LayoutTest1
         private const string IntegrationName = "Playback WPF User";
         private const string Version = "1.0";
         private const string ManufacturerName = "Sample Manufacturer";
+        int default_rowcol = 4; //기본 스케일
+        bool is_fullscreen = false; // 전체화면 (초기에는 전체화면 X)
+        save_setting ss = new save_setting();
         Layout l = null;
         List<Item> CameraList = null;
         public MainWindow()
         {
             InitializeComponent();
             //원래의 속성을 json 파일로부터 가지고 와서 설정 복구한다.
-            //???
-
+            //
+            ss.set_path(System.IO.Directory.GetCurrentDirectory() + @"save_setting_file");
+            load_mainwindow();//저장된 설정 불러오기
             VideoOS.Platform.SDK.Environment.Initialize();			// General initialize.  Always required
             VideoOS.Platform.SDK.UI.Environment.Initialize();		// Initialize UI
             VideoOS.Platform.SDK.Export.Environment.Initialize();   // Initialize recordings access
@@ -50,7 +54,7 @@ namespace LayoutTest1
         {
             //여기서 왜 오류나냐? 시작하자마자 끄니까 오류나네
             CameraGrid.Children.Add(l.MainGrid);
-            l.SetRowCol(5, 5);
+            l.SetRowCol(default_rowcol, default_rowcol);
             LoadAllCamera(null, null);
         }
 
@@ -198,6 +202,7 @@ namespace LayoutTest1
         {
             if(ListGrid.IsVisible)
             {
+                //전체화면
                 ListGrid.Visibility = Visibility.Collapsed;
             }
             else
@@ -209,7 +214,7 @@ namespace LayoutTest1
         private void Save_Settings(object sender, RoutedEventArgs e)
         {
             //설정 저장을 위해 json 파일에 현재 설정값을 저장하는 버튼
-            WriteJson();
+            ss.save_MainWindow(default_rowcol, is_fullscreen);
         }
 
         private void CreateJson(string path)
@@ -265,5 +270,25 @@ namespace LayoutTest1
             pb.ShowDialog();
         }
 
+        private void load_mainwindow()
+        {
+            try
+            {
+                int a = ss.load_MainWindow_1();
+                bool b = ss.load_MainWindow_2();
+                default_rowcol = a;
+                is_fullscreen = b;
+
+            }
+            catch (Exception ex)
+            {
+                //저장된 파일이 없을때,
+                MessageBox.Show("저장된 파일이 없거나, 불러오는데 오류가 발생했습니다.\n");
+                MessageBox.Show(ex.Message);
+                return;
+            }
+            
+
+        }
     }
 }

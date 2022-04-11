@@ -9,7 +9,7 @@
         
         xmlns:local="clr-namespace:LayoutTest1"
         mc:Ignorable="d"
-        Title="Playback_Viewer" Height="700" Width="1000" MinHeight="650" MinWidth="800">
+        Title="녹화 다시보기" Height="700" Width="1000" MinHeight="650" MinWidth="800">
     <Grid>
         <!--전체적인 와꾸 설정-->
         <Grid.ColumnDefinitions>
@@ -30,6 +30,10 @@
         <!--좌측 메뉴바-->
         <StackPanel Grid.Column="0">
 
+            <GroupBox Header="카메라 선택">
+                <Button x:Name="_change_cam" Content="변경" Margin="3" Click="_selectCameraButton_Click"/>
+
+            </GroupBox>
             <GroupBox x:Name="groupBox0" Header="녹화 날짜" Margin="3">
                 <local:DateTimePicker x:Name="_dateTimePicker" DatetimeChangeEvent="DatePicker_SelectedDateChanged"/>
             </GroupBox>
@@ -58,22 +62,20 @@
                 </StackPanel>
             </GroupBox>
 
+            <Button Content="설정 저장" Margin="5" Click="save_setting_playback_Click"/>
         </StackPanel>
         
         <!--좌측 하단-->
-        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" VerticalAlignment="Center">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button x:Name="_save_video_file" Content="동영상 저장" Width="75" Height="23" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center" Click="_save_video_file_Click"/>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button x:Name="_change_cam" Content="카메라 변경" Width="75" Height="23" Margin="3" Click="_selectCameraButton_Click"/>
-                <Button x:Name="_closeButton" Content="나가기" Width="75" Height="23" Margin="3" Click="_closeButton_Click"/>
-            </StackPanel>
+            <Button x:Name="_closeButton" Content="나가기" Width="75" Height="23" Margin="3" Click="_closeButton_Click"/>
         </StackPanel>
 
         <!--우측 하단-->
         <!--제어 컨트롤러-->
         <Grid Grid.Column="1" Grid.Row="1">
 
-            <platformclient:PlaybackWpfUserControl x:Name="_playbackUserControl" Grid.Row="1" Margin="0 3 0 0" ShowSpeedControl="True" ShowTallUserControl="True" ShowTimeSpanControl="True" />
+            <platformclient:PlaybackWpfUserControl x:Name="_playbackUserControl" Grid.Row="1" ShowSpeedControl="True" ShowTallUserControl="True" ShowTimeSpanControl="True" IsHitTestVisible="True" />
 
         </Grid>
 
