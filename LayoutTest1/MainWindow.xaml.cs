@@ -214,7 +214,7 @@ namespace LayoutTest1
         private void Save_Settings(object sender, RoutedEventArgs e)
         {
             //설정 저장을 위해 json 파일에 현재 설정값을 저장하는 버튼
-            ss.save_MainWindow(default_rowcol, is_fullscreen);
+            ss.save_MainWindow(l.Row, is_fullscreen);
         }
 
         private void CreateJson(string path)
@@ -272,7 +272,7 @@ namespace LayoutTest1
 
         private void load_mainwindow()
         {
-            try
+            if(ss.is_savefile_exist())
             {
                 int a = ss.load_MainWindow_1();
                 bool b = ss.load_MainWindow_2();
@@ -280,14 +280,12 @@ namespace LayoutTest1
                 is_fullscreen = b;
 
             }
-            catch (Exception ex)
+            else
             {
-                //저장된 파일이 없을때,
-                MessageBox.Show("저장된 파일이 없거나, 불러오는데 오류가 발생했습니다.\n");
-                MessageBox.Show(ex.Message);
+                //저장된 파일이 없으면 
+                Console.WriteLine("저장된 세이브 파일이 없습니다. ");
                 return;
             }
-            
 
         }
     }

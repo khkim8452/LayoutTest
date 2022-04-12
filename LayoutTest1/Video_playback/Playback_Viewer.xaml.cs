@@ -36,32 +36,39 @@ namespace LayoutTest1
         {
             InitializeComponent();
             ss.set_path(System.IO.Directory.GetCurrentDirectory() + @"save_setting_file_2");
-            load_playback();//저장된 설정 불러오기
+            _load_playback();//저장된 설정 불러오기
         }
 
 
-        private void load_playback()
+        private void _load_playback()
         {
-            try
+            if(ss.is_savefile_exist())
             {
-                int a = ss.load_MainWindow_1();
-                bool b = ss.load_MainWindow_2();
-
+                //저장파일에서 불러와서 
+                sfc = ss.load_playback();
+                //각각 할당.
+                _digitalZoomCheckBox.IsChecked = sfc.a;
+                _maintainAspectRatioCheckBox.IsChecked = sfc.b;
+                _visibleHeaderCheckBox.IsChecked = sfc.c;
+                _visibleCameraNameCheckBox.IsChecked = sfc.d;
+                _visibleLiveIndicatorCheckBox.IsChecked = sfc.e;
+                _visibleTimeStampCheckBox.IsChecked = sfc.f;
+                _skipRadioButton.IsChecked = sfc.g;
+                _noSkipRadioButton.IsChecked = sfc.h;
+                _stopRadioButton.IsChecked = sfc.i;
+                _diagnosticsCheckBox.IsChecked = sfc.j;
             }
-            catch (Exception ex)
+            else
             {
-                //저장된 파일이 없을때,
                 System.Windows.MessageBox.Show("저장된 파일이 없거나, 불러오는데 오류가 발생했습니다.\n");
-                System.Windows.MessageBox.Show(ex.Message);
                 return;
             }
-
 
         }
 
         private void _closeButton_Click(object sender, RoutedEventArgs e)
         {
-            VideoOS.Platform.SDK.Environment.RemoveAllServers();
+            //VideoOS.Platform.SDK.Environment.RemoveAllServers();
             Close();
         }
 

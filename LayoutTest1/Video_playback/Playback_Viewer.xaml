@@ -68,7 +68,7 @@
         <!--좌측 하단-->
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button x:Name="_save_video_file" Content="동영상 저장" Width="75" Height="23" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center" Click="_save_video_file_Click"/>
-            <Button x:Name="_closeButton" Content="나가기" Width="75" Height="23" Margin="3" Click="_closeButton_Click"/>
+            <Button x:Name="_closeButton" Content="나가기" Width="75" Height="23" Margin="3" Click="_closeButton_Click" IsCancel="True"/>
         </StackPanel>
 
         <!--우측 하단-->

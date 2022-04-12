@@ -193,7 +193,7 @@ namespace LayoutTest1
                 _exporter.EndExport();
                 _exporter.Close();
             }
-            VideoOS.Platform.SDK.Environment.RemoveAllServers();
+            //VideoOS.Platform.SDK.Environment.RemoveAllServers();
             Close();
         }
 

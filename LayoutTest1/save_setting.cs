@@ -16,6 +16,21 @@ namespace LayoutTest1
         JObject save_obj = new JObject();
         save_file_container sfc = new save_file_container();
 
+
+
+        public bool is_savefile_exist()
+        {
+            //세이브 파일이 존재하는지 확인 
+            if (File.Exists(save_path))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public void set_path(string path)
         {
             save_path = path;
@@ -53,12 +68,12 @@ namespace LayoutTest1
 
         public int load_MainWindow_1() //스케일
         {
-            int arr_cam = 0;
+            int arr_cam = 4;
 
             try
             {
                 string json = File.ReadAllText(save_path); //파일을 가지고 와서 
-                JObject jobj = new JObject(json); //파싱
+                JObject jobj = JObject.Parse(json); //파싱
                 arr_cam = int.Parse(jobj["array_of_cam"].ToString());
             }
             catch (Exception ex)
@@ -77,7 +92,7 @@ namespace LayoutTest1
             try
             {
                 string json = File.ReadAllText(save_path); //파일을 가지고 와서 
-                JObject jobj = new JObject(json); //파싱
+                JObject jobj = JObject.Parse(json); //파싱
                 is_full_screen = jobj["full_display"].ToString();
             }
             catch (Exception ex)
@@ -98,7 +113,7 @@ namespace LayoutTest1
         public save_file_container load_playback()
         {
             string json = File.ReadAllText(save_path);
-            JObject jobj = new JObject(json);
+            JObject jobj = JObject.Parse(json);
 
             sfc.a = string_to_bool(jobj["pb_save_1"].ToString());
             sfc.b = string_to_bool(jobj["pb_save_2"].ToString());
@@ -117,11 +132,11 @@ namespace LayoutTest1
 
         private bool string_to_bool(string str)
         {
-            if(str == "true")
+            if(str == "True")
             {
                 return true;
             }
-            else
+            else 
             {
                 return false;
             }
