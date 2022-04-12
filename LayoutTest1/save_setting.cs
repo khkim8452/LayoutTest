@@ -87,27 +87,19 @@ namespace LayoutTest1
         
         public bool load_MainWindow_2() //전체화면
         {
-            string is_full_screen = "";
+            bool is_full_screen = false;
 
             try
             {
                 string json = File.ReadAllText(save_path); //파일을 가지고 와서 
                 JObject jobj = JObject.Parse(json); //파싱
-                is_full_screen = jobj["full_display"].ToString();
+                is_full_screen = string_to_bool(jobj["full_display"].ToString());
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-
-            if (is_full_screen == "0")
-            {
-                return false;
-            }
-            else 
-            {
-                return true;
-            }
+            return is_full_screen;
         }
 
         public save_file_container load_playback()

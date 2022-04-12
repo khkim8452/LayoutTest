@@ -49,6 +49,7 @@ namespace LayoutTest1
             _loginButton_Click();
             CameraList=GetCameraList();
             FillCameraListBox();
+            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -109,7 +110,7 @@ namespace LayoutTest1
         {
             Connected = connected;
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Scale_Change_Btn_Click(object sender, RoutedEventArgs e)
         {
             int r = int.Parse((sender as Button).Tag as string);
             l.SetRowCol(r, r);
@@ -198,16 +199,13 @@ namespace LayoutTest1
             l.UpdateTitleStatus();
         }
 
-        private void Test_Button_Click(object sender, RoutedEventArgs e)
+        private void Full_Screen_Btn_Click(object sender, RoutedEventArgs e)
         {
             if(ListGrid.IsVisible)
             {
                 //전체화면
                 ListGrid.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                ListGrid.Visibility=Visibility.Visible;
+                Top_stackpanel.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -287,6 +285,17 @@ namespace LayoutTest1
                 return;
             }
 
+        }
+        private void HandleEsc(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                if((ListGrid.Visibility == Visibility.Collapsed)&&(Top_stackpanel.Visibility == Visibility.Collapsed))
+                {
+                    ListGrid.Visibility = Visibility.Visible;
+                    Top_stackpanel.Visibility = Visibility.Visible;
+                }
+            }
         }
     }
 }

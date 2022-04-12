@@ -32,7 +32,7 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 
-                <Grid Grid.Row="0" x:Name="TitleGrid" Background="Black" Opacity="0.75" >
+                <Grid Grid.Row="0" x:Name="TitleGrid" Background="Black" Opacity="0.75" Visibility="Collapsed">
                     <!-- <local:OutlinedTextBlock x:Name="TitleText"  Stroke="Black" StrokeThickness="1" Fill="White" HorizontalAlignment="Left" VerticalAlignment="Center"  />-->
                     <TextBlock x:Name="TitleText" 
                                Text="" 
@@ -86,7 +86,8 @@
               DragOver="MouseHoverGrid_DragOver" 
               DragLeave="MouseHoverGrid_DragLeave" 
               MouseMove="MouseHoverGrid_MouseMove"
-              
+              MouseLeave="MouseHoverGrid_MouseLeave"
+              MouseEnter="MouseHoverGrid_MouseEnter"
               >
             <!--마우스 오버시 title bar 애니메이션 구현-->
             <Grid.Triggers>
