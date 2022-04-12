@@ -34,6 +34,7 @@ namespace LayoutTest1
         bool _isSingleMode = false;
         bool Maintain_R = false;
         bool ptz_control_mode = false;//ptz 제어 보드 처음에는 안나옴
+        bool is_ROI_Mode = false;
 
         public int Mode
         {
@@ -349,6 +350,37 @@ namespace LayoutTest1
             else
             {
                 MessageBox.Show("PTZ 카메라가 아닙니다.");
+            }
+        }
+
+        private void activate_ROI(object sender, RoutedEventArgs e)
+        {
+            System.Windows.Shapes.Rectangle rect = new System.Windows.Shapes.Rectangle();
+            //ROI그리기 위한 함수
+            if(is_ROI_Mode)
+            {
+                is_ROI_Mode = false;
+                //ROI 편집 끄기
+                _v.BorderBrush = null;
+            }
+            else
+            {
+                is_ROI_Mode = true;
+                //ROI 편집 켜기
+                Size size = _v.ImageSize;
+
+                //rect 정의
+                rect.Stroke = new SolidColorBrush(Colors.Red);
+                rect.Fill = new SolidColorBrush(Colors.Transparent);
+                rect.Width = size.Width;
+                rect.Height = size.Height;
+                Canvas.SetLeft(rect, 0); 
+                Canvas.SetTop(rect, 0);
+                ROI_Canvas.Children.Add(rect);
+
+                _v.BorderBrush = Brushes.SlateBlue;
+                _v.BorderThickness = new Thickness(5);
+                
             }
         }
     }

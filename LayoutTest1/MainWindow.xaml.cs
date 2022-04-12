@@ -206,6 +206,7 @@ namespace LayoutTest1
                 //전체화면
                 ListGrid.Visibility = Visibility.Collapsed;
                 Top_stackpanel.Visibility = Visibility.Collapsed;
+                this.WindowStyle = WindowStyle.None;
             }
         }
 
@@ -294,6 +295,7 @@ namespace LayoutTest1
                 {
                     ListGrid.Visibility = Visibility.Visible;
                     Top_stackpanel.Visibility = Visibility.Visible;
+                    this.WindowStyle = WindowStyle.SingleBorderWindow;
                 }
             }
         }
