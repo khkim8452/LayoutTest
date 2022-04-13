@@ -35,6 +35,7 @@ namespace LayoutTest1
         bool Maintain_R = false;
         bool ptz_control_mode = false;//ptz 제어 보드 처음에는 안나옴
         bool is_ROI_Mode = false;
+        double _ratio;
 
         public int Mode
         {
@@ -67,8 +68,7 @@ namespace LayoutTest1
             InitializeComponent();
 
             Init();
-
-
+            
         }
         public void Init()
         {
@@ -76,6 +76,7 @@ namespace LayoutTest1
             
             _v.EnableVisibleHeader = false;
             _v.MaintainImageAspectRatio = false;
+            ViewBox_ROI.Stretch = Stretch.Fill;
             _v.ConnectResponseReceived += _v_ConnectResponseReceived;
             _isConnected = false;
             _v.PlaybackControllerFQID = V.CommonPlaybackFQID;
@@ -200,6 +201,8 @@ namespace LayoutTest1
                 Console.WriteLine($"Connected={_cameraitem.FQID}");
                 if (V.ShowTitleAlways) ShowTitle();
             }
+            
+
         }
         public void ShowTitle()
         {
@@ -286,12 +289,14 @@ namespace LayoutTest1
                 Maintain_R = false;
                 //MessageBox.Show("이미지 고정을 해제합니다.");
                 _v.MaintainImageAspectRatio = false;
+                ViewBox_ROI.Stretch = Stretch.Fill;
             }
             else//풀린 상태이면 고정하기
             {
                 Maintain_R = true;
                 //MessageBox.Show("이미지를 고정합니다.");
                 _v.MaintainImageAspectRatio = true;
+                ViewBox_ROI.Stretch = Stretch.Uniform;
             }
         }
 
@@ -355,31 +360,24 @@ namespace LayoutTest1
 
         private void activate_ROI(object sender, RoutedEventArgs e)
         {
-            System.Windows.Shapes.Rectangle rect = new System.Windows.Shapes.Rectangle();
+            //MessageBox.Show(_v.ImageSize.Height.ToString());
+            //MessageBox.Show(_v.ActualHeight.ToString());
+            //MessageBox.Show(_v.ImageSize.ToString());
+             Draw_ROI.setRatio(_v.ImageSize.Height, _v.ImageSize.Width);//입력 카메라 Source의 비율에 따라 ROI의 비율을 먼저 정해준다. 
+
             //ROI그리기 위한 함수
-            if(is_ROI_Mode)
+            if (is_ROI_Mode)
             {
-                is_ROI_Mode = false;
                 //ROI 편집 끄기
-                _v.BorderBrush = null;
+                is_ROI_Mode = false;
+                ViewBox_ROI.Visibility = Visibility.Collapsed;
+
             }
             else
             {
-                is_ROI_Mode = true;
                 //ROI 편집 켜기
-                Size size = _v.ImageSize;
-
-                //rect 정의
-                rect.Stroke = new SolidColorBrush(Colors.Red);
-                rect.Fill = new SolidColorBrush(Colors.Transparent);
-                rect.Width = size.Width;
-                rect.Height = size.Height;
-                Canvas.SetLeft(rect, 0); 
-                Canvas.SetTop(rect, 0);
-                ROI_Canvas.Children.Add(rect);
-
-                _v.BorderBrush = Brushes.SlateBlue;
-                _v.BorderThickness = new Thickness(5);
+                is_ROI_Mode = true;
+                ViewBox_ROI.Visibility = Visibility.Visible;
                 
             }
         }

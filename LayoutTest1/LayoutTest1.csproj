@@ -67,6 +67,9 @@
     <Compile Include="CameraCell.xaml.cs">
       <DependentUpon>CameraCell.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControl\DrawROI.xaml.cs">
+      <DependentUpon>DrawROI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="save_setting.cs" />
     <Compile Include="UserControl\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
@@ -91,6 +94,10 @@
       <DependentUpon>Video_Export.xaml</DependentUpon>
     </Compile>
     <Page Include="CameraCell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControl\DrawROI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
