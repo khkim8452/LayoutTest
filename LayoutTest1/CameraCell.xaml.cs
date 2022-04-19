@@ -363,8 +363,9 @@ namespace LayoutTest1
             //MessageBox.Show(_v.ImageSize.Height.ToString());
             //MessageBox.Show(_v.ActualHeight.ToString());
             //MessageBox.Show(_v.ImageSize.ToString());
-             Draw_ROI.setRatio(_v.ImageSize.Height, _v.ImageSize.Width);//입력 카메라 Source의 비율에 따라 ROI의 비율을 먼저 정해준다. 
+            Draw_ROI.setRatio(_v.ImageSize.Height, _v.ImageSize.Width);//입력 카메라 Source의 비율에 따라 ROI의 비율을 먼저 정해준다. 
 
+            /*
             //ROI그리기 위한 함수
             if (is_ROI_Mode)
             {
@@ -379,6 +380,21 @@ namespace LayoutTest1
                 is_ROI_Mode = true;
                 ViewBox_ROI.Visibility = Visibility.Visible;
                 
+            }
+            */
+
+            LayoutTest1.Set_ROI roi = new LayoutTest1.Set_ROI(this.CameraItem);
+            roi.ShowDialog();
+        }
+        private void HandleEsc_(object sender, KeyEventArgs e)
+        {
+            //ROI그리기 위한 함수
+            if (is_ROI_Mode)
+            {
+                //ROI 편집 끄기
+                is_ROI_Mode = false;
+                ViewBox_ROI.Visibility = Visibility.Collapsed;
+
             }
         }
     }

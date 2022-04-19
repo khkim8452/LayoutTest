@@ -141,8 +141,9 @@
             <local:PTZ_control x:Name="ptzptz" />
         </Grid>
         <!--ROI 영역 지정, 박스, 다각형-->
-        <Viewbox x:Name="ViewBox_ROI"  Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed">
-            <local:DrawROI x:Name ="Draw_ROI" /> 
+        
+        <Viewbox x:Name="ViewBox_ROI"  Stretch="Uniform" VerticalAlignment="Center" HorizontalAlignment="Center" Visibility="Collapsed" >
+            <local:DrawROI x:Name ="Draw_ROI" />
         </Viewbox>
     </Grid>
 </UserControl>

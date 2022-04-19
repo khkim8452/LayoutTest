@@ -27,6 +27,7 @@
             <Button Content="모든 카메라" Tag="6" Click="LoadAllCamera" Margin="5"></Button>
             <Button Content="모두 닫기" Tag="6" Click="CloseAll" Margin="5"></Button>
             <Button Content="설정 저장" Click="Save_Settings" Margin="5" ></Button>
+            
             <!--
             <RadioButton GroupName="TitleVisibility" x:Name="rbShowTitle" Content="카메라 이름 항상 보이기" Click="rbShowTitle_Click"/>
             <RadioButton GroupName="TitleVisibility" x:Name="rbHideTitle" Content="카메라 이름 숨기기" Click="rbHideTitle_Click"/>

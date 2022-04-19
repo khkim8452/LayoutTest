@@ -67,6 +67,9 @@
     <Compile Include="CameraCell.xaml.cs">
       <DependentUpon>CameraCell.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Set_ROI.xaml.cs">
+      <DependentUpon>Set_ROI.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControl\DrawROI.xaml.cs">
       <DependentUpon>DrawROI.xaml</DependentUpon>
     </Compile>
@@ -94,6 +97,10 @@
       <DependentUpon>Video_Export.xaml</DependentUpon>
     </Compile>
     <Page Include="CameraCell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Set_ROI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

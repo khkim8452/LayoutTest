@@ -49,7 +49,7 @@ namespace LayoutTest1
             _loginButton_Click();
             CameraList=GetCameraList();
             FillCameraListBox();
-            this.PreviewKeyDown += new KeyEventHandler(HandleEsc);
+            this.KeyDown += new KeyEventHandler(HandleEsc);
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {

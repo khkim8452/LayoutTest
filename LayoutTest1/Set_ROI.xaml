@@ -1,0 +1,38 @@
+﻿<Window x:Class="LayoutTest1.Set_ROI"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LayoutTest1"
+        xmlns:mipsdk="clr-namespace:VideoOS.Platform.Client;assembly=VideoOS.Platform"
+        mc:Ignorable="d"
+        Title="Set_ROI" Height="450" Width="800">
+    
+    
+    <Grid Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions >
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+
+
+        <StackPanel Margin="5" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+
+            <Button Content="나가기" Click="Exit_draw_ROI_Btn"/>
+            <Button Content="모두 지우기" Click ="Button_Click"/>
+            <Button Content="비율 고정" Click="ratio_change"/>
+            
+        </StackPanel>
+
+
+        <mipsdk:ImageViewerWpfControl x:Name="Image_viewer_v" IsHitTestVisible="False" FontFamily="Pretendard Variable" Grid.Column="1" />
+
+        <Viewbox x:Name="view_roi" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Grid.Column="1"  Visibility="Visible">
+            <local:DrawROI x:Name="_roi" />
+        </Viewbox>
+    </Grid>
+</Window>

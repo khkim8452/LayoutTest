@@ -7,12 +7,20 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <Canvas x:Name="Top_Canvas_name"    MouseDown="Left_Mouse_Down" MouseRightButtonDown="Right_Mouse_Down">
+    <Canvas x:Name="Top_Canvas_name" >
         <Rectangle 
             Width="{Binding ActualWidth, ElementName=Top_Canvas_name}" Height="{Binding ActualHeight, ElementName=Top_Canvas_name}"
             Stroke="Orange" StrokeThickness="5">
         </Rectangle>
-        
+
+        <Canvas 
+            x:Name="ROI_paper" 
+             PreviewMouseLeftButtonDown="ROI_paper_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="ROI_paper_PreviewMouseRightButtonDown"
+            Width="{Binding ActualWidth, ElementName=Top_Canvas_name}" Height="{Binding ActualHeight, ElementName=Top_Canvas_name}" 
+            Background="Transparent">
+            <!--transparent 속성이라도 없으면 Click 이벤트가 발생하지 않음-->
+            
+        </Canvas>
     </Canvas>
 
 </UserControl>
