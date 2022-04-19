@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <Canvas x:Name="Top_Canvas_name" >
+    <Canvas x:Name="Top_Canvas_name">
         <Rectangle 
             Width="{Binding ActualWidth, ElementName=Top_Canvas_name}" Height="{Binding ActualHeight, ElementName=Top_Canvas_name}"
             Stroke="Orange" StrokeThickness="5">

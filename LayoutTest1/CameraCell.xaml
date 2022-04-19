@@ -129,7 +129,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Width="Auto">
                     <Button Click="Maintain_Ratio_Click" Content="비율고정" />
                     <Button Click="activate_PTZ" Content="PTZ제어 활성화" />
-                    <Button Click="activate_ROI" Content="ROI 활성화"/>
+                    <Button Click="activate_ROI" Content="ROI 활성화" />
                 </StackPanel>
             </Grid>
         </Grid>

@@ -36,7 +36,6 @@ namespace LayoutTest1
             Image_viewer_v.Connect();
             Image_viewer_v.StartLive();
             view_roi.Visibility = Visibility.Visible;
-            _roi.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
 
         }
 
@@ -56,6 +55,7 @@ namespace LayoutTest1
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
+            _roi.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
         }
 
         private void ratio_change(object sender, RoutedEventArgs e)
@@ -74,6 +74,17 @@ namespace LayoutTest1
                 Image_viewer_v.MaintainImageAspectRatio = true;
                 view_roi.Stretch = Stretch.Uniform;
             }
+        }
+
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            _roi.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
+        }
+
+        private void Window_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            _roi.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
+
         }
     }
 }

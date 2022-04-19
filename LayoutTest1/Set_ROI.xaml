@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:LayoutTest1"
         xmlns:mipsdk="clr-namespace:VideoOS.Platform.Client;assembly=VideoOS.Platform"
         mc:Ignorable="d"
-        Title="Set_ROI" Height="450" Width="800">
+        Title="Set_ROI" Height="450" Width="800"
+        ContentRendered="Window_ContentRendered"
+        FocusableChanged="Window_FocusableChanged"
+        >
     
     
     <Grid Background="Transparent">
@@ -31,8 +34,8 @@
 
         <mipsdk:ImageViewerWpfControl x:Name="Image_viewer_v" IsHitTestVisible="False" FontFamily="Pretendard Variable" Grid.Column="1" />
 
-        <Viewbox x:Name="view_roi" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Grid.Column="1"  Visibility="Visible">
-            <local:DrawROI x:Name="_roi" />
+        <Viewbox x:Name="view_roi" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Visibility="Visible" Grid.Row="0" Grid.Column="1" >
+            <local:DrawROI x:Name="_roi"/>
         </Viewbox>
     </Grid>
 </Window>
