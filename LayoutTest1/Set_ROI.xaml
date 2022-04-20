@@ -7,8 +7,7 @@
         xmlns:mipsdk="clr-namespace:VideoOS.Platform.Client;assembly=VideoOS.Platform"
         mc:Ignorable="d"
         Title="Set_ROI" Height="450" Width="800"
-        ContentRendered="Window_ContentRendered"
-        FocusableChanged="Window_FocusableChanged"
+        
         >
     
     
@@ -21,14 +20,19 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-
+        <ListView>
+            
+        </ListView>
 
         <StackPanel Margin="5" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
 
             <Button Content="나가기" Click="Exit_draw_ROI_Btn"/>
-            <Button Content="모두 지우기" Click ="Button_Click"/>
+            <Button Content="모두 지우기" Click ="Clear_all"/>
             <Button Content="비율 고정" Click="ratio_change"/>
-            
+            <Button Content="새 ROI 만들기" Click="new_ROI"/>
+            <Button Content="ROI 지우기" Click="erase_ROI"/>
+            <Button Content="설정 저장" Click="save_ROI_setting"/>
+
         </StackPanel>
 
 

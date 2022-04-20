@@ -31,11 +31,8 @@ namespace LayoutTest1
     public partial class CameraCell : UserControl
     {
         int _mode = 0;
-        bool _isSingleMode = false;
         bool Maintain_R = false;
         bool ptz_control_mode = false;//ptz 제어 보드 처음에는 안나옴
-        bool is_ROI_Mode = false;
-        double _ratio;
 
         public int Mode
         {
@@ -76,7 +73,6 @@ namespace LayoutTest1
             
             _v.EnableVisibleHeader = false;
             _v.MaintainImageAspectRatio = false;
-            ViewBox_ROI.Stretch = Stretch.Fill;
             _v.ConnectResponseReceived += _v_ConnectResponseReceived;
             _isConnected = false;
             _v.PlaybackControllerFQID = V.CommonPlaybackFQID;
@@ -289,14 +285,12 @@ namespace LayoutTest1
                 Maintain_R = false;
                 //MessageBox.Show("이미지 고정을 해제합니다.");
                 _v.MaintainImageAspectRatio = false;
-                ViewBox_ROI.Stretch = Stretch.Fill;
             }
             else//풀린 상태이면 고정하기
             {
                 Maintain_R = true;
                 //MessageBox.Show("이미지를 고정합니다.");
                 _v.MaintainImageAspectRatio = true;
-                ViewBox_ROI.Stretch = Stretch.Uniform;
             }
         }
 
@@ -363,37 +357,9 @@ namespace LayoutTest1
             //MessageBox.Show(_v.ImageSize.Height.ToString());
             //MessageBox.Show(_v.ActualHeight.ToString());
             //MessageBox.Show(_v.ImageSize.ToString());
-            Draw_ROI.setRatio(_v.ImageSize.Height, _v.ImageSize.Width);//입력 카메라 Source의 비율에 따라 ROI의 비율을 먼저 정해준다. 
-
-            //ROI그리기 위한 함수
-            if (is_ROI_Mode)
-            {
-                //ROI 편집 끄기
-                is_ROI_Mode = false;
-                ViewBox_ROI.Visibility = Visibility.Collapsed;
-
-            }
-            else
-            {
-                //ROI 편집 켜기
-                is_ROI_Mode = true;
-                ViewBox_ROI.Visibility = Visibility.Visible;
-                
-            }
 
             LayoutTest1.Set_ROI roi = new LayoutTest1.Set_ROI(this.CameraItem);
             roi.ShowDialog();
-        }
-        private void HandleEsc_(object sender, KeyEventArgs e)
-        {
-            //ROI그리기 위한 함수
-            if (is_ROI_Mode)
-            {
-                //ROI 편집 끄기
-                is_ROI_Mode = false;
-                ViewBox_ROI.Visibility = Visibility.Collapsed;
-
-            }
         }
     }
 }

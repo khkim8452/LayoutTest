@@ -82,6 +82,7 @@
     <Compile Include="UserControl\new_DateTimePicker.xaml.cs">
       <DependentUpon>new_DateTimePicker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Polygon.cs" />
     <Compile Include="Video_playback\Playback_Viewer.xaml.cs">
       <DependentUpon>Playback_Viewer.xaml</DependentUpon>
     </Compile>
