@@ -9,8 +9,8 @@
         Title="Set_ROI" Height="450" Width="800"
         
         >
-    
-    
+
+
     <Grid Background="Transparent">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100"/>
@@ -20,26 +20,43 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ListView>
-            
+        <ListView x:Name="polygon_item">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="index" Width="30"/>
+                    <GridViewColumn Header="color">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                </GridView>
+            </ListView.View>
         </ListView>
 
         <StackPanel Margin="5" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
 
-            <Button Content="나가기" Click="Exit_draw_ROI_Btn"/>
+            <Button Content="비율 고정" Click="ratio_change"/> <!--ok-->
+            <Button Content="다른 ROI로 변경" Click="change_ROI"/>
             <Button Content="모두 지우기" Click ="Clear_all"/>
-            <Button Content="비율 고정" Click="ratio_change"/>
-            <Button Content="새 ROI 만들기" Click="new_ROI"/>
-            <Button Content="ROI 지우기" Click="erase_ROI"/>
             <Button Content="설정 저장" Click="save_ROI_setting"/>
+            <Button Content="나가기" Click="Exit_draw_ROI_Btn"/> <!--ok-->
 
         </StackPanel>
 
 
         <mipsdk:ImageViewerWpfControl x:Name="Image_viewer_v" IsHitTestVisible="False" FontFamily="Pretendard Variable" Grid.Column="1" />
-
-        <Viewbox x:Name="view_roi" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Uniform" Visibility="Visible" Grid.Row="0" Grid.Column="1" >
-            <local:DrawROI x:Name="_roi"/>
+        <!--viewbox는 3개까지만 지원-->
+        <Viewbox x:Name="view_roi_1" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill" Visibility="Collapsed" Grid.Row="0" Grid.Column="1" >
+            <local:DrawROI x:Name="_roi_1"/>
+        </Viewbox>
+        <Viewbox x:Name="view_roi_2" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill" Visibility="Collapsed" Grid.Row="0" Grid.Column="1" >
+            <local:DrawROI x:Name="_roi_2"/>
+        </Viewbox>
+        <Viewbox x:Name="view_roi_3" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill" Visibility="Collapsed" Grid.Row="0" Grid.Column="1" >
+            <local:DrawROI x:Name="_roi_3"/>
         </Viewbox>
     </Grid>
 </Window>

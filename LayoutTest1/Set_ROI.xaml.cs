@@ -25,29 +25,36 @@ namespace LayoutTest1
     public partial class Set_ROI : Window
     {
         bool video_ratio = false;
+        //최대 ROI 수
+        
+
+
         public Set_ROI(Item camera_item)
         {
             InitializeComponent();
             Image_viewer_v.EnableVisibleHeader = false;
             Image_viewer_v.MaintainImageAspectRatio = false;
-            view_roi.Stretch = Stretch.Fill;
             Image_viewer_v.ConnectResponseReceived += Image_viewer_v_ConnectResponseReceived;
             Image_viewer_v.CameraFQID = camera_item.FQID;
             Image_viewer_v.Initialize();
             Image_viewer_v.Connect();
             Image_viewer_v.StartLive();
-            view_roi.Visibility = Visibility.Visible;
 
-            Thread thread = new Thread(() => after_loaded());
-            thread.Start();
+            //Thread thread = new Thread(() => after_loaded());
+            //thread.Start();
+            _roi_1.Main_Color = Brushes.Red;
+            _roi_2.Main_Color = Brushes.Green;
+            _roi_3.Main_Color = Brushes.Blue;
 
         }
 
+        /*
+         * ROI 한개만 필요했을 때 시작하자마자 비율 설정하기위한 thread
         private void after_loaded()
         {
-            while(true)
+            while (true)
             {
-                if((Image_viewer_v.ImageSize.Width != 0) && (Image_viewer_v.ImageSize.Height != 0))
+                if ((Image_viewer_v.ImageSize.Width != 0) && (Image_viewer_v.ImageSize.Height != 0))
                 {
                     Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
                     {
@@ -59,9 +66,9 @@ namespace LayoutTest1
                 {
                     continue;
                 }
-
             }
         }
+        */
 
         public void Image_viewer_v_ConnectResponseReceived(object sender, VideoOS.Platform.Client.ConnectResponseEventArgs e)
         {
@@ -79,7 +86,18 @@ namespace LayoutTest1
         private void Clear_all(object sender, RoutedEventArgs e)
         {
             //모든 폴리곤 속성 다 지우기
-            _roi.Clear_all();
+            if(view_roi_1.Visibility == Visibility.Visible)
+            {
+                _roi_1.Clear_all();
+            }
+            else if (view_roi_2.Visibility == Visibility.Visible)
+            {
+                _roi_2.Clear_all();
+            }
+            else if (view_roi_3.Visibility == Visibility.Visible)
+            {
+                _roi_3.Clear_all();
+            }
         }
 
         private void ratio_change(object sender, RoutedEventArgs e)
@@ -89,30 +107,56 @@ namespace LayoutTest1
                 video_ratio = false;
                 //MessageBox.Show("이미지 고정을 해제합니다.");
                 Image_viewer_v.MaintainImageAspectRatio = false;
-                view_roi.Stretch = Stretch.Fill;
+                view_roi_1.Stretch = Stretch.Fill;
+                view_roi_2.Stretch = Stretch.Fill;
+                view_roi_3.Stretch = Stretch.Fill;
             }
             else//풀린 상태이면 고정하기
             {
                 video_ratio = true;
                 //MessageBox.Show("이미지를 고정합니다.");
                 Image_viewer_v.MaintainImageAspectRatio = true;
-                view_roi.Stretch = Stretch.Uniform;
+                view_roi_1.Stretch = Stretch.Uniform;
+                view_roi_2.Stretch = Stretch.Uniform;
+                view_roi_3.Stretch = Stretch.Uniform;
             }
         }
 
-        private void new_ROI(object sender, RoutedEventArgs e)
+
+
+        private void change_ROI(object sender, RoutedEventArgs e)
         {
+            //ROI 변경
+            if (view_roi_1.Visibility == Visibility.Visible)
+            {
+                _roi_2.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
+                view_roi_1.Visibility = Visibility.Collapsed;
+                view_roi_2.Visibility = Visibility.Visible;
 
+            }
+            else if (view_roi_2.Visibility == Visibility.Visible)
+            {
+                _roi_3.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
+                view_roi_2.Visibility = Visibility.Collapsed;
+                view_roi_3.Visibility = Visibility.Visible;
+            }
+            else if (view_roi_3.Visibility == Visibility.Visible)
+            {
+                _roi_1.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
+                view_roi_3.Visibility = Visibility.Collapsed;
+                view_roi_1.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                _roi_1.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
+                view_roi_1.Visibility = Visibility.Visible;
+            }
         }
-
         private void save_ROI_setting(object sender, RoutedEventArgs e)
         {
+            //ROI 설정 저장
 
         }
 
-        private void erase_ROI(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }
