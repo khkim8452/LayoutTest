@@ -5,58 +5,102 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LayoutTest1"
         xmlns:mipsdk="clr-namespace:VideoOS.Platform.Client;assembly=VideoOS.Platform"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="Set_ROI" Height="450" Width="800"
-        
+        Title="Set_ROI" Height="600" Width="1000"
+        TextElement.Foreground="{DynamicResource MaterialDesignLightForeground}"
+        FontFamily="{DynamicResource MaterialDesignFont}"
+        Background="{DynamicResource MaterialDesignPaper}"
         >
 
 
     <Grid Background="Transparent">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="100"/>
+            <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions >
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
 
-        <ListView x:Name="polygon_item">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="index" Width="30"/>
-                    <GridViewColumn Header="color">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
 
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+            <Grid>
+                <TextBlock Text="ROI 리스트" FontSize="20" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10 0 10 0"/>
+                <materialDesign:PackIcon Kind="VectorPolygonVariant" Width="30" Height="30" Foreground="White" HorizontalAlignment="Right" Margin="10 0 5 0"/>
+            </Grid>
 
-                </GridView>
-            </ListView.View>
-        </ListView>
+            <ListView x:Name="polygon_item" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" >
 
-        <StackPanel Margin="5" Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
 
-            <Button Content="비율 고정" Click="ratio_change"/> <!--ok-->
-            <Button Content="다른 ROI로 변경" Click="change_ROI"/>
-            <Button Content="모두 지우기" Click ="Clear_all"/>
-            <Button Content="설정 저장" Click="save_ROI_setting"/>
-            <Button Content="나가기" Click="Exit_draw_ROI_Btn"/> <!--ok-->
+                            <Grid Grid.Column="0">
+                                <Button x:Name="color_button" Click="color_button_Click">
+                                    <Button.Template>
+                                        <ControlTemplate>
+                                            <Ellipse Width="25" Height="25" Fill="{Binding main_color}"/>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                                <Popup IsOpen="True" PlacementTarget="{Binding color_button}" Placement="Bottom" >
+                                    <Border BorderThickness="1">
+                                        <materialDesign:ColorPicker Width="100" />
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                            <TextBlock Grid.Column="1" Text="{Binding }" 
+                                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <RadioButton Grid.Column="2" Content="표시" FontSize="11" IsChecked="True"/>
+                            
 
-        </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            
+            <Grid Grid.Row="2">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Button Content="추가" Click="Add_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="40"/>
+                    <Button Content="수정" Click="Modify_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="40"/>
+                    <Button Content="삭제" Click="Delete_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="40"/>
+                </StackPanel>
+            </Grid>
+            
+            <Grid Grid.Row="3">
 
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+
+                    <Button Content="비율 고정" Click="ratio_change" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
+                    <!--ok-->
+                    <Button Content="모두 지우기" Click="Clear_all" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
+                    <!--ok-->
+                    
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="4">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Button Content="설정 저장" Click="save_ROI_setting" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
+                    <Button Content="나가기" Click="Exit_draw_ROI_Btn" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
 
         <mipsdk:ImageViewerWpfControl x:Name="Image_viewer_v" IsHitTestVisible="False" FontFamily="Pretendard Variable" Grid.Column="1" />
         <!--viewbox는 3개까지만 지원-->
-        <Viewbox x:Name="view_roi_1" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill" Visibility="Collapsed" Grid.Row="0" Grid.Column="1" >
-            <local:DrawROI x:Name="_roi_1"/>
-        </Viewbox>
-        <Viewbox x:Name="view_roi_2" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill" Visibility="Collapsed" Grid.Row="0" Grid.Column="1" >
-            <local:DrawROI x:Name="_roi_2"/>
-        </Viewbox>
-        <Viewbox x:Name="view_roi_3" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill" Visibility="Collapsed" Grid.Row="0" Grid.Column="1" >
-            <local:DrawROI x:Name="_roi_3"/>
+        <Viewbox x:Name="view_roi" VerticalAlignment="Center" HorizontalAlignment="Center" Stretch="Fill" Visibility="Collapsed" Grid.Row="0" Grid.Column="1" >
+            <local:DrawROI x:Name="_roi"/>
         </Viewbox>
     </Grid>
 </Window>

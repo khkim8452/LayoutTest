@@ -16,6 +16,10 @@ using VideoOS.Platform.UI;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using System.Threading;
+using System.Collections.ObjectModel;
+using System.IO.Ports;
+using System.Runtime.InteropServices;
+using System.IO;
 
 namespace LayoutTest1
 {
@@ -26,7 +30,8 @@ namespace LayoutTest1
     {
         bool video_ratio = false;
         //최대 ROI 수
-        
+        int Max_ROI_Count = 100;
+        static ObservableCollection<DrawROI> drawROIs = new ObservableCollection<DrawROI>();//ROI 
 
 
         public Set_ROI(Item camera_item)
@@ -42,9 +47,8 @@ namespace LayoutTest1
 
             //Thread thread = new Thread(() => after_loaded());
             //thread.Start();
-            _roi_1.Main_Color = Brushes.Red;
-            _roi_2.Main_Color = Brushes.Green;
-            _roi_3.Main_Color = Brushes.Blue;
+
+            polygon_item.ItemsSource = drawROIs;
 
         }
 
@@ -86,17 +90,9 @@ namespace LayoutTest1
         private void Clear_all(object sender, RoutedEventArgs e)
         {
             //모든 폴리곤 속성 다 지우기
-            if(view_roi_1.Visibility == Visibility.Visible)
+            if(view_roi.Visibility == Visibility.Visible)
             {
-                _roi_1.Clear_all();
-            }
-            else if (view_roi_2.Visibility == Visibility.Visible)
-            {
-                _roi_2.Clear_all();
-            }
-            else if (view_roi_3.Visibility == Visibility.Visible)
-            {
-                _roi_3.Clear_all();
+                _roi.Clear_all();
             }
         }
 
@@ -107,23 +103,20 @@ namespace LayoutTest1
                 video_ratio = false;
                 //MessageBox.Show("이미지 고정을 해제합니다.");
                 Image_viewer_v.MaintainImageAspectRatio = false;
-                view_roi_1.Stretch = Stretch.Fill;
-                view_roi_2.Stretch = Stretch.Fill;
-                view_roi_3.Stretch = Stretch.Fill;
+                view_roi.Stretch = Stretch.Fill;
             }
             else//풀린 상태이면 고정하기
             {
                 video_ratio = true;
                 //MessageBox.Show("이미지를 고정합니다.");
                 Image_viewer_v.MaintainImageAspectRatio = true;
-                view_roi_1.Stretch = Stretch.Uniform;
-                view_roi_2.Stretch = Stretch.Uniform;
-                view_roi_3.Stretch = Stretch.Uniform;
+                view_roi.Stretch = Stretch.Uniform;
             }
         }
 
 
-
+        /*
+         * 보류
         private void change_ROI(object sender, RoutedEventArgs e)
         {
             //ROI 변경
@@ -152,10 +145,59 @@ namespace LayoutTest1
                 view_roi_1.Visibility = Visibility.Visible;
             }
         }
+
+        */
+
+
         private void save_ROI_setting(object sender, RoutedEventArgs e)
         {
             //ROI 설정 저장
 
+        }
+
+        private void Add_ROI(object sender, RoutedEventArgs e)
+        {
+            //ROI 추가
+            DrawROI new_roi = new DrawROI();
+            new_roi.index = drawROIs.Count();
+            new_roi.isvisible = false;
+            new_roi.main_color = Brushes.Red;
+            drawROIs.Add(new_roi);
+
+
+        }
+        private void Modify_ROI(object sender, RoutedEventArgs e)
+        {
+            //ROI 수정
+
+        }
+
+
+        private void Delete_ROI(object sender, RoutedEventArgs e)
+        {
+            //ROI 삭제
+        }
+
+        private void ColorPicker_ColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
+        {
+            //main_color 색을 바꿔야함.
+            //ListViewItem lvi = FindParent<ListViewItem>((sender as ));
+
+
+            //drawROIs[].main_color = e.NewValue;
+        }
+
+        private void color_button_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private T FindParent<T>(DependencyObject dependencyObject) where T : DependencyObject
+        {
+            var parent = VisualTreeHelper.GetParent(dependencyObject);
+            if (parent == null) return null;
+            var parentT = parent as T;
+            return parentT ?? FindParent<T>(parent);
         }
 
     }

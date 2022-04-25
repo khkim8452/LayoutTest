@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using VideoOS.Platform;
 using VideoOS.Platform.SDK.UI.LoginDialog;
 using System.IO;
+using System.Windows.Threading;
 
 // JSON 파일 
 using Newtonsoft.Json;
@@ -39,8 +40,12 @@ namespace LayoutTest1
         public MainWindow()
         {
             InitializeComponent();
+            //시계 timer thread 실행
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = new TimeSpan(0, 0, 1);
+            timer.Tick += Clock_Tick;
+            timer.Start();
             //원래의 속성을 json 파일로부터 가지고 와서 설정 복구한다.
-            //
             ss.set_path(System.IO.Directory.GetCurrentDirectory() + @"save_setting_file");
             load_mainwindow();//저장된 설정 불러오기
             VideoOS.Platform.SDK.Environment.Initialize();			// General initialize.  Always required
@@ -54,7 +59,7 @@ namespace LayoutTest1
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //여기서 왜 오류나냐? 시작하자마자 끄니까 오류나네
-            CameraGrid.Children.Add(l.MainGrid);
+            camera_view_grid.Children.Add(l.MainGrid);
             l.SetRowCol(default_rowcol, default_rowcol);
             LoadAllCamera(null, null);
         }
@@ -80,13 +85,13 @@ namespace LayoutTest1
         }
         public void FillCameraListBox()
         {
-            CameraListBox.Items.Clear();
+            camera_list_box.Items.Clear();
             foreach(Item item in CameraList)
             {
                 ListBoxItem i = new ListBoxItem();
                 i.Content = item.Name;
                 i.Tag = item;
-                CameraListBox.Items.Add(i);
+                camera_list_box.Items.Add(i);
             }
         }
         private void _loginButton_Click()
@@ -173,7 +178,7 @@ namespace LayoutTest1
         public void StartDrag()
         {
             ListBoxItemsBag b = new ListBoxItemsBag();
-            foreach(ListBoxItem i in CameraListBox.SelectedItems)
+            foreach(ListBoxItem i in camera_list_box.SelectedItems)
             {
                 b.Bag.Add(i);
             }
@@ -183,7 +188,7 @@ namespace LayoutTest1
 
             if (b != null && b.Bag.Count>0)
             {
-                DragDrop.DoDragDrop(CameraListBox, b, DragDropEffects.Move);
+                DragDrop.DoDragDrop(camera_list_box, b, DragDropEffects.Move);
             }
         }
 
@@ -201,13 +206,14 @@ namespace LayoutTest1
 
         private void Full_Screen_Btn_Click(object sender, RoutedEventArgs e)
         {
-            if(ListGrid.IsVisible)
-            {
-                //전체화면
-                ListGrid.Visibility = Visibility.Collapsed;
-                Top_stackpanel.Visibility = Visibility.Collapsed;
-                this.WindowStyle = WindowStyle.None;
-            }
+            //전체화면
+            is_fullscreen = true;
+            camera_list_grid.Visibility = Visibility.Collapsed;
+            event_grid.Visibility = Visibility.Collapsed;
+            top_grid.Visibility = Visibility.Collapsed;
+            bottom_system_bar.Visibility=Visibility.Collapsed;
+            this.WindowStyle = WindowStyle.None;
+            
         }
 
         private void Save_Settings(object sender, RoutedEventArgs e)
@@ -291,13 +297,21 @@ namespace LayoutTest1
         {
             if (e.Key == Key.Escape)
             {
-                if((ListGrid.Visibility == Visibility.Collapsed)&&(Top_stackpanel.Visibility == Visibility.Collapsed))
+                if(is_fullscreen)
                 {
-                    ListGrid.Visibility = Visibility.Visible;
-                    Top_stackpanel.Visibility = Visibility.Visible;
+                    camera_list_grid.Visibility = Visibility.Visible;
+                    event_grid.Visibility = Visibility.Visible;
+                    top_grid.Visibility = Visibility.Visible;
+                    bottom_system_bar.Visibility = Visibility.Visible;
+
                     this.WindowStyle = WindowStyle.SingleBorderWindow;
                 }
             }
+        }
+
+        private void Clock_Tick(object sender, EventArgs e)
+        {
+            bottom_clock.Text = DateTime.Now.ToString();
         }
     }
 }

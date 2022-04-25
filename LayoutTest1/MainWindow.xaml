@@ -3,54 +3,151 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:LayoutTest1"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Title="JMON DOMINIC" Height="650" Width="1000"
-        FontFamily="Pretendard Variable"
-        RenderOptions.ClearTypeHint="Enabled">
-    
+        RenderOptions.ClearTypeHint="Enabled"
+        TextElement.Foreground="{DynamicResource MaterialDesignLightForeground}"
+        TextElement.FontWeight="Regular"
+        TextElement.FontSize="13"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="{DynamicResource MaterialDesignFont}">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel x:Name="Top_stackpanel" Orientation="Horizontal" Grid.Row="0" Height="40">
-
-            <Button Content="전체화면" Click="Full_Screen_Btn_Click" Margin="5" FontSize="10"></Button>
-            <Button Content="2" Tag="2" Click="Scale_Change_Btn_Click" Margin="5" Width="30"></Button>
-            <Button Content="3" Tag="3" Click="Scale_Change_Btn_Click" Margin="5" Width="30"></Button>
-            <Button Content="4" Tag="4" Click="Scale_Change_Btn_Click" Margin="5" Width="30"></Button>
-            <Button Content="5" Tag="5" Click="Scale_Change_Btn_Click" Margin="5" Width="30"></Button>
-            <Button Content="6" Tag="6" Click="Scale_Change_Btn_Click" Margin="5" Width="30"></Button>
-            <Button Content="모든 카메라" Tag="6" Click="LoadAllCamera" Margin="5"></Button>
-            <Button Content="모두 닫기" Tag="6" Click="CloseAll" Margin="5"></Button>
-            <Button Content="설정 저장" Click="Save_Settings" Margin="5" ></Button>
-            
-            <!--
-            <RadioButton GroupName="TitleVisibility" x:Name="rbShowTitle" Content="카메라 이름 항상 보이기" Click="rbShowTitle_Click"/>
-            <RadioButton GroupName="TitleVisibility" x:Name="rbHideTitle" Content="카메라 이름 숨기기" Click="rbHideTitle_Click"/>
-            -->
-            <!--사용자 정의 컨트롤로 만들기 -->
-
-            <Button Content="녹화 기록" Margin="5" Click="PlayBack_Viewer" Width="Auto"/>
-        </StackPanel>
-        <Grid Grid.Row="1" x:Name="big">
+        <!--프로그램 상단바-->
+        <Grid x:Name="top_grid" Grid.Row="0" Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Height="40">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="40"/>
+                <!--메인 프로그램 로고-->
+                <ColumnDefinition Width="100"/>
+                <!--메인 프로그램 이름-->
+                <ColumnDefinition Width="*"/>
+                <!--상단 메뉴 구성-->
+
             </Grid.ColumnDefinitions>
 
-            <Grid x:Name="ListGrid" Grid.Column="0" Width="200">
+            <Image x:Name="program_logo" Grid.Column="0"/>
+            <!--메인 프로그램 로고-->
+            <Image x:Name="program_name" Grid.Column="1"/>
+            <!--메인 프로그램 이름-->
+            <StackPanel x:Name="top_menu_bar" Grid.Column="2" Orientation="Horizontal" >
+                <!--상단 메뉴 구성-->
 
-                <ListBox x:Name="CameraListBox" SelectionMode="Extended" AllowDrop="True"
-                         PreviewMouseLeftButtonDown="CameraListBox_PreviewMouseLeftButtonDown"
-                         PreviewMouseLeftButtonUp="CameraListBox_PreviewMouseLeftButtonUp"
-                         PreviewMouseMove="CameraListBox_PreviewMouseMove" HorizontalAlignment="Left"/>
-            </Grid>
-            <Grid x:Name="CameraGrid" Grid.Column="1" HorizontalAlignment="Stretch" />
+                <Button Content="{materialDesign:PackIcon Kind=Fullscreen, Size=30}" Background="Transparent" BorderBrush="Transparent" Padding="0" Click="Full_Screen_Btn_Click" />
+                <Button Content="{materialDesign:PackIcon Kind=GridLarge, Size=30}" Background="Transparent" BorderBrush="Transparent" Padding="0" Click="Scale_Change_Btn_Click" Tag="2"/>
+                <Button Content="2" Tag="2" Click="Scale_Change_Btn_Click" Margin="5" Padding="0" Width="30"></Button>
+                <Button Content="3" Tag="3" Click="Scale_Change_Btn_Click" Margin="5" Padding="0" Width="30"></Button>
+                <Button Content="4" Tag="4" Click="Scale_Change_Btn_Click" Margin="5" Padding="0" Width="30"></Button>
+                <Button Content="5" Tag="5" Click="Scale_Change_Btn_Click" Margin="5" Padding="0" Width="30"></Button>
+                <Button Content="6" Tag="6" Click="Scale_Change_Btn_Click" Margin="5" Padding="0" Width="30"></Button>
+                <Button Content="모든 카메라" Tag="6" Click="LoadAllCamera" Margin="5"></Button>
+                <Button Content="모두 닫기" Tag="6" Click="CloseAll" Margin="5"></Button>
+                <Button Content="설정 저장" Click="Save_Settings" Margin="5" ></Button>
+
+                <!--
+        <RadioButton GroupName="TitleVisibility" x:Name="rbShowTitle" Content="카메라 이름 항상 보이기" Click="rbShowTitle_Click"/>
+        <RadioButton GroupName="TitleVisibility" x:Name="rbHideTitle" Content="카메라 이름 숨기기" Click="rbHideTitle_Click"/>
+        -->
+                <!--사용자 정의 컨트롤로 만들기 -->
+
+                <Button Content="녹화 기록" Margin="5" Click="PlayBack_Viewer" Width="Auto"/>
+            </StackPanel>
+
 
         </Grid>
+
+
+        <!--메인 화면-->
+        <Grid x:Name="main_grid" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <!--카메라 리스트, 예비-->
+                <ColumnDefinition Width="*" />
+                <!--카메라 뷰어-->
+                <ColumnDefinition Width="Auto"/>
+                <!--이벤트 뷰어-->
+            </Grid.ColumnDefinitions>
+
+            <!--카메라 리스트, 예비-->
+            <Grid x:Name="camera_list_grid" Grid.Column="0" Width="150">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="14*"/>
+                            <ColumnDefinition Width="61*"/>
+                        </Grid.ColumnDefinitions>
+                        <!--카메라 리스트 상단표시-->
+                        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
+                            <materialDesign:PackIcon Kind="Cctv" Foreground="White" Padding="0" Width="40" Height="40"/>
+                        </StackPanel>
+                    </Grid>
+                    <ListBox x:Name="camera_list_box" SelectionMode="Extended" AllowDrop="True" Grid.Row="1" 
+                             PreviewMouseLeftButtonDown="CameraListBox_PreviewMouseLeftButtonDown"
+                             PreviewMouseLeftButtonUp="CameraListBox_PreviewMouseLeftButtonUp"
+                             PreviewMouseMove="CameraListBox_PreviewMouseMove" HorizontalAlignment="Left"
+                             FontSize="10" d:ItemsSource="{d:SampleData ItemCount=5}" 
+                             ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Height" Value="20"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </Grid>
+
+                <Grid Grid.Row="1">
+
+                </Grid>
+
+
+
+            </Grid>
+
+            <!--카메라 뷰어-->
+            <Grid x:Name="camera_view_grid" Grid.Column="1" HorizontalAlignment="Stretch" >
+            </Grid>
+
+            <!--이벤트 뷰어-->
+            <Grid x:Name="event_grid" Grid.Column="2" Width="200">
+
+            </Grid>
+
+        </Grid>
+
+        <!--프로그램 하단바-->
+        <Grid x:Name="bottom_system_bar" Grid.Row="2" Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Height="25">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <!--날짜,시각-->
+                <ColumnDefinition Width="*"/>
+                <!--예비-->
+                <ColumnDefinition Width="300"/>
+                <!--시스템 알림-->
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="bottom_clock" Foreground="White" Background="Transparent" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"/>
+
+        </Grid>
+
+
     </Grid>
 </Window>

@@ -23,12 +23,9 @@ namespace LayoutTest1
     {
         //List<Polygon_> polygons = new List<Polygon_>(); // ROI 들을 담는 list 
         
-        public Brush _main_color;
-        public Brush Main_Color
-        {
-            get { return _main_color; }
-            set { _main_color = value;}
-        }
+        public int index { get; set; }
+        public bool isvisible { get; set; }
+        public Brush main_color { get; set; }
 
         private List<Ellipse> ROI_Ellipse = new List<Ellipse>();// 점 list  (점 객체 저장)
         private List<Line> ROI_Lines = new List<Line>();// 선 list (선 객체 저장)
@@ -64,8 +61,8 @@ namespace LayoutTest1
         {
             //점 찍는 것
             Ellipse new_ellipse = new Ellipse();
-            new_ellipse.Stroke = _main_color;
-            new_ellipse.Fill = _main_color;
+            new_ellipse.Stroke = main_color;
+            new_ellipse.Fill = main_color;
             new_ellipse.Width = 10;
             new_ellipse.Height = 10;
             Canvas.SetLeft(new_ellipse, p.X -5);
@@ -90,7 +87,7 @@ namespace LayoutTest1
                 Point preview_point = ROI_Points[point_count - 2];
 
 
-                new_line.Stroke = _main_color;
+                new_line.Stroke = main_color;
                 new_line.X1 = now_point.X;
                 new_line.Y1 = now_point.Y;
                 new_line.X2 = preview_point.X;
@@ -113,7 +110,7 @@ namespace LayoutTest1
                 Line new_last_line = new Line();
 
                 //지웠으니 다시 그린다.
-                new_last_line.Stroke = _main_color;
+                new_last_line.Stroke = main_color;
                 new_last_line.X1 = start.X;
                 new_last_line.Y1 = start.Y;
                 new_last_line.X2 = last.X;
@@ -187,7 +184,7 @@ namespace LayoutTest1
                 Line new_last_line = new Line();
 
                 //지웠으니 다시 그린다.
-                new_last_line.Stroke = _main_color;
+                new_last_line.Stroke = main_color;
                 new_last_line.X1 = start.X;
                 new_last_line.Y1 = start.Y;
                 new_last_line.X2 = last.X;
