@@ -29,75 +29,31 @@ namespace LayoutTest1
     public partial class Set_ROI : Window
     {
         bool video_ratio = false;
-        //최대 ROI 수
-        int Max_ROI_Count = 100;
-        static ObservableCollection<DrawROI> drawROIs = new ObservableCollection<DrawROI>();//ROI 
-
+        ObservableCollection<DrawROI> ROIs_list = new ObservableCollection<DrawROI>();//ROI 
 
         public Set_ROI(Item camera_item)
         {
             InitializeComponent();
+            // polygon_item.DataContext = this;
             Image_viewer_v.EnableVisibleHeader = false;
             Image_viewer_v.MaintainImageAspectRatio = false;
-            Image_viewer_v.ConnectResponseReceived += Image_viewer_v_ConnectResponseReceived;
             Image_viewer_v.CameraFQID = camera_item.FQID;
             Image_viewer_v.Initialize();
             Image_viewer_v.Connect();
             Image_viewer_v.StartLive();
-
-            //Thread thread = new Thread(() => after_loaded());
-            //thread.Start();
-
-            polygon_item.ItemsSource = drawROIs;
-
+            polygon_item.ItemsSource = ROIs_list;
         }
-
-        /*
-         * ROI 한개만 필요했을 때 시작하자마자 비율 설정하기위한 thread
-        private void after_loaded()
-        {
-            while (true)
-            {
-                if ((Image_viewer_v.ImageSize.Width != 0) && (Image_viewer_v.ImageSize.Height != 0))
-                {
-                    Dispatcher.Invoke(DispatcherPriority.Normal, new Action(delegate
-                    {
-                        _roi.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
-                    }));
-                    break;
-                }
-                else
-                {
-                    continue;
-                }
-            }
-        }
-        */
-
-        public void Image_viewer_v_ConnectResponseReceived(object sender, VideoOS.Platform.Client.ConnectResponseEventArgs e)
-        {
-            Console.WriteLine(e);
-        }
-
 
         private void Exit_draw_ROI_Btn(object sender, RoutedEventArgs e)
         {
+            //나가기 버튼
             Image_viewer_v.Disconnect();
-
             this.Close();
-        }
-
-        private void Clear_all(object sender, RoutedEventArgs e)
-        {
-            //모든 폴리곤 속성 다 지우기
-            if(view_roi.Visibility == Visibility.Visible)
-            {
-                _roi.Clear_all();
-            }
         }
 
         private void ratio_change(object sender, RoutedEventArgs e)
         {
+            //비율 고정
             if (video_ratio)//고정상태이면 풀어주기
             {
                 video_ratio = false;
@@ -114,39 +70,10 @@ namespace LayoutTest1
             }
         }
 
-
-        /*
-         * 보류
-        private void change_ROI(object sender, RoutedEventArgs e)
+        private void Clear_all(object sender, RoutedEventArgs e)
         {
-            //ROI 변경
-            if (view_roi_1.Visibility == Visibility.Visible)
-            {
-                _roi_2.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
-                view_roi_1.Visibility = Visibility.Collapsed;
-                view_roi_2.Visibility = Visibility.Visible;
-
-            }
-            else if (view_roi_2.Visibility == Visibility.Visible)
-            {
-                _roi_3.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
-                view_roi_2.Visibility = Visibility.Collapsed;
-                view_roi_3.Visibility = Visibility.Visible;
-            }
-            else if (view_roi_3.Visibility == Visibility.Visible)
-            {
-                _roi_1.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
-                view_roi_3.Visibility = Visibility.Collapsed;
-                view_roi_1.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                _roi_1.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
-                view_roi_1.Visibility = Visibility.Visible;
-            }
+            //모든 폴리곤 속성 다 지우기
         }
-
-        */
 
 
         private void save_ROI_setting(object sender, RoutedEventArgs e)
@@ -155,21 +82,26 @@ namespace LayoutTest1
 
         }
 
+
+
+
         private void Add_ROI(object sender, RoutedEventArgs e)
         {
             //ROI 추가
             DrawROI new_roi = new DrawROI();
-            new_roi.index = drawROIs.Count();
+            new_roi.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
+            new_roi.name = "";
             new_roi.isvisible = false;
             new_roi.main_color = Brushes.Red;
-            drawROIs.Add(new_roi);
+            ROIs_list.Add(new_roi); //리스트에 추가하고,
+            canvas_roi.Children.Add(new_roi);//캔버스에 자식 할당.
 
-
+            view_roi.Child = new_roi;
+            view_roi.Child = new_roi;
         }
         private void Modify_ROI(object sender, RoutedEventArgs e)
         {
             //ROI 수정
-
         }
 
 
@@ -181,15 +113,18 @@ namespace LayoutTest1
         private void ColorPicker_ColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
         {
             //main_color 색을 바꿔야함.
-            //ListViewItem lvi = FindParent<ListViewItem>((sender as ));
-
-
-            //drawROIs[].main_color = e.NewValue;
+            ListViewItem lvi = FindParent<ListViewItem>((sender as Button));
+            ListView lv = FindParent<ListView>((sender as Button));
+            lv.SelectedItem = lvi.DataContext;
+            ROIs_list[polygon_item.SelectedIndex].main_color = new SolidColorBrush(e.NewValue);
         }
 
         private void color_button_Click(object sender, RoutedEventArgs e)
         {
-            
+            //list_text_block
+            ListViewItem lvi = FindParent<ListViewItem>((sender as Button));
+            ListView lv = FindParent<ListView>((sender as Button));
+            lv.SelectedItem = lvi.DataContext;
         }
 
         private T FindParent<T>(DependencyObject dependencyObject) where T : DependencyObject
@@ -200,5 +135,9 @@ namespace LayoutTest1
             return parentT ?? FindParent<T>(parent);
         }
 
+        private void polygon_item_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

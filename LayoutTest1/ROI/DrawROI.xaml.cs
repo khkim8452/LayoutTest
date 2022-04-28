@@ -21,9 +21,9 @@ namespace LayoutTest1
     /// </summary>
     public partial class DrawROI : UserControl
     {
-        //List<Polygon_> polygons = new List<Polygon_>(); // ROI 들을 담는 list 
+        private List<Polygon_> polygons = new List<Polygon_>(); // ROI 들을 담는 list 
         
-        public int index { get; set; }
+        public string name { get; set; }
         public bool isvisible { get; set; }
         public Brush main_color { get; set; }
 
@@ -35,7 +35,7 @@ namespace LayoutTest1
         public DrawROI()
         {
             InitializeComponent();
-            DataContext = this;
+            //  DataContext = this;
         }
 
         public void setRatio(double height, double width)
@@ -54,7 +54,6 @@ namespace LayoutTest1
             Close_line = null;
             ROI_paper.Children.Clear();
         }
-
 
 
         public void draw_point(Point p)
@@ -122,14 +121,6 @@ namespace LayoutTest1
             }
         }
         
-
-
-
-
-
-
-
-
         private void ROI_paper_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //왼쪽 버튼 클릭
@@ -157,7 +148,6 @@ namespace LayoutTest1
             ROI_paper.Children.Remove(ROI_Ellipse[ROI_Ellipse.Count - 1]);
             ROI_Ellipse.RemoveAt(ROI_Ellipse.Count -1);
             ROI_Points.RemoveAt(ROI_Points.Count -1);//?
-
         }
 
         private void erase_line()
@@ -196,5 +186,7 @@ namespace LayoutTest1
             }
 
         }
+
+
     }
 }
