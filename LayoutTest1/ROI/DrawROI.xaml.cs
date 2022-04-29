@@ -31,6 +31,7 @@ namespace LayoutTest1
         private List<Line> ROI_Lines = new List<Line>();// 선 list (선 객체 저장)
         private List<Point> ROI_Points = new List<Point>();// 좌표 list (모든 좌표 저장)
         Line Close_line = new Line();//시작점과 연결된 닫는 선
+        bool isclicked = false;
 
         public DrawROI()
         {
@@ -115,6 +116,7 @@ namespace LayoutTest1
         private void ROI_paper_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //왼쪽 버튼 클릭
+            isclicked = true;
             draw_point(e.GetPosition(this)); //점을 그린다.
             draw_line();                     //선을 그린다.
             draw_end_line();                 //끝선을 그린다.
@@ -178,6 +180,30 @@ namespace LayoutTest1
 
         }
 
+        private void ROI_paper_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if(isclicked)
+            {
 
+                if (ROI_Ellipse.Count != 0)
+                {
+                    Console.WriteLine("previewmousedown");
+                    erase_point();      //점을 지운다.
+                    erase_line();       //선을 지운다.
+                    erase_end_line();   //끝선을 지운다.
+                }
+                //왼쪽 버튼 클릭
+                draw_point(e.GetPosition(this)); //점을 그린다.
+                draw_line();                     //선을 그린다.
+                draw_end_line();                 //끝선을 그린다.
+
+            }
+
+        }
+
+        private void ROI_paper_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            isclicked = false;
+        }
     }
 }

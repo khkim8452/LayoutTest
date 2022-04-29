@@ -13,7 +13,7 @@
                    Width="{Binding ActualWidth, ElementName=Top_Canvas_name}" Height="{Binding ActualHeight, ElementName=Top_Canvas_name}"/>
         <Canvas 
             x:Name="ROI_paper" 
-             PreviewMouseLeftButtonDown="ROI_paper_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="ROI_paper_PreviewMouseRightButtonDown"
+            PreviewMouseLeftButtonDown="ROI_paper_PreviewMouseLeftButtonDown" PreviewMouseRightButtonDown="ROI_paper_PreviewMouseRightButtonDown" MouseMove="ROI_paper_PreviewMouseMove" PreviewMouseLeftButtonUp="ROI_paper_PreviewMouseLeftButtonUp"
             Width="{Binding ActualWidth, ElementName=Top_Canvas_name}" Height="{Binding ActualHeight, ElementName=Top_Canvas_name}" 
             Background="Transparent">
             <!--transparent 속성이라도 없으면 Click 이벤트가 발생하지 않음-->

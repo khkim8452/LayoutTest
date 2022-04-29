@@ -76,6 +76,8 @@ namespace LayoutTest1
         private void Clear_all(object sender, RoutedEventArgs e)
         {
             //모든 폴리곤 속성 다 지우기
+            canvas_roi.Children.Clear();
+            ROIs_list.Clear();
         }
 
 
@@ -150,5 +152,6 @@ namespace LayoutTest1
         {
 
         }
+
     }
 }

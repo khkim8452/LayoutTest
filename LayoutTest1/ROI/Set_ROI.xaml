@@ -24,6 +24,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/> <!--ROI 리스트-->
                 <RowDefinition Height="*"/> <!--리스트-->
+                <RowDefinition Height="100"/> 
                 <RowDefinition Height="30"/> <!--버튼 추가 수정 삭제-->
                 <RowDefinition Height="30"/> <!--버튼 비율 지우기-->
                 <RowDefinition Height="30"/> <!--버튼 저장 나가기-->
@@ -63,9 +64,12 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            
-            <!--버튼-->
+
             <Grid Grid.Row="2">
+                <materialDesign:ColorPicker Height="100" Margin="5" ColorChanged="ColorPicker_ColorChanged"/>
+            </Grid>
+            <!--버튼-->
+            <Grid Grid.Row="3">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Button Content="추가" Click="Add_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="40"/>
                     <Button Content="수정" Click="Modify_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="40"/>
@@ -74,7 +78,7 @@
             </Grid>
 
             <!--버튼-->
-            <Grid Grid.Row="3">
+            <Grid Grid.Row="4">
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
 
@@ -87,7 +91,7 @@
             </Grid>
 
             <!--버튼-->
-            <Grid Grid.Row="4">
+            <Grid Grid.Row="5">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Button Content="설정 저장" Click="save_ROI_setting" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
                     <Button Content="나가기" Click="Exit_draw_ROI_Btn" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
@@ -99,9 +103,7 @@
         <!--viewbox는 3개까지만 지원-->
         <Grid  Grid.Column="1" x:Name="top_grid" >
             <Viewbox x:Name="view_roi" Stretch="Fill" Visibility="Visible" Width="{Binding ElementName=top_grid, Path=ActualWidth}" Height="{Binding ElementName=top_grid, Path=ActualHeight}" >
-                <Canvas x:Name="canvas_roi" >
-                    
-                </Canvas>
+                <Canvas x:Name="canvas_roi" />
             </Viewbox>
         </Grid>
         
