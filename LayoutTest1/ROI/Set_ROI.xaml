@@ -97,11 +97,13 @@
 
         <mipsdk:ImageViewerWpfControl x:Name="Image_viewer_v" IsHitTestVisible="False" FontFamily="Pretendard Variable" Grid.Column="1" />
         <!--viewbox는 3개까지만 지원-->
-        <Viewbox x:Name="view_roi" Stretch="Fill" Visibility="Visible" Grid.Column="1" >
-            <Canvas x:Name="canvas_roi">
-
-            </Canvas>
-        </Viewbox>
+        <Grid  Grid.Column="1" x:Name="top_grid" >
+            <Viewbox x:Name="view_roi" Stretch="Fill" Visibility="Visible" Width="{Binding ElementName=top_grid, Path=ActualWidth}" Height="{Binding ElementName=top_grid, Path=ActualHeight}" >
+                <Canvas x:Name="canvas_roi" >
+                    
+                </Canvas>
+            </Viewbox>
+        </Grid>
         
     </Grid>
 </Window>

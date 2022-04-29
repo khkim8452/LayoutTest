@@ -54,17 +54,20 @@ namespace LayoutTest1
         private void ratio_change(object sender, RoutedEventArgs e)
         {
             //비율 고정
+            
+            MessageBox.Show($" video :{Image_viewer_v.ImageSize} , grid:{top_grid.ActualWidth},{top_grid.ActualHeight} , viewbox :{view_roi.Width},{view_roi.Height} , canvas:{canvas_roi.ActualWidth},{canvas_roi.ActualHeight}");
+
             if (video_ratio)//고정상태이면 풀어주기
             {
                 video_ratio = false;
-                //MessageBox.Show("이미지 고정을 해제합니다.");
+                MessageBox.Show("이미지 고정을 해제합니다.");
                 Image_viewer_v.MaintainImageAspectRatio = false;
                 view_roi.Stretch = Stretch.Fill;
             }
             else//풀린 상태이면 고정하기
             {
                 video_ratio = true;
-                //MessageBox.Show("이미지를 고정합니다.");
+                MessageBox.Show("이미지를 고정합니다.");
                 Image_viewer_v.MaintainImageAspectRatio = true;
                 view_roi.Stretch = Stretch.Uniform;
             }
@@ -88,16 +91,24 @@ namespace LayoutTest1
         private void Add_ROI(object sender, RoutedEventArgs e)
         {
             //ROI 추가
+            canvas_roi.Width = Image_viewer_v.ImageSize.Width;
+            canvas_roi.Height = Image_viewer_v.ImageSize.Height;
             DrawROI new_roi = new DrawROI();
             new_roi.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
             new_roi.name = "";
             new_roi.isvisible = false;
-            new_roi.main_color = Brushes.Red;
+            Random r = new Random();
+            switch(r.Next(5))
+            {
+                case 0: new_roi.main_color = Brushes.Red; break;
+                case 1: new_roi.main_color = Brushes.Yellow; break;
+                case 2: new_roi.main_color = Brushes.Blue; break;
+                case 3: new_roi.main_color = Brushes.Green; break;
+                case 4: new_roi.main_color = Brushes.Purple; break;
+            }
             ROIs_list.Add(new_roi); //리스트에 추가하고,
             canvas_roi.Children.Add(new_roi);//캔버스에 자식 할당.
 
-            view_roi.Child = new_roi;
-            view_roi.Child = new_roi;
         }
         private void Modify_ROI(object sender, RoutedEventArgs e)
         {
