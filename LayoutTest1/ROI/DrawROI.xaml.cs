@@ -20,23 +20,56 @@ namespace LayoutTest1
     /// <summary>
     /// DrawROI.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class DrawROI : UserControl
+    public partial class DrawROI : UserControl , INotifyPropertyChanged
     {
-        
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public string name { get; set; }
         public bool isvisible { get; set; }
-        public Brush main_color { get; set; }
+        private Brush Main_Color;
+        public Brush main_color
+        {
+            get { return Main_Color; }
+            set
+            {
+                this.Main_Color = value;
+                OnPropertyChanged("main_color");
+            }
+        }
 
         private List<Ellipse> ROI_Ellipse = new List<Ellipse>();// 점 list  (점 객체 저장)
         private List<Line> ROI_Lines = new List<Line>();// 선 list (선 객체 저장)
         private List<Point> ROI_Points = new List<Point>();// 좌표 list (모든 좌표 저장)
         Line Close_line = new Line();//시작점과 연결된 닫는 선
-        bool isclicked = false;
 
         public DrawROI()
         {
             InitializeComponent();
             //  DataContext = this;
+        }
+        
+        protected void OnPropertyChanged(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            change__();
+            if(handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(name));
+            }
+        }
+        private void change__()
+        {
+            for(int i = 0; i < ROI_Ellipse.Count; i++)
+            {
+                ROI_Ellipse[i].Stroke = Main_Color;
+                ROI_Ellipse[i].Fill = Main_Color;
+            }
+            for(int i = 0; i < ROI_Lines.Count; i++)
+            {
+                ROI_Lines[i].Stroke = Main_Color;
+            }
+            Close_line.Stroke = Main_Color;
         }
 
         public void setRatio(double height, double width)
@@ -116,7 +149,6 @@ namespace LayoutTest1
         private void ROI_paper_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             //왼쪽 버튼 클릭
-            isclicked = true;
             draw_point(e.GetPosition(this)); //점을 그린다.
             draw_line();                     //선을 그린다.
             draw_end_line();                 //끝선을 그린다.
@@ -145,21 +177,16 @@ namespace LayoutTest1
 
         private void erase_line()
         {
-
             //2개 이상일 때만 선을 지움.
             if ((ROI_Ellipse.Count >= 1) && (ROI_Points.Count >= 1))
             {
                 ROI_paper.Children.Remove(ROI_Lines[ROI_Lines.Count - 1]); //지우기
                 ROI_Lines.RemoveAt(ROI_Lines.Count - 1);
-
             }
-            //
-
         }
 
         private void erase_end_line()
         {
-
             if ((ROI_Ellipse.Count >= 1) && (ROI_Points.Count >= 1))
             {
                 Point start = ROI_Points[0]; //시작점 
@@ -177,14 +204,12 @@ namespace LayoutTest1
                 ROI_paper.Children.Add(new_last_line);//그리기
                 Close_line = new_last_line;//최신화
             }
-
         }
 
         private void ROI_paper_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if(isclicked)
+            if(e.LeftButton == MouseButtonState.Pressed)
             {
-
                 if (ROI_Ellipse.Count != 0)
                 {
                     Console.WriteLine("previewmousedown");
@@ -196,14 +221,7 @@ namespace LayoutTest1
                 draw_point(e.GetPosition(this)); //점을 그린다.
                 draw_line();                     //선을 그린다.
                 draw_end_line();                 //끝선을 그린다.
-
             }
-
-        }
-
-        private void ROI_paper_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            isclicked = false;
         }
     }
 }

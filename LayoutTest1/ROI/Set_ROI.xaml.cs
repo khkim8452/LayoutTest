@@ -87,9 +87,6 @@ namespace LayoutTest1
 
         }
 
-
-
-
         private void Add_ROI(object sender, RoutedEventArgs e)
         {
             //ROI 추가
@@ -112,25 +109,21 @@ namespace LayoutTest1
             canvas_roi.Children.Add(new_roi);//캔버스에 자식 할당.
 
         }
-        private void Modify_ROI(object sender, RoutedEventArgs e)
-        {
-            //ROI 수정
-        }
-
 
         private void Delete_ROI(object sender, RoutedEventArgs e)
         {
             //ROI 삭제
+            if(polygon_item.SelectedIndex == -1)
+            {
+                MessageBox.Show("선택된 ROI가 없습니다.\n삭제하고자 하는 ROI를 선택하고 다시 실행해주세요.");
+            }
+            else
+            {
+                canvas_roi.Children.Remove(ROIs_list[polygon_item.SelectedIndex]);
+                ROIs_list.Remove(ROIs_list[polygon_item.SelectedIndex]);
+            }
         }
 
-        private void ColorPicker_ColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
-        {
-            //main_color 색을 바꿔야함.
-            ListViewItem lvi = FindParent<ListViewItem>((sender as Button));
-            ListView lv = FindParent<ListView>((sender as Button));
-            lv.SelectedItem = lvi.DataContext;
-            ROIs_list[polygon_item.SelectedIndex].main_color = new SolidColorBrush(e.NewValue);
-        }
 
         private void color_button_Click(object sender, RoutedEventArgs e)
         {
@@ -153,5 +146,29 @@ namespace LayoutTest1
 
         }
 
+        private void list_radio_button_Click(object sender, RoutedEventArgs e)
+        {
+            //ROI 보이기
+            ListViewItem lvi = FindParent<ListViewItem>((sender as RadioButton));
+            ListView lv = FindParent<ListView>((sender as RadioButton));
+            lv.SelectedItem = lvi.DataContext;
+
+            
+        }
+
+        private void ColorPicker_MouseMove(object sender, MouseEventArgs e)
+        {
+            //마우스 왼쪽이 눌렸을때만 move가 되고,
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                //리스트에서 선택된 개체가 있을때만 실행.
+                if (polygon_item.SelectedIndex != -1)
+                {
+                    Brush b = new SolidColorBrush(color_picker.Color);
+                    ROIs_list[polygon_item.SelectedIndex].main_color = b;
+                    
+                }
+            }
+        }
     }
 }

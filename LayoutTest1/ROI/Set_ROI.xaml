@@ -24,7 +24,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/> <!--ROI 리스트-->
                 <RowDefinition Height="*"/> <!--리스트-->
-                <RowDefinition Height="100"/> 
+                <RowDefinition Height="110"/> 
                 <RowDefinition Height="30"/> <!--버튼 추가 수정 삭제-->
                 <RowDefinition Height="30"/> <!--버튼 비율 지우기-->
                 <RowDefinition Height="30"/> <!--버튼 저장 나가기-->
@@ -54,26 +54,26 @@
                             <Button x:Name="color_button" Grid.RowSpan="2" Click="color_button_Click" Padding="0" Width="30" Height="30">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
-                                        <Ellipse  Fill="{Binding main_color}"/>
+                                        <Ellipse Fill="{Binding main_color, UpdateSourceTrigger=PropertyChanged}"/>
+
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
                             <TextBlock x:Name="list_text_block" Grid.Column="1" Text="{Binding name}" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <RadioButton x:Name="list_radio_button" Grid.Column="1" Grid.Row="1" Content="이 ROI 보이기" FontSize="10" IsChecked="{Binding isvisible}"/>
+                            <RadioButton x:Name="list_radio_button" Grid.Column="1" Grid.Row="1" Content="이 ROI 보이기" FontSize="10" Click="list_radio_button_Click" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
 
             <Grid Grid.Row="2">
-                <materialDesign:ColorPicker Height="100" Margin="5" ColorChanged="ColorPicker_ColorChanged"/>
+                <materialDesign:ColorPicker x:Name="color_picker" Height="100" Margin="5" MouseMove="ColorPicker_MouseMove" />
             </Grid>
             <!--버튼-->
             <Grid Grid.Row="3">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                    <Button Content="추가" Click="Add_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="40"/>
-                    <Button Content="수정" Click="Modify_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="40"/>
-                    <Button Content="삭제" Click="Delete_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="40"/>
+                    <Button Content="추가" Click="Add_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
+                    <Button Content="삭제" Click="Delete_ROI" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
                 </StackPanel>
             </Grid>
 
