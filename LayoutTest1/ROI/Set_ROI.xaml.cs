@@ -107,7 +107,6 @@ namespace LayoutTest1
             }
             ROIs_list.Add(new_roi); //리스트에 추가하고,
             canvas_roi.Children.Add(new_roi);//캔버스에 자식 할당.
-
         }
 
         private void Delete_ROI(object sender, RoutedEventArgs e)
@@ -143,7 +142,7 @@ namespace LayoutTest1
 
         private void polygon_item_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
+            color_picker.Color = (ROIs_list[polygon_item.SelectedIndex].main_color as SolidColorBrush).Color;
         }
 
         private void list_radio_button_Click(object sender, RoutedEventArgs e)
