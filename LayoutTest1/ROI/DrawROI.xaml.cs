@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.ComponentModel;
 
+
 namespace LayoutTest1
 {
     /// <summary>
@@ -21,7 +22,6 @@ namespace LayoutTest1
     /// </summary>
     public partial class DrawROI : UserControl
     {
-        private List<Polygon_> polygons = new List<Polygon_>(); // ROI 들을 담는 list 
         
         public string name { get; set; }
         public bool isvisible { get; set; }
@@ -45,16 +45,6 @@ namespace LayoutTest1
             Top_Canvas_name.Height = height;
         }
 
-        public void Clear_all()
-        {
-
-            ROI_Ellipse.Clear();
-            ROI_Lines.Clear();
-            ROI_Points.Clear();
-            Close_line = null;
-            ROI_paper.Children.Clear();
-        }
-
 
         public void draw_point(Point p)
         {
@@ -65,10 +55,11 @@ namespace LayoutTest1
             new_ellipse.Width = 10;
             new_ellipse.Height = 10;
             Canvas.SetLeft(new_ellipse, p.X -5);
-            Canvas.SetTop(new_ellipse, p.Y -5);
+            Canvas.SetTop(new_ellipse, p.Y -5); 
 
             ROI_Ellipse.Add(new_ellipse);
             ROI_Points.Add(p);
+
 
             ROI_paper.Children.Add(new_ellipse);//그리기
         }
