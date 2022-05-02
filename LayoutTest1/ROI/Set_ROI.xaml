@@ -59,11 +59,17 @@
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
-                            <TextBlock x:Name="list_text_block" Grid.Column="1" Text="{Binding name}" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <RadioButton x:Name="list_radio_button" Grid.Column="1" Grid.Row="1" Content="이 ROI 보이기" FontSize="10" Click="list_radio_button_Click" />
+                            <TextBlock x:Name="list_text_block" Grid.Column="1" Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <CheckBox x:Name="list_radio_button" Grid.Column="1" Grid.Row="1" Content="이 ROI 보이기" FontSize="10" Checked="list_radio_button_Checked" Unchecked="list_radio_button_Unchecked" IsChecked="False"/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="이름 바꾸기" Click="change_ROI_name"/>
+                        <MenuItem Header="삭제" Click="Delete_ROI"/>
+                    </ContextMenu>
+                </ListView.ContextMenu>
             </ListView>
 
             <Grid Grid.Row="2">
@@ -79,7 +85,6 @@
 
             <!--버튼-->
             <Grid Grid.Row="4">
-
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
 
                     <Button Content="비율 고정" Click="ratio_change" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>

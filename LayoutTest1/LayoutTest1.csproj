@@ -67,6 +67,9 @@
     <Compile Include="CameraCell.xaml.cs">
       <DependentUpon>CameraCell.xaml</DependentUpon>
     </Compile>
+    <Compile Include="change_name.xaml.cs">
+      <DependentUpon>change_name.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ROI\Set_ROI.xaml.cs">
       <DependentUpon>Set_ROI.xaml</DependentUpon>
     </Compile>
@@ -97,6 +100,10 @@
       <DependentUpon>Video_Export.xaml</DependentUpon>
     </Compile>
     <Page Include="CameraCell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="change_name.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -24,9 +24,21 @@ namespace LayoutTest1
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public string name { get; set; }
-        public bool isvisible { get; set; }
+        bool is_enabled = false;
+        private string Name;
+        public string name 
+        { 
+            get
+            { 
+                return Name; 
+            }
+            set
+            {
+                this.Name = value;
+                OnPropertyChanged("name");
+            }
+        
+        }
         private Brush Main_Color;
         public Brush main_color
         {
@@ -37,6 +49,7 @@ namespace LayoutTest1
                 OnPropertyChanged("main_color");
             }
         }
+        public bool isvisible { get; set; }
 
         private List<Ellipse> ROI_Ellipse = new List<Ellipse>();// 점 list  (점 객체 저장)
         private List<Line> ROI_Lines = new List<Line>();// 선 list (선 객체 저장)
@@ -221,6 +234,21 @@ namespace LayoutTest1
                 draw_point(e.GetPosition(this)); //점을 그린다.
                 draw_line();                     //선을 그린다.
                 draw_end_line();                 //끝선을 그린다.
+            }
+        }
+
+        public void Enable_and_Disable(bool t_f)
+        {
+            //usercontrol을 켜고 끌수 있게 하는 기능
+            if(t_f)
+            {
+                Top_Canvas_name.Visibility = Visibility.Visible;
+                Top_Canvas_name.IsEnabled = true;
+            }
+            else
+            {
+                Top_Canvas_name.Visibility = Visibility.Collapsed;
+                Top_Canvas_name.IsEnabled = false;
             }
         }
     }

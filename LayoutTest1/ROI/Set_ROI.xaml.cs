@@ -29,6 +29,8 @@ namespace LayoutTest1
     public partial class Set_ROI : Window
     {
         bool video_ratio = false;
+        int count = 0;
+        int index_count = 0;
         ObservableCollection<DrawROI> ROIs_list = new ObservableCollection<DrawROI>();//ROI 
 
         public Set_ROI(Item camera_item)
@@ -55,19 +57,15 @@ namespace LayoutTest1
         {
             //비율 고정
             
-            MessageBox.Show($" video :{Image_viewer_v.ImageSize} , grid:{top_grid.ActualWidth},{top_grid.ActualHeight} , viewbox :{view_roi.Width},{view_roi.Height} , canvas:{canvas_roi.ActualWidth},{canvas_roi.ActualHeight}");
-
             if (video_ratio)//고정상태이면 풀어주기
             {
                 video_ratio = false;
-                MessageBox.Show("이미지 고정을 해제합니다.");
                 Image_viewer_v.MaintainImageAspectRatio = false;
                 view_roi.Stretch = Stretch.Fill;
             }
             else//풀린 상태이면 고정하기
             {
                 video_ratio = true;
-                MessageBox.Show("이미지를 고정합니다.");
                 Image_viewer_v.MaintainImageAspectRatio = true;
                 view_roi.Stretch = Stretch.Uniform;
             }
@@ -77,7 +75,7 @@ namespace LayoutTest1
         {
             //모든 폴리곤 속성 다 지우기
             canvas_roi.Children.Clear();
-            ROIs_list.Clear();
+            ROIs_list.Clear(); //오류
         }
 
 
@@ -92,19 +90,30 @@ namespace LayoutTest1
             //ROI 추가
             canvas_roi.Width = Image_viewer_v.ImageSize.Width;
             canvas_roi.Height = Image_viewer_v.ImageSize.Height;
+
             DrawROI new_roi = new DrawROI();
             new_roi.setRatio(Image_viewer_v.ImageSize.Height, Image_viewer_v.ImageSize.Width);
-            new_roi.name = "";
+            new_roi.name = "이름";
             new_roi.isvisible = false;
-            Random r = new Random();
-            switch(r.Next(5))
+
+            //Random r = new Random(); -> 랜덤
+            //switch(r.Next(5)) -> 랜덤
+            switch(count)
             {
-                case 0: new_roi.main_color = Brushes.Red; break;
-                case 1: new_roi.main_color = Brushes.Yellow; break;
-                case 2: new_roi.main_color = Brushes.Blue; break;
-                case 3: new_roi.main_color = Brushes.Green; break;
-                case 4: new_roi.main_color = Brushes.Purple; break;
+                case 0: new_roi.main_color = Brushes.Red; count++; break;
+                case 1: new_roi.main_color = Brushes.DarkOrange; count++; break;
+                case 2: new_roi.main_color = Brushes.Yellow; count++; break;
+                case 3: new_roi.main_color = Brushes.Lime; count++; break;
+                case 4: new_roi.main_color = Brushes.DarkGreen; count++; break;
+                case 5: new_roi.main_color = Brushes.Cyan; count++; break;
+                case 6: new_roi.main_color = Brushes.MediumBlue; count++; break;
+                case 7: new_roi.main_color = Brushes.MediumPurple; count++; break;
+                case 8: new_roi.main_color = Brushes.Violet; count++; break;
+                case 9: new_roi.main_color = Brushes.Snow; count++; break;
+                case 10: new_roi.main_color = Brushes.Black; count = 0; break;
+                
             }
+
             ROIs_list.Add(new_roi); //리스트에 추가하고,
             canvas_roi.Children.Add(new_roi);//캔버스에 자식 할당.
         }
@@ -119,7 +128,15 @@ namespace LayoutTest1
             else
             {
                 canvas_roi.Children.Remove(ROIs_list[polygon_item.SelectedIndex]);
-                ROIs_list.Remove(ROIs_list[polygon_item.SelectedIndex]);
+                try
+                {
+
+                    ROIs_list.RemoveAt(polygon_item.SelectedIndex);
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
         }
 
@@ -142,18 +159,12 @@ namespace LayoutTest1
 
         private void polygon_item_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            color_picker.Color = (ROIs_list[polygon_item.SelectedIndex].main_color as SolidColorBrush).Color;
-        }
-
-        private void list_radio_button_Click(object sender, RoutedEventArgs e)
-        {
-            //ROI 보이기
-            ListViewItem lvi = FindParent<ListViewItem>((sender as RadioButton));
-            ListView lv = FindParent<ListView>((sender as RadioButton));
-            lv.SelectedItem = lvi.DataContext;
-
+            if (polygon_item.SelectedIndex < 0) return;
             
+            color_picker.Color = (ROIs_list[polygon_item.SelectedIndex].main_color as SolidColorBrush).Color;
+            Canvas.SetZIndex(canvas_roi.Children[polygon_item.SelectedIndex], index_count++);
         }
+
 
         private void ColorPicker_MouseMove(object sender, MouseEventArgs e)
         {
@@ -168,6 +179,37 @@ namespace LayoutTest1
                     
                 }
             }
+        }
+
+        private void list_radio_button_Checked(object sender, RoutedEventArgs e)
+        {
+            //ROI 보이기
+            ListViewItem lvi = FindParent<ListViewItem>((sender as CheckBox));
+            ListView lv = FindParent<ListView>((sender as CheckBox));
+            lv.SelectedItem = lvi.DataContext;
+
+            ROIs_list[polygon_item.SelectedIndex].Enable_and_Disable(true);
+            
+        }
+
+        private void list_radio_button_Unchecked(object sender, RoutedEventArgs e)
+        {
+            //ROI 보이기
+            ListViewItem lvi = FindParent<ListViewItem>((sender as CheckBox));
+            ListView lv = FindParent<ListView>((sender as CheckBox));
+            lv.SelectedItem = lvi.DataContext;
+
+            ROIs_list[polygon_item.SelectedIndex].Enable_and_Disable(false);
+        }
+
+
+        private void change_ROI_name(object sender, RoutedEventArgs e)
+        {
+            change_name cn = new change_name();
+            cn.set_Name_out(ROIs_list[polygon_item.SelectedIndex].name);//현재 이름을 dialog에 toss해줌.
+            cn.ShowDialog();
+
+            ROIs_list[polygon_item.SelectedIndex].name = cn.result; //결과 이름을 현재 이름에 반영해줌.
         }
     }
 }

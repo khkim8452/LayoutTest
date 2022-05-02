@@ -357,12 +357,9 @@ namespace LayoutTest1
 
         private void activate_ROI(object sender, RoutedEventArgs e)
         {
-            //MessageBox.Show(_v.ImageSize.Height.ToString());
-            //MessageBox.Show(_v.ActualHeight.ToString());
-            //MessageBox.Show(_v.ImageSize.ToString());
 
             LayoutTest1.Set_ROI roi = new LayoutTest1.Set_ROI(this.CameraItem);
-            roi.ShowDialog();
+            roi.ShowDialog(); //오류
         }
     }
 }
