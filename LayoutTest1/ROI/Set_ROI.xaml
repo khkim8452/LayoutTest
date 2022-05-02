@@ -40,7 +40,7 @@
             <ListView x:Name="polygon_item" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionChanged="polygon_item_SelectionChanged">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Width="120" Height="30">
+                        <Grid Width="120" Height="30" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30"/>
                                 <ColumnDefinition Width="*"/>

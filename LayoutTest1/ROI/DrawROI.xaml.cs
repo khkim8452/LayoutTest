@@ -99,10 +99,10 @@ namespace LayoutTest1
             Ellipse new_ellipse = new Ellipse();
             new_ellipse.Stroke = main_color;
             new_ellipse.Fill = main_color;
-            new_ellipse.Width = 10;
-            new_ellipse.Height = 10;
-            Canvas.SetLeft(new_ellipse, p.X -5);
-            Canvas.SetTop(new_ellipse, p.Y -5); 
+            new_ellipse.Width = 14;
+            new_ellipse.Height = 14;
+            Canvas.SetLeft(new_ellipse, p.X -7);
+            Canvas.SetTop(new_ellipse, p.Y -7); 
 
             ROI_Ellipse.Add(new_ellipse);
             ROI_Points.Add(p);
@@ -129,6 +129,7 @@ namespace LayoutTest1
                 new_line.Y1 = now_point.Y;
                 new_line.X2 = preview_point.X;
                 new_line.Y2 = preview_point.Y;
+                new_line.StrokeThickness = 7;
 
                 ROI_Lines.Add(new_line);
 
@@ -152,6 +153,7 @@ namespace LayoutTest1
                 new_last_line.Y1 = start.Y;
                 new_last_line.X2 = last.X;
                 new_last_line.Y2 = last.Y;
+                new_last_line.StrokeThickness= 7;
 
                 ROI_paper.Children.Remove(Close_line);//있던거 지우고
                 ROI_paper.Children.Add(new_last_line);//그리기
@@ -212,6 +214,7 @@ namespace LayoutTest1
                 new_last_line.Y1 = start.Y;
                 new_last_line.X2 = last.X;
                 new_last_line.Y2 = last.Y;
+                new_last_line.StrokeThickness = 7;
 
                 ROI_paper.Children.Remove(Close_line);//있던거 지우고
                 ROI_paper.Children.Add(new_last_line);//그리기
