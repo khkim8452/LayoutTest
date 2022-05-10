@@ -24,8 +24,12 @@ namespace LayoutTest1
     {
 
         public event PropertyChangedEventHandler PropertyChanged;
-        bool is_enabled = false;
+        public double _width;
+        public double _height;
+
         private string Name;
+        private Brush Main_Color;
+        private bool Isvisible;
         public string name 
         { 
             get
@@ -39,7 +43,6 @@ namespace LayoutTest1
             }
         
         }
-        private Brush Main_Color;
         public Brush main_color
         {
             get { return Main_Color; }
@@ -49,12 +52,20 @@ namespace LayoutTest1
                 OnPropertyChanged("main_color");
             }
         }
-        public bool isvisible { get; set; }
+        public bool isvisible
+        {
+            get { return Isvisible; }
+            set
+            {
+                this.Isvisible = value;
+                OnPropertyChanged("isvisible");
+            }
+        }
 
-        private List<Ellipse> ROI_Ellipse = new List<Ellipse>();// 점 list  (점 객체 저장)
-        private List<Line> ROI_Lines = new List<Line>();// 선 list (선 객체 저장)
-        private List<Point> ROI_Points = new List<Point>();// 좌표 list (모든 좌표 저장)
-        Line Close_line = new Line();//시작점과 연결된 닫는 선
+        public List<Ellipse> ROI_Ellipse = new List<Ellipse>();// 점 list  (점 객체 저장)
+        public List<Line> ROI_Lines = new List<Line>();// 선 list (선 객체 저장)
+        public List<Point> ROI_Points = new List<Point>();// 좌표 list (모든 좌표 저장)
+        public Line Close_line = new Line();//시작점과 연결된 닫는 선
 
         public DrawROI()
         {
@@ -89,7 +100,10 @@ namespace LayoutTest1
         {
             //Canvas의 가로세로 높이를 받아와 설정.
             Top_Canvas_name.Width = width;
-            Top_Canvas_name.Height = height;
+            Top_Canvas_name.Height = height; 
+            _height = height;
+            _width = width;
+
         }
 
 
@@ -129,7 +143,7 @@ namespace LayoutTest1
                 new_line.Y1 = now_point.Y;
                 new_line.X2 = preview_point.X;
                 new_line.Y2 = preview_point.Y;
-                new_line.StrokeThickness = 7;
+                new_line.StrokeThickness = 5;
 
                 ROI_Lines.Add(new_line);
 
@@ -153,7 +167,7 @@ namespace LayoutTest1
                 new_last_line.Y1 = start.Y;
                 new_last_line.X2 = last.X;
                 new_last_line.Y2 = last.Y;
-                new_last_line.StrokeThickness= 7;
+                new_last_line.StrokeThickness= 5;
 
                 ROI_paper.Children.Remove(Close_line);//있던거 지우고
                 ROI_paper.Children.Add(new_last_line);//그리기
@@ -214,7 +228,7 @@ namespace LayoutTest1
                 new_last_line.Y1 = start.Y;
                 new_last_line.X2 = last.X;
                 new_last_line.Y2 = last.Y;
-                new_last_line.StrokeThickness = 7;
+                new_last_line.StrokeThickness = 5;
 
                 ROI_paper.Children.Remove(Close_line);//있던거 지우고
                 ROI_paper.Children.Add(new_last_line);//그리기
@@ -245,14 +259,40 @@ namespace LayoutTest1
             //usercontrol을 켜고 끌수 있게 하는 기능
             if(t_f)
             {
+                this.isvisible = true;
                 Top_Canvas_name.Visibility = Visibility.Visible;
                 Top_Canvas_name.IsEnabled = true;
             }
             else
             {
+                this.isvisible = false;
                 Top_Canvas_name.Visibility = Visibility.Collapsed;
                 Top_Canvas_name.IsEnabled = false;
             }
+        }
+
+        public void load_and_draw()
+        {
+            if(this.isvisible)
+            {
+                Top_Canvas_name.Visibility= Visibility.Visible;
+                Top_Canvas_name.IsEnabled = true;
+
+            }
+            else
+            {
+                Top_Canvas_name.Visibility= Visibility.Collapsed;
+                Top_Canvas_name.IsEnabled = false;
+            }
+            for(int i = 0; i < ROI_Ellipse.Count; i++)
+            {
+                ROI_paper.Children.Add(ROI_Ellipse[i]); // 점 추가 
+            }
+            for (int j = 0; j < ROI_Lines.Count; j++)
+            {
+                ROI_paper.Children.Add(ROI_Lines[j]); // 선 추가
+            }
+            ROI_paper.Children.Add(Close_line); // 끝선 추가
         }
     }
 }

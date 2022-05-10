@@ -142,5 +142,9 @@
         </Grid>
         <!--ROI 영역 지정, 박스, 다각형-->
         
+        <Viewbox x:Name="cell_view_roi" Stretch="Fill" Visibility="Visible" Width="{Binding ElementName=top_grid, Path=ActualWidth}" Height="{Binding ElementName=top_grid, Path=ActualHeight}" >
+            <Canvas x:Name="cell_canvas_roi" />
+        </Viewbox>
+        
     </Grid>
 </UserControl>

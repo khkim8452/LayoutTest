@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using System.IO.Ports;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.ComponentModel;
 
 namespace LayoutTest1
 {
@@ -30,8 +31,9 @@ namespace LayoutTest1
     {
         bool video_ratio = false;
         int count = 0;
-        int index_count = 0;
+        int z_index_count = 1; //0으로 하면 맨 처음 클릭은 위에 표시되지 않는 오류가 있음.
         ObservableCollection<DrawROI> ROIs_list = new ObservableCollection<DrawROI>();//ROI 
+        save_ROI sroi = new save_ROI();
 
         public Set_ROI(Item camera_item)
         {
@@ -43,6 +45,14 @@ namespace LayoutTest1
             Image_viewer_v.Initialize();
             Image_viewer_v.Connect();
             Image_viewer_v.StartLive();
+            sroi.set_path(System.IO.Directory.GetCurrentDirectory() + Image_viewer_v.CameraFQID.ObjectId);
+            if (sroi.is_savefile_exist()) //세이브파일이 있으면
+            {
+                ROIs_list = sroi.load_ROI_list(); //세이브 파일에 저장된 리스트 원래 형식대로 가지고 오기
+                load_canvas(ROIs_list); // 리스트에 있는 객체들 canvas에 children 속성으로 그리기.
+                canvas_roi.Width = ROIs_list[0]._width;
+                canvas_roi.Height = ROIs_list[0]._height;
+            }
             polygon_item.ItemsSource = ROIs_list;
         }
 
@@ -56,7 +66,7 @@ namespace LayoutTest1
         private void ratio_change(object sender, RoutedEventArgs e)
         {
             //비율 고정
-            
+
             if (video_ratio)//고정상태이면 풀어주기
             {
                 video_ratio = false;
@@ -82,7 +92,7 @@ namespace LayoutTest1
         private void save_ROI_setting(object sender, RoutedEventArgs e)
         {
             //ROI 설정 저장
-
+            sroi.save_ROI_list(ROIs_list);
         }
 
         private void Add_ROI(object sender, RoutedEventArgs e)
@@ -98,7 +108,7 @@ namespace LayoutTest1
 
             //Random r = new Random(); -> 랜덤
             //switch(r.Next(5)) -> 랜덤
-            switch(count)
+            switch (count)
             {
                 case 0: new_roi.main_color = Brushes.Red; count++; break;
                 case 1: new_roi.main_color = Brushes.DarkOrange; count++; break;
@@ -111,7 +121,7 @@ namespace LayoutTest1
                 case 8: new_roi.main_color = Brushes.Violet; count++; break;
                 case 9: new_roi.main_color = Brushes.Snow; count++; break;
                 case 10: new_roi.main_color = Brushes.Black; count = 0; break;
-                
+
             }
 
             ROIs_list.Add(new_roi); //리스트에 추가하고,
@@ -121,7 +131,7 @@ namespace LayoutTest1
         private void Delete_ROI(object sender, RoutedEventArgs e)
         {
             //ROI 삭제
-            if(polygon_item.SelectedIndex == -1)
+            if (polygon_item.SelectedIndex == -1)
             {
                 MessageBox.Show("선택된 ROI가 없습니다.\n삭제하고자 하는 ROI를 선택하고 다시 실행해주세요.");
             }
@@ -133,7 +143,7 @@ namespace LayoutTest1
 
                     ROIs_list.RemoveAt(polygon_item.SelectedIndex);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }
@@ -160,9 +170,9 @@ namespace LayoutTest1
         private void polygon_item_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (polygon_item.SelectedIndex < 0) return;
-            
+
             color_picker.Color = (ROIs_list[polygon_item.SelectedIndex].main_color as SolidColorBrush).Color;
-            Canvas.SetZIndex(canvas_roi.Children[polygon_item.SelectedIndex], index_count++);
+            Canvas.SetZIndex(canvas_roi.Children[polygon_item.SelectedIndex], z_index_count++);
         }
 
 
@@ -176,7 +186,7 @@ namespace LayoutTest1
                 {
                     Brush b = new SolidColorBrush(color_picker.Color);
                     ROIs_list[polygon_item.SelectedIndex].main_color = b;
-                    
+
                 }
             }
         }
@@ -189,7 +199,7 @@ namespace LayoutTest1
             lv.SelectedItem = lvi.DataContext;
 
             ROIs_list[polygon_item.SelectedIndex].Enable_and_Disable(true);
-            
+
         }
 
         private void list_radio_button_Unchecked(object sender, RoutedEventArgs e)
@@ -206,12 +216,38 @@ namespace LayoutTest1
         private void change_ROI_name(object sender, RoutedEventArgs e)
         {
             change_name cn = new change_name();
-            
+
             cn.set_Name_out(ROIs_list[polygon_item.SelectedIndex].name);//현재 이름을 dialog에 toss해줌.
             cn.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             cn.ShowDialog();
 
             ROIs_list[polygon_item.SelectedIndex].name = cn.result; //결과 이름을 현재 이름에 반영해줌.
+        }
+
+        private void load_canvas(ObservableCollection<DrawROI> ROIs_list)
+        {
+            try
+            {
+                for (int i = 0; i < ROIs_list.Count; i++)
+                {
+                    ROIs_list[i].setRatio(ROIs_list[0]._height, ROIs_list[0]._width);
+                    ROIs_list[i].load_and_draw(); //DrawROI 객체 안에서 ROI_paper canvas 안에 추가하는 작업
+                    canvas_roi.Children.Add(ROIs_list[i]);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        void DataWindow_Closing(object sender, CancelEventArgs e)
+        {
+            sroi.save_ROI_list(ROIs_list);
+
+        }
+        public ObservableCollection<DrawROI> return_ROI_outside()
+        {
+            return ROIs_list;
         }
     }
 }

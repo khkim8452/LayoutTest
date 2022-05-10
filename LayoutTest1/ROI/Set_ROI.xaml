@@ -11,6 +11,7 @@
         TextElement.Foreground="{DynamicResource MaterialDesignLightForeground}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Background="{DynamicResource MaterialDesignPaper}"
+        Closing="DataWindow_Closing"  
         >
 
 
@@ -55,12 +56,11 @@
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Ellipse Fill="{Binding main_color, UpdateSourceTrigger=PropertyChanged}"/>
-
                                     </ControlTemplate>
                                 </Button.Template>
                             </Button>
                             <TextBlock x:Name="list_text_block" Grid.Column="1" Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <CheckBox x:Name="list_radio_button" Grid.Column="1" Grid.Row="1" Content="이 ROI 보이기" FontSize="10" Checked="list_radio_button_Checked" Unchecked="list_radio_button_Unchecked" IsChecked="False"/>
+                            <CheckBox x:Name="list_radio_button" Grid.Column="1" Grid.Row="1" Content="이 ROI 보이기" FontSize="10" Checked="list_radio_button_Checked" Unchecked="list_radio_button_Unchecked" IsChecked="{Binding isvisible, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -86,12 +86,8 @@
             <!--버튼-->
             <Grid Grid.Row="4">
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-
                     <Button Content="비율 고정" Click="ratio_change" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
-                    <!--ok-->
                     <Button Content="모두 지우기" Click="Clear_all" Padding="0" Margin="3" FontSize="10" Height="20" Width="60"/>
-                    <!--ok-->
-                    
                 </StackPanel>
             </Grid>
 

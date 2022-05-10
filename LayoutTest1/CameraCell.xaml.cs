@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -357,9 +357,13 @@ namespace LayoutTest1
 
         private void activate_ROI(object sender, RoutedEventArgs e)
         {
-
             LayoutTest1.Set_ROI roi = new LayoutTest1.Set_ROI(this.CameraItem);
             roi.ShowDialog(); //오류
+                              // 창만 닫은 것이고, roi 객체 자체는 아직 사라진게 아님.
+                              // roi에 접근해서 가지고오기.
+
+            roi.return_ROI_outside();
+            cell_canvas_roi.Children.Add();
         }
     }
 }

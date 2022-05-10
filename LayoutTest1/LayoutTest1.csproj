@@ -76,6 +76,7 @@
     <Compile Include="ROI\DrawROI.xaml.cs">
       <DependentUpon>DrawROI.xaml</DependentUpon>
     </Compile>
+    <Compile Include="save_ROI.cs" />
     <Compile Include="save_setting.cs" />
     <Compile Include="UserControl\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
