@@ -70,6 +70,7 @@
     <Compile Include="change_name.xaml.cs">
       <DependentUpon>change_name.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Event.cs" />
     <Compile Include="ROI\Set_ROI.xaml.cs">
       <DependentUpon>Set_ROI.xaml</DependentUpon>
     </Compile>

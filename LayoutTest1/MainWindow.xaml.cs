@@ -20,6 +20,7 @@ using System.Windows.Threading;
 // JSON 파일 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Collections.ObjectModel;
 
 namespace LayoutTest1
 {
@@ -34,9 +35,12 @@ namespace LayoutTest1
         private const string ManufacturerName = "Sample Manufacturer";
         int default_rowcol = 4; //기본 스케일
         bool is_fullscreen = false; // 전체화면 (초기에는 전체화면 X)
-        save_setting ss = new save_setting();
+        save_setting ss = new save_setting(); // 메인화면 설정
         Layout l = null;
-        List<Item> CameraList = null;
+        List<Item> CameraList = null; //카메라 리스트 
+        ObservableCollection<Event> EventList = new ObservableCollection<Event>(); //이벤트 리스트
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -81,7 +85,6 @@ namespace LayoutTest1
             }
             return result;
 
-
         }
         public void FillCameraListBox()
         {
@@ -96,17 +99,15 @@ namespace LayoutTest1
         }
         private void _loginButton_Click()
         {
-            var loginForm = new DialogLoginForm(SetLoginResult, IntegrationId, IntegrationName, Version, ManufacturerName);
+            var loginForm = new DialogLoginForm(SetLoginResult, IntegrationId, IntegrationName, Version, ManufacturerName); //로그인 폼
+
             //loginForm.AutoLogin = false;
             loginForm.ShowDialog();
             if (Connected)
             {
-             
                 loginForm.Close();
                 l = Layout.Instance;
                 
-
-
             }
         }
 
@@ -144,10 +145,6 @@ namespace LayoutTest1
             Layout.Instance.CloseAll();
         }
 
-        private void CameraListBox_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-          
-        }
         bool DND_MouseDown = false;
        Point DND_StartPoint;
         private void CameraListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -222,53 +219,6 @@ namespace LayoutTest1
             ss.save_MainWindow(l.Row, is_fullscreen);
         }
 
-        private void CreateJson(string path)
-        {
-            if(!File.Exists(path))
-            {
-                using (File.Create(path))
-                {
-                    MessageBox.Show("파일 생성 성공.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("이미 파일이 존재합니다.");
-            }
-        }
-        private void WriteJson()
-        {
-            string path = @"C:\Users\9junb\source\repos\LayoutTest\saved_settings.json";
-
-            if(File.Exists(path))
-            {
-                InputJson(path);
-            }
-            else
-            {
-                CreateJson(path);
-            }
-        }
-        private void InputJson(string path)
-        {
-            //사용자 정보 배열로 선언
-            var users = new[] { "USER1", "USER2", "USER3", "USER4" };
-
-            JObject dbSpec = new JObject(
-                new JProperty("a", "1"),
-                new JProperty("b", "0"),
-                new JProperty("c", "1"),
-                new JProperty("d", "1"),
-                new JProperty("e", "0")
-                );
-
-            //Jarray 로 추가
-            dbSpec.Add("USERS", JArray.FromObject(users));
-
-            File.WriteAllText(path, dbSpec.ToString());
-
-        }
-
         private void PlayBack_Viewer(object sender, RoutedEventArgs e)
         {
             LayoutTest1.Playback_Viewer pb = new LayoutTest1.Playback_Viewer();
@@ -313,5 +263,26 @@ namespace LayoutTest1
         {
             bottom_clock.Text = DateTime.Now.ToString();
         }
+
+        private void event_search_Btn(object sender, RoutedEventArgs e) //이벤트 검색
+        {
+            //이벤트 검색 누르면~
+
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //nothing to do 
+        }
+
+        private void get_event_json()
+        {
+            JObject j = new JObject();//jobject 형식으로 이벤트 class를 호출
+            Event e = new Event(j);
+            System.Drawing.Image I = e.base64_to_Image();
+            //event_list.SelectedIndex;
+        }
+
+
     }
 }

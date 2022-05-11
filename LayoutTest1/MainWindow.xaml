@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:LayoutTest1"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="JMON DOMINIC" Height="650" Width="1000"
+        Title="JMON DOMINIC" Height="900" Width="1500"
         RenderOptions.ClearTypeHint="Enabled"
         TextElement.Foreground="{DynamicResource MaterialDesignLightForeground}"
         TextElement.FontWeight="Regular"
@@ -127,8 +127,69 @@
             </Grid>
 
             <!--이벤트 뷰어-->
-            <Grid x:Name="event_grid" Grid.Column="2" Width="200">
+            <Grid x:Name="event_grid" Grid.Column="2" Width="200" Margin="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="150"/> <!--컨트롤-->
+                    <RowDefinition Height="*"/> <!--리스트-->
+                </Grid.RowDefinitions>
 
+                <StackPanel Orientation="Vertical" Grid.Row="0">
+                    <Grid Height="20">
+                        <!--제목-->
+                        <Label Content="이벤트" HorizontalAlignment="Center"/>
+                    </Grid>
+
+                    <StackPanel Height="30" Orientation="Horizontal">
+                        <!--검색 탭-->
+                        <Label Content="검색" VerticalAlignment="Center"/>
+                        <TextBlock Background="Gray" Width="130" Margin="3"/>
+                        <Button Content="{materialDesign:PackIcon Kind=Search, Size=30}" Background="Transparent" BorderBrush="Transparent" Padding="0" Click="event_search_Btn" />
+                    </StackPanel>
+                    <Grid Height="10"/>  
+                        <!--공백-->
+                    <Grid Height="40">
+                        <!--이벤트 유형 1번째 줄-->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                            <Button Content="{materialDesign:PackIcon Kind=Car,Size=25}" Padding="0" Margin="10 5 10 5"
+                                Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"/>
+                            <Button Content="{materialDesign:PackIcon Kind=Person,Size=25}" Padding="0" Margin="10 5 10 5"
+                                Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"/>
+                            <Button Content="{materialDesign:PackIcon Kind=Fire,Size=25}" Padding="0" Margin="10 5 10 5"
+                                Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"/>
+                            <Button Content="{materialDesign:PackIcon Kind=QuestionMark,Size=25}" Padding="0" Margin="10 5 10 5"
+                                Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Height="40">
+                        <!--이벤트 유형 2번째 줄-->
+                        
+                    </Grid>
+
+                    <Grid Height="10"/>
+                </StackPanel>
+
+                <ListView x:Name="event_list" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Row="1" Padding="0" SelectionChanged="ListView_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="125"/>
+                                    <ColumnDefinition Width="65"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="70"/>
+                                    <RowDefinition Height="15"/>
+                                </Grid.RowDefinitions>
+
+                                <Canvas x:Name="event_picture" Grid.Row="0" Grid.Column="0"/>
+                                <TextBlock x:Name="event_time" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
+                                <TextBlock x:Name="event_content" Grid.Row="0" Grid.Column="1"/>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Grid>
 
         </Grid>

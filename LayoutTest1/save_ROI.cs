@@ -75,16 +75,23 @@ namespace LayoutTest1
                     point_xy = "";
                 }
             }
-            save_obj = new JObject(
-                new JProperty("save_width", to_save_list[0]._width),
-                new JProperty("save_height", to_save_list[0]._height),
-                new JProperty("save_list_name", save_list_name),
-                new JProperty("save_list_main_color", save_list_main_color),
-                new JProperty("save_list_isvisible", save_list_isvisible),
-                new JProperty("save_list_point", save_list_point)
-                ) ;
-            
+            try
+            {
 
+                save_obj = new JObject(
+                    new JProperty("save_width", to_save_list[0]._width),
+                    new JProperty("save_height", to_save_list[0]._height),
+                    new JProperty("save_list_name", save_list_name),
+                    new JProperty("save_list_main_color", save_list_main_color),
+                    new JProperty("save_list_isvisible", save_list_isvisible),
+                    new JProperty("save_list_point", save_list_point)
+                    );
+
+            }
+            catch (Exception ex)
+            { 
+                Console.WriteLine(ex.Message);
+            }
             File.WriteAllText(save_roi_path, save_obj.ToString());
 
         }

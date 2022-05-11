@@ -9,7 +9,7 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
     <Canvas x:Name="Top_Canvas_name" IsEnabled="False" Visibility="Hidden">
-        <Rectangle Fill="Transparent" Stroke="{Binding main_color}" StrokeThickness="5"
+        <Rectangle Fill="Transparent" Stroke="{Binding main_color}" StrokeThickness="5" x:Name="ROI_rectangle"
                    Width="{Binding ActualWidth, ElementName=Top_Canvas_name}" Height="{Binding ActualHeight, ElementName=Top_Canvas_name}"/>
         <Canvas 
             x:Name="ROI_paper" 

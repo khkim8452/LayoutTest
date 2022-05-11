@@ -271,18 +271,43 @@ namespace LayoutTest1
             }
         }
 
-        public void load_and_draw()
+        public void load_and_draw_(int version)
         {
-            if(this.isvisible)
-            {
-                Top_Canvas_name.Visibility= Visibility.Visible;
-                Top_Canvas_name.IsEnabled = true;
+            //version 
+            // 1 - editable 
+            // 0 - uneditable
+            // 
 
-            }
-            else
+            if(version == 0) //메인화면
             {
-                Top_Canvas_name.Visibility= Visibility.Collapsed;
-                Top_Canvas_name.IsEnabled = false;
+                if (this.isvisible)
+                {
+                    Top_Canvas_name.Visibility = Visibility.Visible;
+                    Top_Canvas_name.IsEnabled = false;
+                    ROI_rectangle.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Top_Canvas_name.Visibility = Visibility.Collapsed;
+                    Top_Canvas_name.IsEnabled = false;
+                    ROI_rectangle.Visibility = Visibility.Collapsed;
+                }
+            }
+            else if(version == 1) // setROI 화면
+            {
+                if (this.isvisible)
+                {
+                    Top_Canvas_name.Visibility = Visibility.Visible;
+                    Top_Canvas_name.IsEnabled = true;
+                    ROI_rectangle.Visibility = Visibility.Collapsed; // 이것만 지우면 됨
+
+                }
+                else
+                {
+                    Top_Canvas_name.Visibility = Visibility.Collapsed;
+                    Top_Canvas_name.IsEnabled = false;
+                    ROI_rectangle.Visibility = Visibility.Collapsed; //이것만 지우면 됨 rectangle 보이고 싶으면
+                }
             }
             for(int i = 0; i < ROI_Ellipse.Count; i++)
             {

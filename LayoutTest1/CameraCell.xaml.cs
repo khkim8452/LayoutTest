@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VideoOS.Platform;
+using System.Collections.ObjectModel;
 using VideoOS.Platform.Client;
 using VideoOS.Platform.UI;
 
@@ -66,9 +67,7 @@ namespace LayoutTest1
         public CameraCell()
         {
             InitializeComponent();
-
             Init();
-            
         }
         public void Init()
         {
@@ -162,7 +161,7 @@ namespace LayoutTest1
                 _v.Connect();
                 _v.StartLive();
                 _isConnected = true;
-
+                update_ROI();
                 if (Mode != CameraCellMode.Show)
                 {
                     this.SetShow();
@@ -259,6 +258,7 @@ namespace LayoutTest1
             if (data.Count > 0) Layout.Instance.ActivateCameras(data, Row, Col);
                 e.Effects = DragDropEffects.Move;
             HighlightGrid.Visibility = Visibility.Collapsed;
+            update_ROI();
         }
 
         private void MouseHoverGrid_DragEnter(object sender, DragEventArgs e)
@@ -288,12 +288,14 @@ namespace LayoutTest1
                 Maintain_R = false;
                 //MessageBox.Show("이미지 고정을 해제합니다.");
                 _v.MaintainImageAspectRatio = false;
+                cell_view_roi.Stretch = Stretch.Fill;
             }
             else//풀린 상태이면 고정하기
             {
                 Maintain_R = true;
                 //MessageBox.Show("이미지를 고정합니다.");
                 _v.MaintainImageAspectRatio = true;
+                cell_view_roi.Stretch = Stretch.Uniform;
             }
         }
 
@@ -362,8 +364,42 @@ namespace LayoutTest1
                               // 창만 닫은 것이고, roi 객체 자체는 아직 사라진게 아님.
                               // roi에 접근해서 가지고오기.
 
-            roi.return_ROI_outside();
-            cell_canvas_roi.Children.Add();
+            update_ROI();
         }
+
+        public void update_ROI()
+        {
+            //현재 카메라 셀에 ROI를 최신 버전으로 업데이트 하여 표시하고자 함.
+            //저장된걸 가지고 오기
+            save_ROI save_roi = new save_ROI();
+            save_roi.set_path(System.IO.Directory.GetCurrentDirectory() + _v.CameraFQID.ObjectId);
+            ObservableCollection<DrawROI> ROIs_list = new ObservableCollection<DrawROI>();
+            cell_canvas_roi.Children.Clear();
+            if (save_roi.is_savefile_exist()) //세이브파일이 있으면
+            {
+                ROIs_list = save_roi.load_ROI_list(); //세이브 파일에 저장된 리스트 원래 형식대로 가지고 오기
+                load_canvas(ROIs_list); // 리스트에 있는 객체들 canvas에 children 속성으로 그리기.
+                cell_canvas_roi.Width = ROIs_list[0]._width;
+                cell_canvas_roi.Height = ROIs_list[0]._height;
+            }
+
+        }
+        private void load_canvas(ObservableCollection<DrawROI> ROIs_list)
+        {
+            try
+            {
+                for (int i = 0; i < ROIs_list.Count; i++)
+                {
+                    ROIs_list[i].setRatio(ROIs_list[0]._height, ROIs_list[0]._width);
+                    ROIs_list[i].load_and_draw_(0); //DrawROI 객체 안에서 ROI_paper canvas 안에 추가하는 작업
+                    cell_canvas_roi.Children.Add(ROIs_list[i]);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
     }
 }

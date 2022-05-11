@@ -84,15 +84,31 @@ namespace LayoutTest1
         private void Clear_all(object sender, RoutedEventArgs e)
         {
             //모든 폴리곤 속성 다 지우기
-            canvas_roi.Children.Clear();
-            ROIs_list.Clear(); //오류
+            MessageBoxResult result = MessageBox.Show("지우면 되돌릴 수 없습니다. 지우시겠습니까?","경고",MessageBoxButton.YesNo);
+            if(result == MessageBoxResult.Yes)
+            {
+                canvas_roi.Children.Clear();
+                ROIs_list.Clear(); //오류
+            }
+            else if(result == MessageBoxResult.No)
+            {
+
+            }
         }
 
 
         private void save_ROI_setting(object sender, RoutedEventArgs e)
         {
             //ROI 설정 저장
-            sroi.save_ROI_list(ROIs_list);
+            if (ROIs_list.Count == 0)
+            {
+                //저장할게 없으면
+                return;
+            }
+            else
+            {
+                sroi.save_ROI_list(ROIs_list);
+            }
         }
 
         private void Add_ROI(object sender, RoutedEventArgs e)
@@ -121,7 +137,6 @@ namespace LayoutTest1
                 case 8: new_roi.main_color = Brushes.Violet; count++; break;
                 case 9: new_roi.main_color = Brushes.Snow; count++; break;
                 case 10: new_roi.main_color = Brushes.Black; count = 0; break;
-
             }
 
             ROIs_list.Add(new_roi); //리스트에 추가하고,
@@ -137,15 +152,24 @@ namespace LayoutTest1
             }
             else
             {
-                canvas_roi.Children.Remove(ROIs_list[polygon_item.SelectedIndex]);
-                try
+                MessageBoxResult result = MessageBox.Show("삭제하면 되돌릴 수 없습니다. 삭제하시겠습니까?", "경고", MessageBoxButton.YesNo);
+                if (result == MessageBoxResult.Yes)
                 {
 
-                    ROIs_list.RemoveAt(polygon_item.SelectedIndex);
+                    canvas_roi.Children.Remove(ROIs_list[polygon_item.SelectedIndex]);
+                    try
+                    {
+
+                        ROIs_list.RemoveAt(polygon_item.SelectedIndex);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.ToString());
+                    }
                 }
-                catch (Exception ex)
+                else if(result == MessageBoxResult.No)
                 {
-                    Console.WriteLine(ex.ToString());
+                    //삭제 안함
                 }
             }
         }
@@ -231,7 +255,7 @@ namespace LayoutTest1
                 for (int i = 0; i < ROIs_list.Count; i++)
                 {
                     ROIs_list[i].setRatio(ROIs_list[0]._height, ROIs_list[0]._width);
-                    ROIs_list[i].load_and_draw(); //DrawROI 객체 안에서 ROI_paper canvas 안에 추가하는 작업
+                    ROIs_list[i].load_and_draw_(1); //DrawROI 객체 안에서 ROI_paper canvas 안에 추가하는 작업
                     canvas_roi.Children.Add(ROIs_list[i]);
                 }
             }
@@ -242,7 +266,16 @@ namespace LayoutTest1
         }
         void DataWindow_Closing(object sender, CancelEventArgs e)
         {
-            sroi.save_ROI_list(ROIs_list);
+            if(ROIs_list.Count == 0)
+            {
+                //저장할게 없으면
+                return;
+            }
+            else
+            {
+                sroi.save_ROI_list(ROIs_list);
+            }
+
 
         }
         public ObservableCollection<DrawROI> return_ROI_outside()
