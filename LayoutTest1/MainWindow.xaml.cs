@@ -21,6 +21,7 @@ using System.Windows.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
+using System.Drawing;
 
 namespace LayoutTest1
 {
@@ -38,7 +39,7 @@ namespace LayoutTest1
         save_setting ss = new save_setting(); // 메인화면 설정
         Layout l = null;
         List<Item> CameraList = null; //카메라 리스트 
-        ObservableCollection<Event> EventList = new ObservableCollection<Event>(); //이벤트 리스트
+        ObservableCollection<Event_> EventList = new ObservableCollection<Event_>(); //이벤트 리스트
 
 
         public MainWindow()
@@ -57,7 +58,10 @@ namespace LayoutTest1
             VideoOS.Platform.SDK.Export.Environment.Initialize();   // Initialize recordings access
             _loginButton_Click();
             CameraList=GetCameraList();
+            Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
             FillCameraListBox();
+            event_occur_json(); //이벤트 테스트 용
+            event_list.ItemsSource = EventList;
             this.KeyDown += new KeyEventHandler(HandleEsc);
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -146,7 +150,7 @@ namespace LayoutTest1
         }
 
         bool DND_MouseDown = false;
-       Point DND_StartPoint;
+       System.Windows.Point DND_StartPoint;
         private void CameraListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DND_MouseDown = true;
@@ -272,17 +276,18 @@ namespace LayoutTest1
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //nothing to do 
+            //이벤트 listview 선택줄 변경시
         }
 
-        private void get_event_json()
+        private void event_occur_json() //이벤트가 발생하면 실행할 함수
         {
-            JObject j = new JObject();//jobject 형식으로 이벤트 class를 호출
-            Event e = new Event(j);
-            System.Drawing.Image I = e.base64_to_Image();
+            string json = File.ReadAllText(System.IO.Directory.GetCurrentDirectory() + @"\save_event.json");
+            JObject j = JObject.Parse(json);
+            Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
+            EventList.Add(e);
             //event_list.SelectedIndex;
+            //ImageConverter converter = new ImageConverter();
+            //var img = (System.Windows.Controls.Image)converter.ConvertTo(e.base64_to_Image(),typeof(System.Drawing.Image));
         }
-
-
     }
 }

@@ -163,7 +163,6 @@
                     </Grid>
                     <Grid Height="40">
                         <!--이벤트 유형 2번째 줄-->
-                        
                     </Grid>
 
                     <Grid Height="10"/>
@@ -182,13 +181,22 @@
                                     <RowDefinition Height="15"/>
                                 </Grid.RowDefinitions>
 
-                                <Canvas x:Name="event_picture" Grid.Row="0" Grid.Column="0"/>
-                                <TextBlock x:Name="event_time" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"/>
-                                <TextBlock x:Name="event_content" Grid.Row="0" Grid.Column="1"/>
+                                <Canvas x:Name="event_picture" Grid.Row="0" Grid.Column="0" >
+                                    <Image Source="{Binding image, UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" Visibility="Visible"
+                                           Width="{Binding ElementName=event_picture, Path=ActualWidth}" Height="{Binding ElementName=event_picture, Path=ActualHeight}"/>
+                                </Canvas>
+                                <TextBlock x:Name="event_time" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding time, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+                                <TextBlock x:Name="event_content" Grid.Row="0" Grid.Column="1" Text="{Binding content, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
 
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
+                    <ListView.ContextMenu>
+                        <ContextMenu> <!--우클릭시 이벤트 Click 속성 추가해서 함수 만들자-->
+                            <MenuItem Header="이벤트 시점으로 가기" />
+                            <MenuItem Header="이벤트 저장" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
                 </ListView>
             </Grid>
 
