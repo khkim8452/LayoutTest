@@ -12,10 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VideoOS.Platform;
 using VideoOS.Platform.SDK.UI.LoginDialog;
 using System.IO;
 using System.Windows.Threading;
+using System.Data.SQLite;
+
+using VideoOS.Platform;
+using VideoOS.Platform.Live;
+using VideoOS.Platform.UI;
+using System.Diagnostics;
+using System.Globalization;
+
 
 // JSON 파일 
 using Newtonsoft.Json;
@@ -40,6 +47,15 @@ namespace LayoutTest1
         Layout l = null;
         List<Item> CameraList = null; //카메라 리스트 
         ObservableCollection<Event_> EventList = new ObservableCollection<Event_>(); //이벤트 리스트
+        SQLiteConnection connection = new SQLiteConnection();
+
+        //metadata
+        private Item _selectItem1;
+        private MetadataLiveSource _metadataLiveSource;
+        JObject event_json = new JObject(); //JObject 추가
+        private int _count;
+
+
 
 
         public MainWindow()
@@ -57,11 +73,14 @@ namespace LayoutTest1
             VideoOS.Platform.SDK.UI.Environment.Initialize();		// Initialize UI
             VideoOS.Platform.SDK.Export.Environment.Initialize();   // Initialize recordings access
             _loginButton_Click();
-            CameraList=GetCameraList();
+            CameraList = GetCameraList();
             Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
             FillCameraListBox();
             event_occur_json(); //이벤트 테스트 용
             event_list.ItemsSource = EventList;
+            //데이터베이스
+
+
             this.KeyDown += new KeyEventHandler(HandleEsc);
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -74,7 +93,7 @@ namespace LayoutTest1
 
         public List<Item> GetCameraList()
         {
-            var q=Configuration.Instance.GetItemsSorted();
+            var q = Configuration.Instance.GetItemsSorted();
             var result = new List<Item>();
             while (q.Count > 0)
             {
@@ -93,7 +112,7 @@ namespace LayoutTest1
         public void FillCameraListBox()
         {
             camera_list_box.Items.Clear();
-            foreach(Item item in CameraList)
+            foreach (Item item in CameraList)
             {
                 ListBoxItem i = new ListBoxItem();
                 i.Content = item.Name;
@@ -111,7 +130,7 @@ namespace LayoutTest1
             {
                 loginForm.Close();
                 l = Layout.Instance;
-                
+
             }
         }
 
@@ -127,15 +146,15 @@ namespace LayoutTest1
 
         }
 
-      
+
         private void LoadAllCamera(object sender, RoutedEventArgs e)
         {
             ///싱글테이크상태일때 전체 카메라 부르기 X
-            if(Layout.Instance.IsSingle)
+            if (Layout.Instance.IsSingle)
             {
                 return;
             }
-            for(int i = 0; i < CameraList.Count; i++)
+            for (int i = 0; i < CameraList.Count; i++)
             {
                 int r = Layout.Instance.Row;
                 int c = Layout.Instance.Col;
@@ -150,7 +169,7 @@ namespace LayoutTest1
         }
 
         bool DND_MouseDown = false;
-       System.Windows.Point DND_StartPoint;
+        System.Windows.Point DND_StartPoint;
         private void CameraListBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             DND_MouseDown = true;
@@ -166,11 +185,11 @@ namespace LayoutTest1
         {
             Vector diff = DND_StartPoint - e.GetPosition(null);
             //e.Handled = true;
-           //if (MouseDown) StartDrag();
+            //if (MouseDown) StartDrag();
 
-            if(e.LeftButton==MouseButtonState.Pressed &&(
+            if (e.LeftButton == MouseButtonState.Pressed && (
                 Math.Abs(diff.X) > 5 &&
-                Math.Abs(diff.Y) >5))
+                Math.Abs(diff.Y) > 5))
             {
                 StartDrag();
             }
@@ -179,15 +198,15 @@ namespace LayoutTest1
         public void StartDrag()
         {
             ListBoxItemsBag b = new ListBoxItemsBag();
-            foreach(ListBoxItem i in camera_list_box.SelectedItems)
+            foreach (ListBoxItem i in camera_list_box.SelectedItems)
             {
                 b.Bag.Add(i);
             }
 
             //List<ListBoxItem> data = new List<ListBoxItem>();
-            
 
-            if (b != null && b.Bag.Count>0)
+
+            if (b != null && b.Bag.Count > 0)
             {
                 DragDrop.DoDragDrop(camera_list_box, b, DragDropEffects.Move);
             }
@@ -212,9 +231,9 @@ namespace LayoutTest1
             camera_list_grid.Visibility = Visibility.Collapsed;
             event_grid.Visibility = Visibility.Collapsed;
             top_grid.Visibility = Visibility.Collapsed;
-            bottom_system_bar.Visibility=Visibility.Collapsed;
+            bottom_system_bar.Visibility = Visibility.Collapsed;
             this.WindowStyle = WindowStyle.None;
-            
+
         }
 
         private void Save_Settings(object sender, RoutedEventArgs e)
@@ -231,7 +250,7 @@ namespace LayoutTest1
 
         private void load_mainwindow()
         {
-            if(ss.is_savefile_exist())
+            if (ss.is_savefile_exist())
             {
                 int a = ss.load_MainWindow_1();
                 bool b = ss.load_MainWindow_2();
@@ -251,7 +270,7 @@ namespace LayoutTest1
         {
             if (e.Key == Key.Escape)
             {
-                if(is_fullscreen)
+                if (is_fullscreen)
                 {
                     camera_list_grid.Visibility = Visibility.Visible;
                     event_grid.Visibility = Visibility.Visible;
@@ -289,5 +308,225 @@ namespace LayoutTest1
             //ImageConverter converter = new ImageConverter();
             //var img = (System.Windows.Controls.Image)converter.ConvertTo(e.base64_to_Image(),typeof(System.Drawing.Image));
         }
+
+
+
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            if (_metadataLiveSource != null)
+            {
+
+                _metadataLiveSource.LiveModeStart = false;
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+
+            if (_metadataLiveSource != null)
+            {
+
+                _metadataLiveSource.LiveModeStart = true;
+            }
+        }
+
+
+        /*
+        #region Live Click handling 
+        private void OnSelect1Click(object sender, EventArgs e)
+        {
+            if (_metadataLiveSource != null)
+            {
+                // Close any current displayed Metadata Live Source
+                _metadataLiveSource.LiveContentEvent -= OnLiveContentEvent;
+                _metadataLiveSource.LiveStatusEvent -= OnLiveStatusEvent;
+                _metadataLiveSource.Close();
+                _metadataLiveSource = null;
+            }
+
+            ClearAllFlags();
+            ResetSelections();
+
+            ItemPickerForm form = new ItemPickerForm();
+            form.KindFilter = Kind.Metadata;
+            form.AutoAccept = true;
+            form.Init(Configuration.Instance.GetItems());
+
+            // Ask user to select a metadata device
+            if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                _selectItem1 = form.SelectedItem;
+                deviceSelectButton.Text = _selectItem1.Name;
+
+                _metadataLiveSource = new MetadataLiveSource(_selectItem1);
+                try
+                {
+                    _metadataLiveSource.LiveModeStart = true;
+                    _metadataLiveSource.Init();
+                    _metadataLiveSource.LiveContentEvent += OnLiveContentEvent;
+                    _metadataLiveSource.LiveStatusEvent += OnLiveStatusEvent;
+                    _metadataLiveSource.ErrorEvent += OnErrorEvent;
+
+                    _count = 0;
+                    labelCount.Text = _count.ToString(CultureInfo.InvariantCulture);
+                    buttonPause.Enabled = true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(@"Could not Init:" + ex.Message);
+                    _metadataLiveSource = null;
+                }
+            }
+            else
+            {
+                _selectItem1 = null;
+                deviceSelectButton.Text = @"Select Metadata device ...";
+                labelCount.Text = "0";
+                labelSize.Text = "";
+                buttonPause.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// This event is called when some exception has occurred
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="exception"></param>
+        private void OnErrorEvent(MetadataLiveSource sender, Exception exception)
+        {
+            if (InvokeRequired)
+            {
+                // Make sure we execute on the UI thread before updating UI Controls
+                BeginInvoke(new Action(() => OnErrorEvent(sender, exception)));
+            }
+            else
+            {
+                // Display the error
+                labelSize.Text = @"Error!";
+
+                if (exception is CommunicationMIPException)
+                {
+                    textBoxMetadataOutput.Text = @"Connection lost to server ...";
+                }
+                else
+                {
+                    textBoxMetadataOutput.Text = exception.ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// This event is called when metadata is available
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void OnLiveContentEvent(MetadataLiveSource sender, MetadataLiveContent e)
+        {
+            if (InvokeRequired)
+            {
+                // Make sure we execute on the UI thread before updating UI Controls
+                BeginInvoke(new Action(() => OnLiveContentEvent(sender, e)));
+            }
+            else
+            {
+                if (e.Content != null)
+                {
+                    // Display the received metadata
+                    var metadataXml = e.Content.GetMetadataString();
+                    textBoxMetadataOutput.Text = metadataXml;
+                    //==========================
+
+                    event_json = JObject.Parse(metadataXml);
+                    textBoxMetadataOutput.AppendText(event_json["data"].ToString() + "\n");
+                    textBoxMetadataOutput.AppendText(event_json["Car_number_event"].ToString() + "\n");
+                    textBoxMetadataOutput.AppendText(event_json["Time_event"].ToString() + "\n");
+
+
+                    //==========================
+                    labelSize.Text = metadataXml.Length.ToString(CultureInfo.InvariantCulture);
+                    _count++;
+                    labelCount.Text = "" + _count;
+                }
+            }
+        }
+
+        /// <summary>
+        /// This event is called when a Live status package has been received.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        void OnLiveStatusEvent(object sender, LiveStatusEventArgs args) //이 함수가 반복됨.
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new EventHandler<LiveStatusEventArgs>(OnLiveStatusEvent), new[] { sender, args });
+            }
+            else
+            {
+                if (args != null)
+                {
+                    if ((args.ChangedStatusFlags & StatusFlags.Motion) != 0)
+                        checkBoxMotion.Checked = (args.CurrentStatusFlags & StatusFlags.Motion) != 0;
+
+                    if ((args.ChangedStatusFlags & StatusFlags.Notification) != 0)
+                        checkBoxNotification.Checked = (args.CurrentStatusFlags & StatusFlags.Notification) != 0;
+
+                    if ((args.ChangedStatusFlags & StatusFlags.CameraConnectionLost) != 0)
+                        checkBoxOffline.Checked = (args.CurrentStatusFlags & StatusFlags.CameraConnectionLost) != 0;
+
+                    if ((args.ChangedStatusFlags & StatusFlags.Recording) != 0)
+                        checkBoxRec.Checked = (args.CurrentStatusFlags & StatusFlags.Recording) != 0;
+
+                    if ((args.ChangedStatusFlags & StatusFlags.LiveFeed) != 0)
+                        checkBoxLiveFeed.Checked = (args.CurrentStatusFlags & StatusFlags.LiveFeed) != 0;
+
+                    if ((args.ChangedStatusFlags & StatusFlags.ClientLiveStopped) != 0)
+                        checkBoxClientLive.Checked = (args.CurrentStatusFlags & StatusFlags.ClientLiveStopped) != 0;
+
+                    if ((args.ChangedStatusFlags & StatusFlags.DatabaseFail) != 0)
+                        checkBoxDBFail.Checked = (args.CurrentStatusFlags & StatusFlags.DatabaseFail) != 0;
+
+                    if ((args.ChangedStatusFlags & StatusFlags.DiskFull) != 0)
+                        checkBoxDiskFull.Checked = (args.CurrentStatusFlags & StatusFlags.DiskFull) != 0;
+
+                    Debug.WriteLine("LiveStatus: motion=" + checkBoxMotion.Checked + ", Notification=" + checkBoxNotification.Checked +
+                                    ", Offline=" + checkBoxOffline.Checked + ", Recording=" + checkBoxRec.Checked);
+
+                    if (checkBoxLiveFeed.Checked == false)
+                    {
+                        ClearAllFlags();
+                    }
+                }
+            }
+        }
+
+        private void ClearAllFlags()
+        {
+            checkBoxMotion.Checked = false;
+            checkBoxNotification.Checked = false;
+            checkBoxOffline.Checked = false;
+            checkBoxRec.Checked = false;
+            checkBoxClientLive.Checked = false;
+            checkBoxDBFail.Checked = false;
+            checkBoxDiskFull.Checked = false;
+            checkBoxLiveFeed.Checked = false;
+        }
+
+        private void ResetSelections()
+        {
+            checkBoxClientLive.Checked = false;
+            buttonPause.Enabled = false;
+            buttonPause.Text = "Pause";
+        }
+        #endregion
+
+        
+        */
     }
+
+
+
+
+
 }

@@ -160,8 +160,9 @@
                                 Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"/>
                         </StackPanel>
                     </Grid>
-                    <Grid Height="40">
+                    <Grid Height="40" HorizontalAlignment="Center">
                         <!--이벤트 유형 2번째 줄-->
+                        <CheckBox Content="이벤트 수신" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
                     </Grid>
 
                     <Grid Height="10"/>

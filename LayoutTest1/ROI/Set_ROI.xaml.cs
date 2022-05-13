@@ -89,6 +89,7 @@ namespace LayoutTest1
             {
                 canvas_roi.Children.Clear();
                 ROIs_list.Clear(); //오류
+
             }
             else if(result == MessageBoxResult.No)
             {
@@ -161,6 +162,7 @@ namespace LayoutTest1
                     {
 
                         ROIs_list.RemoveAt(polygon_item.SelectedIndex);
+                        sroi.save_ROI_list(ROIs_list);
                     }
                     catch (Exception ex)
                     {
