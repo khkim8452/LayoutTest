@@ -127,7 +127,7 @@
             </Grid>
 
             <!--이벤트 뷰어-->
-            <Grid x:Name="event_grid" Grid.Column="2" Width="200" Margin="0">
+            <Grid x:Name="event_grid" Grid.Column="2" Width="250" Margin="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="150"/> <!--컨트롤-->
                     <RowDefinition Height="*"/> <!--리스트-->
@@ -142,15 +142,14 @@
                     <StackPanel Height="30" Orientation="Horizontal">
                         <!--검색 탭-->
                         <Label Content="검색" VerticalAlignment="Center"/>
-                        <TextBlock Background="Gray" Width="130" Margin="3"/>
+                        <TextBlock Background="Gray" Width="180" Margin="3"/>
                         <Button Content="{materialDesign:PackIcon Kind=Search, Size=30}" Background="Transparent" BorderBrush="Transparent" Padding="0" Click="event_search_Btn" />
                     </StackPanel>
-                    <Grid Height="10"/>  
-                        <!--공백-->
+                    <Grid Height="10"/>
+                    <!--공백-->
                     <Grid Height="40">
                         <!--이벤트 유형 1번째 줄-->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-
                             <Button Content="{materialDesign:PackIcon Kind=Car,Size=25}" Padding="0" Margin="10 5 10 5"
                                 Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"/>
                             <Button Content="{materialDesign:PackIcon Kind=Person,Size=25}" Padding="0" Margin="10 5 10 5"
@@ -173,20 +172,22 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="115"/>
-                                    <ColumnDefinition Width="65"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="70"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="70"/>
-                                    <RowDefinition Height="15"/>
+                                    <RowDefinition Height="90"/>
+                                    <RowDefinition Height="20"/>
                                 </Grid.RowDefinitions>
 
                                 <Canvas x:Name="event_picture" Grid.Row="0" Grid.Column="0" >
                                     <Image Source="{Binding image, UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" Visibility="Visible"
                                            Width="{Binding ElementName=event_picture, Path=ActualWidth}" Height="{Binding ElementName=event_picture, Path=ActualHeight}"/>
                                 </Canvas>
-                                <TextBlock x:Name="event_time" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding time, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
-                                <TextBlock x:Name="event_content" Grid.Row="0" Grid.Column="1" Text="{Binding content, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+                                <TextBlock x:Name="event_time" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding time, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="event_content" Grid.Row="0" Grid.Column="1" Text="{Binding content, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
                             </Grid>
                         </DataTemplate>
