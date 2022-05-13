@@ -173,7 +173,7 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="125"/>
+                                    <ColumnDefinition Width="115"/>
                                     <ColumnDefinition Width="65"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>

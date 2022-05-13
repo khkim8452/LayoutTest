@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-using System.Windows.Controls;
 using System.IO;
 using System.ComponentModel;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace LayoutTest1
@@ -16,11 +16,11 @@ namespace LayoutTest1
         public event PropertyChangedEventHandler PropertyChanged;
         JObject loaded_event = new JObject();
 
-        private System.Windows.Controls.Image Image;
+        private ImageSource Image;
         private string Time;
         private string Content;
 
-        public Image image
+        public ImageSource image
         {
             get
             {
@@ -52,13 +52,6 @@ namespace LayoutTest1
             }
         }
 
-        public string Base64ImageData { get; set; }
-        public ImageData()
-        {
-
-        }
-
-
         public Event_(JObject j)
         {
             loaded_event = j;
@@ -71,14 +64,13 @@ namespace LayoutTest1
         public void base64_to_Image()
         {
             byte[] data = Convert.FromBase64String(loaded_event["Image_event"]["data"].ToString());
-
-            BitmapImage bi = new BitmapImage();
-            bi.BeginInit();
-            bi.StreamSource = new MemoryStream(data);
-            bi.EndInit();
-
-            image.Source = bi;
+            BitmapImage bmp = new BitmapImage();
+            bmp.BeginInit();
+            bmp.StreamSource = new System.IO.MemoryStream(data);
+            bmp.EndInit();
+            image = bmp;
         }
+
         protected void OnPropertyChanged(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
