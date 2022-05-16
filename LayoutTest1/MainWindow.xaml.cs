@@ -12,8 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VideoOS.Platform.SDK.UI.LoginDialog;
 using System.IO;
+using VideoOS.Platform.SDK.UI.LoginDialog;
+using VideoOS.Platform.SDK.Media;
 using System.Windows.Threading;
 using System.Data.SQLite;
 
@@ -72,11 +73,11 @@ namespace LayoutTest1
             VideoOS.Platform.SDK.Environment.Initialize();			// General initialize.  Always required
             VideoOS.Platform.SDK.UI.Environment.Initialize();		// Initialize UI
             VideoOS.Platform.SDK.Export.Environment.Initialize();   // Initialize recordings access
+            VideoOS.Platform.SDK.Media.Environment.Initialize();
             _loginButton_Click();
             CameraList = GetCameraList();
             Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
             FillCameraListBox();
-            event_occur_json(); //이벤트 테스트 용
             event_list.ItemsSource = EventList;
             //데이터베이스
 
@@ -298,9 +299,8 @@ namespace LayoutTest1
             //이벤트 listview 선택줄 변경시
         }
 
-        private void event_occur_json() //이벤트가 발생하면 실행할 함수
+        private void event_occur_json(string json) //이벤트가 발생하면 실행할 함수
         {
-            string json = File.ReadAllText(System.IO.Directory.GetCurrentDirectory() + @"\save_event.json");
             JObject j = JObject.Parse(json);
             Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
             EventList.Add(e);
@@ -339,13 +339,10 @@ namespace LayoutTest1
             {
                 // Close any current displayed Metadata Live Source
                 _metadataLiveSource.LiveContentEvent -= OnLiveContentEvent;
-                _metadataLiveSource.LiveStatusEvent -= OnLiveStatusEvent;
                 _metadataLiveSource.Close();
                 _metadataLiveSource = null;
             }
 
-            ClearAllFlags();
-            ResetSelections();
 
             ItemPickerForm form = new ItemPickerForm();
             form.KindFilter = Kind.Metadata;
@@ -356,20 +353,17 @@ namespace LayoutTest1
             if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 _selectItem1 = form.SelectedItem;
-                deviceSelectButton.Text = _selectItem1.Name;
 
                 _metadataLiveSource = new MetadataLiveSource(_selectItem1);
                 try
                 {
                     _metadataLiveSource.LiveModeStart = true;
-                    _metadataLiveSource.Init();
+                    _metadataLiveSource.Init(); //오류
                     _metadataLiveSource.LiveContentEvent += OnLiveContentEvent;
-                    _metadataLiveSource.LiveStatusEvent += OnLiveStatusEvent;
                     _metadataLiveSource.ErrorEvent += OnErrorEvent;
 
                     _count = 0;
-                    labelCount.Text = _count.ToString(CultureInfo.InvariantCulture);
-                    buttonPause.Enabled = true;
+                    event_checkbox.IsEnabled = true;
                 }
                 catch (Exception ex)
                 {
@@ -380,10 +374,8 @@ namespace LayoutTest1
             else
             {
                 _selectItem1 = null;
-                deviceSelectButton.Text = @"Select Metadata device ...";
-                labelCount.Text = "0";
-                labelSize.Text = "";
-                buttonPause.Enabled = false;
+                bottom_system_alert.Text = @"Select Metadata device ...";
+                event_checkbox.IsEnabled = false;
             }
         }
 
@@ -394,23 +386,22 @@ namespace LayoutTest1
         /// <param name="exception"></param>
         private void OnErrorEvent(MetadataLiveSource sender, Exception exception)
         {
-            if (InvokeRequired)
+            if (!CheckAccess())
             {
                 // Make sure we execute on the UI thread before updating UI Controls
-                BeginInvoke(new Action(() => OnErrorEvent(sender, exception)));
+                Dispatcher.BeginInvoke(new Action(() => OnErrorEvent(sender, exception)));
             }
             else
             {
                 // Display the error
-                labelSize.Text = @"Error!";
 
                 if (exception is CommunicationMIPException)
                 {
-                    textBoxMetadataOutput.Text = @"Connection lost to server ...";
+                    bottom_system_alert.Text = @"Connection lost to server ...";
                 }
                 else
                 {
-                    textBoxMetadataOutput.Text = exception.ToString();
+                    bottom_system_alert.Text = exception.ToString();
                 }
             }
         }
@@ -422,10 +413,10 @@ namespace LayoutTest1
         /// <param name="e"></param>
         void OnLiveContentEvent(MetadataLiveSource sender, MetadataLiveContent e)
         {
-            if (InvokeRequired)
+            if (!CheckAccess())
             {
                 // Make sure we execute on the UI thread before updating UI Controls
-                BeginInvoke(new Action(() => OnLiveContentEvent(sender, e)));
+                Dispatcher.BeginInvoke(new Action(() => OnLiveContentEvent(sender, e)));
             }
             else
             {
@@ -433,91 +424,11 @@ namespace LayoutTest1
                 {
                     // Display the received metadata
                     var metadataXml = e.Content.GetMetadataString();
-                    textBoxMetadataOutput.Text = metadataXml;
-                    //==========================
-
-                    event_json = JObject.Parse(metadataXml);
-                    textBoxMetadataOutput.AppendText(event_json["data"].ToString() + "\n");
-                    textBoxMetadataOutput.AppendText(event_json["Car_number_event"].ToString() + "\n");
-                    textBoxMetadataOutput.AppendText(event_json["Time_event"].ToString() + "\n");
-
-
-                    //==========================
-                    labelSize.Text = metadataXml.Length.ToString(CultureInfo.InvariantCulture);
-                    _count++;
-                    labelCount.Text = "" + _count;
+                    event_occur_json(metadataXml);
                 }
             }
         }
 
-        /// <summary>
-        /// This event is called when a Live status package has been received.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        void OnLiveStatusEvent(object sender, LiveStatusEventArgs args) //이 함수가 반복됨.
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new EventHandler<LiveStatusEventArgs>(OnLiveStatusEvent), new[] { sender, args });
-            }
-            else
-            {
-                if (args != null)
-                {
-                    if ((args.ChangedStatusFlags & StatusFlags.Motion) != 0)
-                        checkBoxMotion.Checked = (args.CurrentStatusFlags & StatusFlags.Motion) != 0;
-
-                    if ((args.ChangedStatusFlags & StatusFlags.Notification) != 0)
-                        checkBoxNotification.Checked = (args.CurrentStatusFlags & StatusFlags.Notification) != 0;
-
-                    if ((args.ChangedStatusFlags & StatusFlags.CameraConnectionLost) != 0)
-                        checkBoxOffline.Checked = (args.CurrentStatusFlags & StatusFlags.CameraConnectionLost) != 0;
-
-                    if ((args.ChangedStatusFlags & StatusFlags.Recording) != 0)
-                        checkBoxRec.Checked = (args.CurrentStatusFlags & StatusFlags.Recording) != 0;
-
-                    if ((args.ChangedStatusFlags & StatusFlags.LiveFeed) != 0)
-                        checkBoxLiveFeed.Checked = (args.CurrentStatusFlags & StatusFlags.LiveFeed) != 0;
-
-                    if ((args.ChangedStatusFlags & StatusFlags.ClientLiveStopped) != 0)
-                        checkBoxClientLive.Checked = (args.CurrentStatusFlags & StatusFlags.ClientLiveStopped) != 0;
-
-                    if ((args.ChangedStatusFlags & StatusFlags.DatabaseFail) != 0)
-                        checkBoxDBFail.Checked = (args.CurrentStatusFlags & StatusFlags.DatabaseFail) != 0;
-
-                    if ((args.ChangedStatusFlags & StatusFlags.DiskFull) != 0)
-                        checkBoxDiskFull.Checked = (args.CurrentStatusFlags & StatusFlags.DiskFull) != 0;
-
-                    Debug.WriteLine("LiveStatus: motion=" + checkBoxMotion.Checked + ", Notification=" + checkBoxNotification.Checked +
-                                    ", Offline=" + checkBoxOffline.Checked + ", Recording=" + checkBoxRec.Checked);
-
-                    if (checkBoxLiveFeed.Checked == false)
-                    {
-                        ClearAllFlags();
-                    }
-                }
-            }
-        }
-
-        private void ClearAllFlags()
-        {
-            checkBoxMotion.Checked = false;
-            checkBoxNotification.Checked = false;
-            checkBoxOffline.Checked = false;
-            checkBoxRec.Checked = false;
-            checkBoxClientLive.Checked = false;
-            checkBoxDBFail.Checked = false;
-            checkBoxDiskFull.Checked = false;
-            checkBoxLiveFeed.Checked = false;
-        }
-
-        private void ResetSelections()
-        {
-            checkBoxClientLive.Checked = false;
-            buttonPause.Enabled = false;
-            buttonPause.Text = "Pause";
-        }
         #endregion
 
         

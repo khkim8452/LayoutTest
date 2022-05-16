@@ -36,7 +36,10 @@ namespace LayoutTest1
                 return false;
             }
         }
-
+        public void delete_file()
+        {
+            File.Delete(save_roi_path);
+        }
         public void set_path(string path)
         {
             save_roi_path = path;

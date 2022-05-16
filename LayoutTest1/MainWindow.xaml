@@ -162,7 +162,11 @@
                     </Grid>
                     <Grid Height="40" HorizontalAlignment="Center">
                         <!--이벤트 유형 2번째 줄-->
-                        <CheckBox Content="이벤트 수신" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                            <Button Content="메타데이터 채널" Click="OnSelect1Click" Background="Gray" BorderBrush="Transparent" Padding="2" Margin="4" FontSize="12"/>
+                            <CheckBox x:Name="event_checkbox" Content="이벤트 수신" IsEnabled="False" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                        </StackPanel>
                     </Grid>
 
                     <Grid Height="10"/>
@@ -216,7 +220,7 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock x:Name="bottom_clock" Foreground="White" Background="Transparent" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"/>
-
+            <TextBox x:Name="bottom_system_alert" Grid.Column="1" Margin="2" />
         </Grid>
 
 

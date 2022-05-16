@@ -63,7 +63,7 @@ namespace LayoutTest1
 
         public void base64_to_Image()
         {
-            byte[] data = Convert.FromBase64String(loaded_event["Image_event"]["data"].ToString());
+            byte[] data = Convert.FromBase64String(loaded_event["data"].ToString());
             BitmapImage bmp = new BitmapImage();
             bmp.BeginInit();
             bmp.StreamSource = new System.IO.MemoryStream(data);
