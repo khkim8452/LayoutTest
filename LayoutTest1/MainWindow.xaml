@@ -23,7 +23,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
+ 
         <!--프로그램 상단바-->
         <Grid x:Name="top_grid" Grid.Row="0" Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Height="40">
             <Grid.ColumnDefinitions>

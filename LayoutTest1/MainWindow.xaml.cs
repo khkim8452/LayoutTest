@@ -332,7 +332,6 @@ namespace LayoutTest1
         }
 
 
-        /*
         #region Live Click handling 
         private void OnSelect1Click(object sender, EventArgs e)
         {
@@ -522,7 +521,6 @@ namespace LayoutTest1
         #endregion
 
         
-        */
     }
 
 
