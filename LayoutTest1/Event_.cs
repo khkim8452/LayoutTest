@@ -68,7 +68,10 @@ namespace LayoutTest1
                 OnPropertyChanged("content");
             }
         }
+        public Event_()
+        {
 
+        }
         public Event_(JObject j)
         {
             loaded_event = j;
@@ -83,11 +86,19 @@ namespace LayoutTest1
         {
             byte[] data = Convert.FromBase64String(loaded_event["data"].ToString());
             Image_String = loaded_event["data"].ToString();
-            BitmapImage bmp = new BitmapImage();
-            bmp.BeginInit();
-            bmp.StreamSource = new System.IO.MemoryStream(data);
-            bmp.EndInit();
-            image = bmp;
+            if(Image_String != "data")
+            {
+                BitmapImage bmp = new BitmapImage();
+                bmp.BeginInit();
+                bmp.StreamSource = new System.IO.MemoryStream(data);
+                bmp.EndInit();
+                image = bmp;
+            }
+            else
+            {
+                Image_String = "test";
+                image = new BitmapImage();
+            }
         }
 
         protected void OnPropertyChanged(string name)

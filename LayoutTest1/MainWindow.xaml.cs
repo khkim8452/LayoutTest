@@ -85,6 +85,8 @@ namespace LayoutTest1
 
             this.KeyDown += new KeyEventHandler(HandleEsc);
         }
+        #region basic_function
+        
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //여기서 왜 오류나냐? 시작하자마자 끄니까 오류나네
@@ -288,11 +290,13 @@ namespace LayoutTest1
         {
             bottom_clock.Text = DateTime.Now.ToString();
         }
+        #endregion
 
+        #region event_function
         private void event_search_Btn(object sender, RoutedEventArgs e) //이벤트 검색
         {
             //이벤트 검색 누르면~
-            event_list.ItemsSource = EventList_Select;
+            see_all_event();
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -305,9 +309,17 @@ namespace LayoutTest1
             //눌린 상태면
             JObject j = JObject.Parse(json);
             Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
-            EventList_All.Add(e);
-            //database.Insert_Row(e.Image_String, e.time, e.content, e.kind);
+            // EventList_All.Add(e);
+            database.Insert_Row(e.Image_String, e.time, e.content, e.kind); //해당 이벤트를 db에 저장.
         }
+
+        private void see_all_event()
+        {
+            EventList_Select = database.see_all_Query_Data();
+            event_list.ItemsSource = EventList_Select;
+        }
+
+
 
 
 
@@ -422,17 +434,16 @@ namespace LayoutTest1
             {
                 if (e.Content != null)
                 {
-                    Debug.WriteLine("날아옴");
                     // Display the received metadata
-                    var metadataXml = e.Content.GetMetadataString();
-                    event_occur_json(metadataXml);
+                    var metadataXml = e.Content.GetMetadataString(); //날아온 json 파일
+                    event_occur_json(metadataXml); // 해당 json 파일을 parsing 하여 db에 저장.
                 }
             }
         }
 
         #endregion
 
-        
+        #endregion
     }
 
 
