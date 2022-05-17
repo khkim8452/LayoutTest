@@ -79,6 +79,7 @@
     </Compile>
     <Compile Include="ROI\save_ROI.cs" />
     <Compile Include="save_setting.cs" />
+    <Compile Include="SQLite_Event_DB.cs" />
     <Compile Include="UserControl\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>

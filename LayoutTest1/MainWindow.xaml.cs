@@ -47,16 +47,17 @@ namespace LayoutTest1
         save_setting ss = new save_setting(); // 메인화면 설정
         Layout l = null;
         List<Item> CameraList = null; //카메라 리스트 
-        ObservableCollection<Event_> EventList = new ObservableCollection<Event_>(); //이벤트 리스트
-        SQLiteConnection connection = new SQLiteConnection();
+        
+        //metadata & event
+        ObservableCollection<Event_> EventList_All = new ObservableCollection<Event_>(); //이벤트 리스트 (전체 담기)
+        ObservableCollection<Event_> EventList_Select = new ObservableCollection<Event_>(); //이벤트 리스트 (부분 담기)
 
-        //metadata
-        private Item _selectItem1;
-        private MetadataLiveSource _metadataLiveSource;
+        SQLiteConnection connection = new SQLiteConnection();
+        private Item _selectItem1; //메타데이터 채널 설정 아이템
+        private MetadataLiveSource _metadataLiveSource; 
         JObject event_json = new JObject(); //JObject 추가
         private int _count;
-
-
+        SQLite_Event_DB database = new SQLite_Event_DB(); //데이터베이스
 
 
         public MainWindow()
@@ -73,12 +74,12 @@ namespace LayoutTest1
             VideoOS.Platform.SDK.Environment.Initialize();			// General initialize.  Always required
             VideoOS.Platform.SDK.UI.Environment.Initialize();		// Initialize UI
             VideoOS.Platform.SDK.Export.Environment.Initialize();   // Initialize recordings access
-            VideoOS.Platform.SDK.Media.Environment.Initialize();
+            VideoOS.Platform.SDK.Media.Environment.Initialize();    // metadata initialize
             _loginButton_Click();
             CameraList = GetCameraList();
             Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
             FillCameraListBox();
-            event_list.ItemsSource = EventList;
+            event_list.ItemsSource = EventList_All;
             //데이터베이스
 
 
@@ -291,7 +292,7 @@ namespace LayoutTest1
         private void event_search_Btn(object sender, RoutedEventArgs e) //이벤트 검색
         {
             //이벤트 검색 누르면~
-
+            event_list.ItemsSource = EventList_Select;
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -301,12 +302,11 @@ namespace LayoutTest1
 
         private void event_occur_json(string json) //이벤트가 발생하면 실행할 함수
         {
+            //눌린 상태면
             JObject j = JObject.Parse(json);
             Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
-            EventList.Add(e);
-            //event_list.SelectedIndex;
-            //ImageConverter converter = new ImageConverter();
-            //var img = (System.Windows.Controls.Image)converter.ConvertTo(e.base64_to_Image(),typeof(System.Drawing.Image));
+            EventList_All.Add(e);
+            //database.Insert_Row(e.Image_String, e.time, e.content, e.kind);
         }
 
 
@@ -316,8 +316,8 @@ namespace LayoutTest1
         {
             if (_metadataLiveSource != null)
             {
-
-                _metadataLiveSource.LiveModeStart = false;
+                Debug.WriteLine("활성화");
+                _metadataLiveSource.LiveModeStart = true;
             }
         }
 
@@ -326,8 +326,8 @@ namespace LayoutTest1
 
             if (_metadataLiveSource != null)
             {
-
-                _metadataLiveSource.LiveModeStart = true;
+                Debug.WriteLine("비활성화");
+                _metadataLiveSource.LiveModeStart = false;
             }
         }
 
@@ -357,7 +357,7 @@ namespace LayoutTest1
                 _metadataLiveSource = new MetadataLiveSource(_selectItem1);
                 try
                 {
-                    _metadataLiveSource.LiveModeStart = true;
+                    _metadataLiveSource.LiveModeStart = false;
                     _metadataLiveSource.Init(); //오류
                     _metadataLiveSource.LiveContentEvent += OnLiveContentEvent;
                     _metadataLiveSource.ErrorEvent += OnErrorEvent;
@@ -422,6 +422,7 @@ namespace LayoutTest1
             {
                 if (e.Content != null)
                 {
+                    Debug.WriteLine("날아옴");
                     // Display the received metadata
                     var metadataXml = e.Content.GetMetadataString();
                     event_occur_json(metadataXml);

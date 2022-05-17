@@ -16,10 +16,27 @@ namespace LayoutTest1
         public event PropertyChangedEventHandler PropertyChanged;
         JObject loaded_event = new JObject();
 
+        public string Image_String;
         private ImageSource Image;
         private string Time;
         private string Content;
+        private int Kind;
+        // kind - 0 : car
+        // kind - 1 : fire
+        // kind - 2 : person
 
+        public int kind
+        {
+            get 
+            { 
+                return Kind; 
+            }
+            set 
+            {
+                Kind = value;
+                OnPropertyChanged("kind");
+            }
+        }
         public ImageSource image
         {
             get
@@ -58,12 +75,14 @@ namespace LayoutTest1
             base64_to_Image();//이미지 넣기
             this.time = j["Time_event"].ToString();//시간 넣기
             this.content = j["Car_number_event"].ToString(); //일단
+            this.kind = int.Parse(j["Kind_event"].ToString());// 이벤트 종류 넣기
         }
 
 
         public void base64_to_Image()
         {
             byte[] data = Convert.FromBase64String(loaded_event["data"].ToString());
+            Image_String = loaded_event["data"].ToString();
             BitmapImage bmp = new BitmapImage();
             bmp.BeginInit();
             bmp.StreamSource = new System.IO.MemoryStream(data);

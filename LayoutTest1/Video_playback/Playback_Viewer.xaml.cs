@@ -92,7 +92,7 @@ namespace LayoutTest1
             }
         }
 
-        private void _selectCameraButton_Click(object sender, RoutedEventArgs e)
+        private void _selectCameraButton_Click(object sender, RoutedEventArgs e) //오류 
         {
             var form = new ItemPickerForm();
             form.KindFilter = Kind.Camera;
@@ -151,7 +151,7 @@ namespace LayoutTest1
         {
             AudioPlayerControl audioControl = ClientControl.Instance.GenerateAudioPlayerControl();
             audioControl.Initialize();
-            audioControl.PlaybackControllerFQID = _playbackFQID;
+            audioControl.PlaybackControllerFQID = _imageViewerControl.PlaybackControllerFQID;
             return audioControl;
         }
 
@@ -163,7 +163,7 @@ namespace LayoutTest1
             _imageViewerControl.StartBrowse();
             EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
                                                         VideoOS.Platform.Messaging.MessageId.System.ModeChangeCommand,
-                                                        Mode.ClientPlayback), _playbackFQID);
+                                                        Mode.ClientPlayback), _imageViewerControl.PlaybackControllerFQID);
         }
         #endregion
 
@@ -267,10 +267,10 @@ namespace LayoutTest1
 
             EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
                                                         MessageId.SmartClient.PlaybackCommand,
-                                                        new PlaybackCommandData() { Command = PlaybackData.PlayStop }), _playbackFQID);
+                                                        new PlaybackCommandData() { Command = PlaybackData.PlayStop }), _imageViewerControl.PlaybackControllerFQID);
             EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
                                                         MessageId.SmartClient.PlaybackCommand,
-                                                        new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = _dateTimePicker.returnDT().ToUniversalTime() }), _playbackFQID);
+                                                        new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = _dateTimePicker.returnDT().ToUniversalTime() }), _imageViewerControl.PlaybackControllerFQID);
 
         }
         #endregion

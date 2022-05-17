@@ -129,7 +129,7 @@
             <!--이벤트 뷰어-->
             <Grid x:Name="event_grid" Grid.Column="2" Width="250" Margin="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="150"/> <!--컨트롤-->
+                    <RowDefinition Height="170"/> <!--컨트롤-->
                     <RowDefinition Height="*"/> <!--리스트-->
                 </Grid.RowDefinitions>
 
@@ -139,13 +139,28 @@
                         <Label Content="이벤트" HorizontalAlignment="Center"/>
                     </Grid>
 
+                    <StackPanel Height="50" Orientation="Horizontal">
+                        <!--검색 탭-->
+                        <Label Content="시간" VerticalAlignment="Center"/>
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center"  Margin="3">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <local:new_DateTimePicker Background="Gray" FontSize="15" Width="180"/>
+                                <Label Content="부터" FontSize="10" Padding="0" VerticalAlignment="Center" Margin="3"/>
+                            </StackPanel>
+                            <Grid Height="3"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <local:new_DateTimePicker Background="Gray" FontSize="15" Width="180"/>
+                                <Label Content="까지" FontSize="10" Padding="0" VerticalAlignment="Center" Margin="3"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                    
                     <StackPanel Height="30" Orientation="Horizontal">
                         <!--검색 탭-->
-                        <Label Content="검색" VerticalAlignment="Center"/>
-                        <TextBlock Background="Gray" Width="180" Margin="3"/>
-                        <Button Content="{materialDesign:PackIcon Kind=Search, Size=30}" Background="Transparent" BorderBrush="Transparent" Padding="0" Click="event_search_Btn" />
+                        <Label Content="내용" VerticalAlignment="Center"/>
+                        <TextBlock Background="White" Width="180" Margin="3" />
+                        <Button Content="{materialDesign:PackIcon Kind=Search, Size=25}" Background="Transparent" BorderBrush="Transparent" Padding="0" Click="event_search_Btn" />
                     </StackPanel>
-                    <Grid Height="10"/>
                     <!--공백-->
                     <Grid Height="40">
                         <!--이벤트 유형 1번째 줄-->
@@ -156,20 +171,18 @@
                                 Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"/>
                             <Button Content="{materialDesign:PackIcon Kind=Fire,Size=25}" Padding="0" Margin="10 5 10 5"
                                 Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"/>
-                            <Button Content="{materialDesign:PackIcon Kind=QuestionMark,Size=25}" Padding="0" Margin="10 5 10 5"
+                            <Button Content="{materialDesign:PackIcon Kind=Star,Size=25}" Padding="0" Margin="10 5 10 5"
                                 Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"/>
                         </StackPanel>
                     </Grid>
-                    <Grid Height="40" HorizontalAlignment="Center">
+                    <Grid Height="30" HorizontalAlignment="Center">
                         <!--이벤트 유형 2번째 줄-->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-
-                            <Button Content="메타데이터 채널" Click="OnSelect1Click" Background="Gray" BorderBrush="Transparent" Padding="2" Margin="4" FontSize="12"/>
-                            <CheckBox x:Name="event_checkbox" Content="이벤트 수신" IsEnabled="False" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+                            <Button Content="메타데이터 채널" Click="OnSelect1Click" Background="Gray" BorderBrush="Transparent" Padding="2" Margin="4" FontSize="10" VerticalAlignment="Center"/>
+                            <CheckBox x:Name="event_checkbox" Content="이벤트 수신" IsEnabled="False" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" FontSize="10"/>
                         </StackPanel>
                     </Grid>
 
-                    <Grid Height="10"/>
                 </StackPanel>
 
                 <ListView x:Name="event_list" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Row="1" Padding="0" SelectionChanged="ListView_SelectionChanged">
@@ -191,8 +204,13 @@
                                 </Canvas>
                                 <TextBlock x:Name="event_time" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding time, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
                                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                <TextBlock x:Name="event_content" Grid.Row="0" Grid.Column="1" Text="{Binding content, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
+                                    <Button Content="{materialDesign:PackIcon Kind=Star, Size=25}" Background="Transparent" BorderBrush="Transparent">
+                                        
+                                    </Button>
+                                    <TextBlock x:Name="event_content"  Text="{Binding content, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" />
+                                </StackPanel>
 
                             </Grid>
                         </DataTemplate>
