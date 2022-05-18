@@ -58,7 +58,7 @@ namespace LayoutTest1
         JObject event_json = new JObject(); //JObject 추가
         private int _count;
         SQLite_Event_DB database = new SQLite_Event_DB(); //데이터베이스
-
+        int Max_Row_Count = 100; //최대 검색 개수
 
         public MainWindow()
         {
@@ -296,9 +296,15 @@ namespace LayoutTest1
         private void event_search_Btn(object sender, RoutedEventArgs e) //이벤트 검색
         {
             //이벤트 검색 누르면~
-            see_all_event();
+            string query = make_Query();
+            see_some_event(query);
         }
 
+        private void live_view(object sender, RoutedEventArgs e)
+        {
+            //실시간으로 보기 버튼
+            see_all_event();
+        }
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //이벤트 listview 선택줄 변경시
@@ -310,17 +316,31 @@ namespace LayoutTest1
             JObject j = JObject.Parse(json);
             Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
             // EventList_All.Add(e);
+            
             database.Insert_Row(e.Image_String, e.time, e.content, e.kind); //해당 이벤트를 db에 저장.
+            update_DB();
         }
 
         private void see_all_event()
         {
-            EventList_Select = database.see_all_Query_Data();
-            event_list.ItemsSource = EventList_Select;
+            EventList_All.Clear();
+            EventList_All = database.see_all_Query_Data(Max_Row_Count); //100개만 보여준다는 뜻
+            event_list.ItemsSource = EventList_All;
+            bottom_system_alert.Text = EventList_All.Count().ToString() + "개의 (전체) 이벤트를 표시중입니다.";
         }
 
+        private void see_some_event(string query)
+        {
+            EventList_Select.Clear();
+            EventList_Select = database.see_some_Query_Data(Max_Row_Count, query); //100개만 보여준다는 뜻
+            event_list.ItemsSource = EventList_Select;
+            bottom_system_alert.Text = EventList_Select.Count().ToString() + "개의 (선택) 이벤트를 표시중입니다.";
+        }
 
+        public void update_DB()
+        {
 
+        }
 
 
 
@@ -343,6 +363,40 @@ namespace LayoutTest1
             }
         }
 
+        public string make_Query(int event_type)
+        {
+            //검색 옵션을 파악하고 원하는 쿼리를 만들어 반환함.
+            //  event_type 
+            //  0 == 시간 검색
+            //  1 == 컨텐츠 검색
+            //  2 == 시간 & 컨텐츠 검색
+            //  3 == 차량 kind 검색
+            //  4 == 사람 kind 검색
+            //  5 == 화재 kind 검색
+            //  6 == 좋아요 검색
+            string result = "";
+
+
+
+            switch(event_type)
+            {
+                case 0: break;
+                case 1:
+                    result = "select * from events where E_content like '%" + Search_content.Text + "%'"; break;
+                case 2: break;
+                case 3:
+                    result = "select * from events where E_kind=0 limit " + Max_Row_Count; break;
+                case 4:
+                    result = "select * from events where E_kind=1 limit " + Max_Row_Count; break;
+                case 5:
+                    result = "select * from events where E_kind=2 limit " + Max_Row_Count; break;
+                case 6:
+                    result = "select * from events where E_star=1 limit " + Max_Row_Count; break;
+
+            }
+
+            return result;
+        }
 
         #region Live Click handling 
         private void OnSelect1Click(object sender, EventArgs e)
@@ -444,6 +498,7 @@ namespace LayoutTest1
         #endregion
 
         #endregion
+
     }
 
 

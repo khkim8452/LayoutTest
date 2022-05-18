@@ -10,6 +10,7 @@ using System.Windows.Shapes;
 using System.Data.SQLite;
 using System.IO;
 using System.Collections.ObjectModel;
+using System;
 
 namespace LayoutTest1
 {
@@ -45,7 +46,7 @@ namespace LayoutTest1
 
         private void Create_Table()
         {
-            string sql = "create table events (E_image string, E_time string, E_content string, E_Kind int, E_Star bool)";
+            string sql = "create table events (E_image string, E_time string, E_content string, E_kind int, E_star bool)";
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery();
             sql = "create index E_index on events(E_time)";
@@ -55,7 +56,7 @@ namespace LayoutTest1
 
         public void Insert_Row(string E_image_, string E_time_, string E_content_, int kind)
         {
-            string sql = "insert into events (E_image, E_time, E_content, E_Kind, E_Star) values (\"" + E_image_ + "\",\"" + E_time_ + "\",\"" + E_content_ + "\"," + kind + "," + false + ")";
+            string sql = "insert into events (E_image, E_time, E_content, E_kind, E_star) values (\"" + E_image_ + "\",\"" + E_time_ + "\",\"" + E_content_ + "\"," + kind + "," + false + ")";
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery(); //오류 발생 = / token 잘못된 문자열
         }
@@ -71,29 +72,74 @@ namespace LayoutTest1
             }
             rdr.Close();
         }
-        public ObservableCollection<Event_> see_all_Query_Data()
+        public ObservableCollection<Event_> see_all_Query_Data(int Max_Row_Count)
         {
             //최대 1000개만 보여주기
             ObservableCollection<Event_> le = new ObservableCollection<Event_>();
-            Event_ eee = new Event_();
-            string sql = "select * from events limit 10 ";
+            string sql = "select * from events limit " + Max_Row_Count.ToString();
             SQLiteCommand cmd = new SQLiteCommand(sql, conn);
             SQLiteDataReader rdr = cmd.ExecuteReader();
-            while (rdr.Read())
+
+            if(rdr.HasRows)
             {
-                MessageBox.Show(rdr["name"] + " " + rdr["age"]);
-                eee.Image_String = rdr["E_image"].ToString(); //이미지 꺼내기
-                eee.time = rdr["E_time"].ToString(); // 시간 꺼내기
-                eee.content = rdr["E_Content"].ToString();
-                eee.kind = int.Parse(rdr["E_Kind"].ToString());
-                //eee.star = bool.Parse(rdr["E_Star"].ToString());
-                
-                le.Add(eee);
+                while(rdr.Read())
+                {
+                    Event_ eee = new Event_();
+                    byte[] data = Convert.FromBase64String(rdr["E_image"].ToString());
+                    eee.Image_String = rdr["E_image"].ToString();
+                    BitmapImage bmp = new BitmapImage();
+                    bmp.BeginInit();
+                    bmp.StreamSource = new System.IO.MemoryStream(data);
+                    bmp.EndInit();
+                    eee.image = bmp;
+                    eee.time = rdr["E_time"].ToString(); // 시간 꺼내기
+                    eee.content = rdr["E_content"].ToString();
+                    eee.kind = int.Parse(rdr["E_kind"].ToString());
+                    le.Add(eee);
+                }
             }
+            else
+            {
+                //데이터가 없음
+            }
+
             rdr.Close();
             return le;
         }
 
+        public ObservableCollection<Event_> see_some_Query_Data(int Max_Row_Count, string sql)
+        {
+            //최대 1000개만 보여주기
+            ObservableCollection<Event_> le = new ObservableCollection<Event_>();
+            SQLiteCommand cmd = new SQLiteCommand(sql, conn);
+            SQLiteDataReader rdr = cmd.ExecuteReader();
+
+            if (rdr.HasRows)
+            {
+                while (rdr.Read())
+                {
+                    Event_ eee = new Event_();
+                    byte[] data = Convert.FromBase64String(rdr["E_image"].ToString());
+                    eee.Image_String = rdr["E_image"].ToString();
+                    BitmapImage bmp = new BitmapImage();
+                    bmp.BeginInit();
+                    bmp.StreamSource = new System.IO.MemoryStream(data);
+                    bmp.EndInit();
+                    eee.image = bmp;
+                    eee.time = rdr["E_time"].ToString(); // 시간 꺼내기
+                    eee.content = rdr["E_content"].ToString();
+                    eee.kind = int.Parse(rdr["E_kind"].ToString());
+                    le.Add(eee);
+                }
+            }
+            else
+            {
+                //데이터가 없음
+            }
+
+            rdr.Close();
+            return le;
+        }
         private void Close_Connection(object sender, RoutedEventArgs e)
         {
             conn.Close();
