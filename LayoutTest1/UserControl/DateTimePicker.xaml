@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-            
              xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d">
 
@@ -33,7 +32,7 @@
                 <StackPanel Orientation="Vertical" Background="LightGray">
                     <Calendar Margin="0,-3,0,0" x:Name="CalDisplay" SelectedDate="{x:Static sys:DateTime.Now}"/>
                     <StackPanel Orientation="Horizontal" Margin="0,-1,0,0">
-                        <ComboBox Width="45" Name="Hours" HorizontalContentAlignment="Right" SelectedIndex="0">
+                        <ComboBox Width="45" Name="Hours" HorizontalContentAlignment="Right">
                             <ComboBoxItem Content="0" />
                             <ComboBoxItem Content="1" />
                             <ComboBoxItem Content="2" />
@@ -47,7 +46,7 @@
                             <ComboBoxItem Content="10" />
                             <ComboBoxItem Content="11" />
                         </ComboBox>
-                        <ComboBox Width="45" Name="Min" HorizontalContentAlignment="Right" SelectedIndex="0">
+                        <ComboBox Width="45" Name="Min" HorizontalContentAlignment="Right">
                             <ComboBoxItem Content="0" />
                             <ComboBoxItem Content="1" />
                             <ComboBoxItem Content="2" />

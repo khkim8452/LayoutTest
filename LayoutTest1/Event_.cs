@@ -16,6 +16,7 @@ namespace LayoutTest1
         public event PropertyChangedEventHandler PropertyChanged;
         JObject loaded_event = new JObject();
 
+        private int Index;
         public string Image_String;
         private ImageSource Image;
         private string Time;
@@ -24,7 +25,53 @@ namespace LayoutTest1
         // kind - 0 : car
         // kind - 1 : fire
         // kind - 2 : person
+        private bool Star;
+        public Brush Starbtn_color;
 
+        public Brush starbtn_color
+        {
+            get
+            {
+                return Starbtn_color;
+            }
+            set
+            {
+                Starbtn_color = value;
+                OnPropertyChanged("starbtn_color");
+            }
+        }
+        public int index
+        {
+            get
+            {
+                return Index;
+            }
+            set
+            {
+                Index = value;
+                OnPropertyChanged("index");
+            }
+        }
+        public bool star
+        {
+            get
+            {
+                return Star;
+            }
+            set
+            {
+                Star = value;
+                if(Star == false)
+                {
+                    starbtn_color = Brushes.Gray;
+                }
+                else if(Star == true)
+                {
+                    starbtn_color = Brushes.Yellow;
+                }
+                OnPropertyChanged("star");
+            }
+        }
         public int kind
         {
             get 

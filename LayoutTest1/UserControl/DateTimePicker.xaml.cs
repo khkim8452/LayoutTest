@@ -61,38 +61,19 @@ namespace LayoutTest1
             {
                 int hours = Convert.ToInt32(Hours.Text) + 12;
                 TimeSpan timeSpan = TimeSpan.Parse(hours.ToString() + ":" + Min.Text);
-                if (CalDisplay.SelectedDate.Value.Date == DateTime.Today.Date && timeSpan.CompareTo(DateTime.Now.TimeOfDay) < 0)
-                {
-                    var date = CalDisplay.SelectedDate.Value.Date + DateTime.Now.TimeOfDay;
-                    DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
+                var date = CalDisplay.SelectedDate.Value.Date + timeSpan;
+                DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
 
-                    output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
-                }
-                else
-                {
-                    var date = CalDisplay.SelectedDate.Value.Date + timeSpan;
-                    DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
-
-                    output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
-                }
+                output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
             }
             else //AM
             {
                 TimeSpan timeSpan = TimeSpan.Parse(Hours.Text + ":" + Min.Text);
-                if (CalDisplay.SelectedDate.Value.Date == DateTime.Today.Date && timeSpan.CompareTo(DateTime.Now.TimeOfDay) < 0)
-                {
-                    var date = CalDisplay.SelectedDate.Value.Date + DateTime.Now.TimeOfDay;
-                    DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
+                var date = CalDisplay.SelectedDate.Value.Date + timeSpan;
+                DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
 
-                    output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
-                }
-                else
-                {
-                    var date = CalDisplay.SelectedDate.Value.Date + timeSpan;
-                    DateDisplay.Text = date.ToString("yyyy-MM-dd hh:mm tt");
-
-                    output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
-                }
+                output_Date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute, date.Second);
+                
             }
             if(DatetimeChangeEvent != null)
             {
@@ -107,12 +88,16 @@ namespace LayoutTest1
                 CalDisplay.SelectedDate = DateTime.Today.Date;
                 CalDisplay.DisplayDate = DateTime.Today.Date;
             }
-            if (Hours.SelectedIndex == -1 || Min.SelectedIndex == -1 || AMPM.SelectedIndex == -1) { }
+            if (Hours.SelectedIndex == -1 || Min.SelectedIndex == -1 || AMPM.SelectedIndex == -1) 
+            {
+                MessageBox.Show("입력되지 않은 정보가 있습니다. 모두 입력후 다시 시도해주세요.");
+                return;
+            }
             else
             {
                 CalDisplay_SelectedDatesChanged(SaveTime, EventArgs.Empty);
+                PopUpCalendarButton.IsChecked = false;
             }
-            PopUpCalendarButton.IsChecked = false;
         }
 
         #endregion

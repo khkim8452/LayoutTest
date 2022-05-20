@@ -49,8 +49,7 @@ namespace LayoutTest1
         List<Item> CameraList = null; //카메라 리스트 
         
         //metadata & event
-        ObservableCollection<Event_> EventList_All = new ObservableCollection<Event_>(); //이벤트 리스트 (전체 담기)
-        ObservableCollection<Event_> EventList_Select = new ObservableCollection<Event_>(); //이벤트 리스트 (부분 담기)
+        ObservableCollection<Event_> EventList = new ObservableCollection<Event_>(); //이벤트 리스트 (전체 담기)
 
         SQLiteConnection connection = new SQLiteConnection();
         private Item _selectItem1; //메타데이터 채널 설정 아이템
@@ -79,7 +78,7 @@ namespace LayoutTest1
             CameraList = GetCameraList();
             Console.WriteLine(System.IO.Directory.GetCurrentDirectory());
             FillCameraListBox();
-            event_list.ItemsSource = EventList_All;
+            event_list.ItemsSource = EventList;
             //데이터베이스
 
 
@@ -293,57 +292,126 @@ namespace LayoutTest1
         #endregion
 
         #region event_function
-        private void event_search_Btn(object sender, RoutedEventArgs e) //이벤트 검색
+        private void event_search_Btn(object sender, RoutedEventArgs e) //이벤트 검색(예비)   
         {
             //이벤트 검색 누르면~
-            string query = make_Query();
+            //event_search_start_time
+            //event_search_end_time
+            //Search_content
+
+            DateTime dts = event_search_start_time.returnDT();
+            DateTime dte = event_search_end_time.returnDT();
+
+            string _dts = event_search_start_time.returnDT().ToString("yyyy-MM-dd HH:mm:ss");
+            string _dte = event_search_end_time.returnDT().ToString("yyyy-MM-dd HH:mm:ss");
+
+            if(Search_content.Text != "")
+            {
+                //내용이 있을 때
+                if(dts < dte)
+                {
+                    string query = "select * from events where strftime('%s', E_time) between strftime('%s', '" + _dts + "') and strftime('%s', '" + _dte + "') and E_Content like '%" + Search_content.Text + "%'";
+                    see_some_event(query);
+                }
+                else if((dts > dte)||(dts==dte))
+                {
+                    MessageBox.Show("시간 형식이 맞지 않거나 잘못된 입력값 입니다.");
+                }
+            }
+            else
+            {
+                //내용이 없을 때 (시간만으로 검색)
+                if (dts < dte)
+                {
+                    string query = "select * from events where strftime('%s', E_time) between strftime('%s', '" + _dts + "') and strftime('%s', '" + _dte + "')";
+                    see_some_event(query);
+                }
+                else if ((dts > dte) || (dts == dte))
+                {
+                    MessageBox.Show("시간 형식이 맞지 않거나 잘못된 입력값 입니다.");
+                }
+            }
+
+        }
+        private void select_car(object sender, RoutedEventArgs e)//이벤트 검색 - 자동차
+        {
+            //차량 
+            string query = make_Query(3);
+            see_some_event(query);
+        }   
+        private void select_person(object sender, RoutedEventArgs e)//이벤트 검색 - 사람
+        {
+            //사람
+            string query = make_Query(4);
             see_some_event(query);
         }
-
-        private void live_view(object sender, RoutedEventArgs e)
+        private void select_fire(object sender, RoutedEventArgs e)//이벤트 검색 - 화재
+        {
+            //화재
+            string query = make_Query(5);
+            see_some_event(query);
+        }
+        private void select_star(object sender, RoutedEventArgs e)//이벤트 검색 - 좋아요
+        {
+            //좋아요
+            string query = make_Query(6);
+            see_some_event(query);
+        }
+        private void select_live(object sender, RoutedEventArgs e)//이벤트 검색 - 실시간
         {
             //실시간으로 보기 버튼
-            see_all_event();
+            string query = make_Query(7);
+            see_some_event(query);
         }
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void StarBtn(object sender, RoutedEventArgs e) //좋아요 버튼
         {
-            //이벤트 listview 선택줄 변경시
-        }
+            //해당 event의 DB 에 E_Star = 1을 넣고 refresh 다시 누르면 E_Star = 0을 넣고 refresh
 
+            ListViewItem lvi = FindParent<ListViewItem>((sender as Button));
+            ListView lv = FindParent<ListView>((sender as Button));
+            lv.SelectedItem = lvi.DataContext;
+
+            string query = "update events set E_star=((E_star | 1) - (E_star & 1)) where E_index = " + EventList[event_list.SelectedIndex].index;
+            database.operate_this_query(query);
+            if (EventList[event_list.SelectedIndex].star)
+            {
+                //true면 
+                EventList[event_list.SelectedIndex].Starbtn_color = System.Windows.Media.Brushes.Transparent;
+            }
+            else
+            {
+                EventList[event_list.SelectedIndex].Starbtn_color = System.Windows.Media.Brushes.Yellow;
+            }
+            update_DB();
+            //(sender as Button).Background = System.Windows.Media.Brushes.Yellow;
+        }
         private void event_occur_json(string json) //이벤트가 발생하면 실행할 함수
         {
             //눌린 상태면
             JObject j = JObject.Parse(json);
             Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
-            // EventList_All.Add(e);
-            
             database.Insert_Row(e.Image_String, e.time, e.content, e.kind); //해당 이벤트를 db에 저장.
-            update_DB();
+            update_DB();//새로운 이벤트가 발생할때마다 list 업데이트 (다시 검색해서 refresh 함)
         }
-
-        private void see_all_event()
+        private void see_some_event(string query) //db에서 임의의 query에 대해 결과를 받아와 itemsource에 넣어줌.
         {
-            EventList_All.Clear();
-            EventList_All = database.see_all_Query_Data(Max_Row_Count); //100개만 보여준다는 뜻
-            event_list.ItemsSource = EventList_All;
-            bottom_system_alert.Text = EventList_All.Count().ToString() + "개의 (전체) 이벤트를 표시중입니다.";
-        }
+            //EventList.Clear();
+            EventList = database.see_Query_Data(Max_Row_Count, query); //100개만 보여준다는 뜻
 
-        private void see_some_event(string query)
+            event_list.ItemsSource = EventList;
+            bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
+        }
+        public void update_DB() //db에서 실행된 마지막 query에 대해 결과를 받아와 itemsource에 넣어줌
         {
-            EventList_Select.Clear();
-            EventList_Select = database.see_some_Query_Data(Max_Row_Count, query); //100개만 보여준다는 뜻
-            event_list.ItemsSource = EventList_Select;
-            bottom_system_alert.Text = EventList_Select.Count().ToString() + "개의 (선택) 이벤트를 표시중입니다.";
+            //마지막 쿼리 다시 검사해서 refresh 함.
+            //EventList.Clear();
+            EventList = database.see_Query_Data(Max_Row_Count, database.last_query);
+            event_list.ItemsSource = EventList;
         }
-
-        public void update_DB()
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e) //이벤트 listview 선택줄 변경시
         {
-
+            //이벤트 listview 선택줄 변경시
         }
-
-
-
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             if (_metadataLiveSource != null)
@@ -352,7 +420,6 @@ namespace LayoutTest1
                 _metadataLiveSource.LiveModeStart = true;
             }
         }
-
         private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
 
@@ -362,8 +429,7 @@ namespace LayoutTest1
                 _metadataLiveSource.LiveModeStart = false;
             }
         }
-
-        public string make_Query(int event_type)
+        public string make_Query(int event_type) //검색 옵션을 파악하고 원하는 쿼리를 만들어 반환함.
         {
             //검색 옵션을 파악하고 원하는 쿼리를 만들어 반환함.
             //  event_type 
@@ -374,8 +440,8 @@ namespace LayoutTest1
             //  4 == 사람 kind 검색
             //  5 == 화재 kind 검색
             //  6 == 좋아요 검색
+            //  7 == 전체 검색
             string result = "";
-
 
 
             switch(event_type)
@@ -392,14 +458,37 @@ namespace LayoutTest1
                     result = "select * from events where E_kind=2 limit " + Max_Row_Count; break;
                 case 6:
                     result = "select * from events where E_star=1 limit " + Max_Row_Count; break;
-
+                case 7:
+                    result = "select * from events limit " + Max_Row_Count; break;
             }
 
             return result;
         }
+        private T FindParent<T>(DependencyObject dependencyObject) where T : DependencyObject
+        {
+            var parent = VisualTreeHelper.GetParent(dependencyObject);
+            if (parent == null) return null;
+            var parentT = parent as T;
+            return parentT ?? FindParent<T>(parent);
+        }
+        private void delete_event(object sender, RoutedEventArgs e)
+        {
+            //우클릭시 이벤트 삭제
 
-        #region Live Click handling 
-        private void OnSelect1Click(object sender, EventArgs e)
+            string query = "delete from events where E_index = " + EventList[event_list.SelectedIndex].index;
+            database.operate_this_query(query);
+            update_DB();
+        }
+        private void see_Detail_event(object sender, RoutedEventArgs e)
+        {
+            //우클릭시 이벤트 자세히 보기
+        }
+
+    #endregion
+
+
+    #region Live Click handling 
+    private void OnSelect1Click(object sender, EventArgs e)
         {
             if (_metadataLiveSource != null)
             {
@@ -497,12 +586,6 @@ namespace LayoutTest1
 
         #endregion
 
-        #endregion
-
     }
-
-
-
-
 
 }

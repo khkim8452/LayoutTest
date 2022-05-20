@@ -17,6 +17,7 @@ namespace LayoutTest1
     internal class SQLite_Event_DB : Window
     {
         private SQLiteConnection conn = null;
+        public string last_query = "";
         public SQLite_Event_DB()
         {
             if(File.Exists(System.IO.Directory.GetCurrentDirectory() + @"event_DB.sqlite"))
@@ -46,71 +47,25 @@ namespace LayoutTest1
 
         private void Create_Table()
         {
-            string sql = "create table events (E_image string, E_time string, E_content string, E_kind int, E_star bool)";
+            string sql = "create table events (E_index Integer primary key autoincrement, E_image string, E_time datetime, E_content string, E_kind integer, E_star bool)";
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery();
-            sql = "create index E_index on events(E_time)";
-            command = new SQLiteCommand(sql, conn);
-            result = command.ExecuteNonQuery();
         }
 
         public void Insert_Row(string E_image_, string E_time_, string E_content_, int kind)
         {
+            string new_time_string = "";
             string sql = "insert into events (E_image, E_time, E_content, E_kind, E_star) values (\"" + E_image_ + "\",\"" + E_time_ + "\",\"" + E_content_ + "\"," + kind + "," + false + ")";
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery(); //오류 발생 = / token 잘못된 문자열
         }
 
-        private void Query_Data() //조회
-        {
-            string sql = "select * from events";
-            SQLiteCommand cmd = new SQLiteCommand(sql, conn);
-            SQLiteDataReader rdr = cmd.ExecuteReader();
-            while (rdr.Read())
-            {
-                MessageBox.Show(rdr["name"] + " " + rdr["age"]);
-            }
-            rdr.Close();
-        }
-        public ObservableCollection<Event_> see_all_Query_Data(int Max_Row_Count)
+
+        public ObservableCollection<Event_> see_Query_Data(int Max_Row_Count, string sql)
         {
             //최대 1000개만 보여주기
             ObservableCollection<Event_> le = new ObservableCollection<Event_>();
-            string sql = "select * from events limit " + Max_Row_Count.ToString();
-            SQLiteCommand cmd = new SQLiteCommand(sql, conn);
-            SQLiteDataReader rdr = cmd.ExecuteReader();
-
-            if(rdr.HasRows)
-            {
-                while(rdr.Read())
-                {
-                    Event_ eee = new Event_();
-                    byte[] data = Convert.FromBase64String(rdr["E_image"].ToString());
-                    eee.Image_String = rdr["E_image"].ToString();
-                    BitmapImage bmp = new BitmapImage();
-                    bmp.BeginInit();
-                    bmp.StreamSource = new System.IO.MemoryStream(data);
-                    bmp.EndInit();
-                    eee.image = bmp;
-                    eee.time = rdr["E_time"].ToString(); // 시간 꺼내기
-                    eee.content = rdr["E_content"].ToString();
-                    eee.kind = int.Parse(rdr["E_kind"].ToString());
-                    le.Add(eee);
-                }
-            }
-            else
-            {
-                //데이터가 없음
-            }
-
-            rdr.Close();
-            return le;
-        }
-
-        public ObservableCollection<Event_> see_some_Query_Data(int Max_Row_Count, string sql)
-        {
-            //최대 1000개만 보여주기
-            ObservableCollection<Event_> le = new ObservableCollection<Event_>();
+            last_query = sql;
             SQLiteCommand cmd = new SQLiteCommand(sql, conn);
             SQLiteDataReader rdr = cmd.ExecuteReader();
 
@@ -125,10 +80,22 @@ namespace LayoutTest1
                     bmp.BeginInit();
                     bmp.StreamSource = new System.IO.MemoryStream(data);
                     bmp.EndInit();
+                    eee.index = int.Parse(rdr["E_index"].ToString());
                     eee.image = bmp;
                     eee.time = rdr["E_time"].ToString(); // 시간 꺼내기
                     eee.content = rdr["E_content"].ToString();
                     eee.kind = int.Parse(rdr["E_kind"].ToString());
+                    eee.star = string_to_bool(rdr["E_Star"].ToString());
+                    if(eee.star)
+                    {
+                        eee.Starbtn_color = Brushes.Yellow;
+                    }
+                    else
+                    {
+                    
+                        eee.Starbtn_color = Brushes.Transparent;
+                    }
+
                     le.Add(eee);
                 }
             }
@@ -140,9 +107,28 @@ namespace LayoutTest1
             rdr.Close();
             return le;
         }
+        public void operate_this_query(string sql)
+        {
+            SQLiteCommand command = new SQLiteCommand(sql, conn);
+            int result = command.ExecuteNonQuery();
+
+        }
         private void Close_Connection(object sender, RoutedEventArgs e)
         {
             conn.Close();
         }
+
+        private bool string_to_bool(string str)
+        {
+            if (str == "True")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }
