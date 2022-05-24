@@ -18,13 +18,13 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <TextBox BorderThickness="2" VerticalAlignment="Top" x:Name="DateDisplay"
+        <TextBox BorderThickness="2" VerticalAlignment="Stretch" x:Name="DateDisplay"
                      HorizontalAlignment="Stretch"
-                     VerticalContentAlignment="Center"
-                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Stretch"
+                     HorizontalContentAlignment="Stretch"
                      Height="26" IsReadOnly="True" IsUndoEnabled="False" Text="{Binding Source={x:Static sys:DateTime.Today}, StringFormat='{}{0:yyyy-MM-dd hh:mm tt}', Mode=OneWay}"  >
         </TextBox>
-        <ToggleButton Grid.Column="1" Template="{StaticResource IconButton}" MinHeight="25" MinWidth="25" Name="PopUpCalendarButton" IsChecked="False">
+        <ToggleButton Grid.Column="1" Template="{StaticResource IconButton}" MinHeight="15" MinWidth="15" Name="PopUpCalendarButton" IsChecked="False">
             <Image Name="CalIco" Stretch="Fill" HorizontalAlignment="Left" Source="DateTimePicker.png" Height="25" Width="25"/>
         </ToggleButton>
         <Popup IsOpen="{Binding Path=IsChecked, ElementName=PopUpCalendarButton}" x:Name="CalendarPopup" PopupAnimation="Fade" StaysOpen="False">

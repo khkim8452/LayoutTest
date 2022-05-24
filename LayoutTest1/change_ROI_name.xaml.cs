@@ -17,13 +17,13 @@ namespace LayoutTest1
     /// <summary>
     /// change_name.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class change_name : Window
+    public partial class change_ROI_name : Window
     {
         public string result
         {
             get { return name_text_box.Text; }
         }
-        public change_name()
+        public change_ROI_name()
         {
             InitializeComponent();
         }

@@ -23,7 +23,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
- 
+
         <!--프로그램 상단바-->
         <Grid x:Name="top_grid" Grid.Row="0" Background="{DynamicResource MaterialDesignDarkSeparatorBackground}" Height="40">
             <Grid.ColumnDefinitions>
@@ -129,7 +129,7 @@
             <!--이벤트 뷰어-->
             <Grid x:Name="event_grid" Grid.Column="2" Width="250" Margin="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="170"/>
+                    <RowDefinition Height="180"/>
                     <!--컨트롤-->
                     <RowDefinition Height="*"/>
                     <!--리스트-->
@@ -138,20 +138,24 @@
                 <StackPanel Orientation="Vertical" Grid.Row="0">
                     <Grid Height="20">
                         <!--제목-->
-                        <Label Content="이벤트" HorizontalAlignment="Center"/>
+                        <Label Content="이벤트" HorizontalAlignment="Left"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <Button Content="채널 설정" Click="select_meta_channel" Background="Gray" BorderBrush="Transparent" Margin="2" FontSize="9" VerticalAlignment="Center" Height="18"/>
+                            <CheckBox x:Name="event_checkbox" Content="이벤트 수신" IsEnabled="False" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" FontSize="10" Foreground="White"/>
+                        </StackPanel>
                     </Grid>
 
-                    <StackPanel Height="50" Orientation="Horizontal">
+                    <StackPanel Height="60" Orientation="Horizontal">
                         <!--검색 탭-->
                         <Label Content="시간" VerticalAlignment="Center"/>
-                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center"  Margin="3">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <local:DateTimePicker x:Name="event_search_start_time" Background="Gray" FontSize="15" Width="180" />
+                        <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center" >
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
+                                <local:DateTimePicker x:Name="event_search_start_time" Background="Gray" FontSize="13" Width="180"/>
                                 <Label Content="부터" FontSize="10" Padding="0" VerticalAlignment="Center" Margin="3"/>
                             </StackPanel>
-                            <Grid Height="3"/>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                                <local:DateTimePicker x:Name="event_search_end_time" Background="Gray" FontSize="15" Width="180"/>
+                            <Grid Height="2"/>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Stretch" HorizontalAlignment="Center">
+                                <local:DateTimePicker x:Name="event_search_end_time" Background="Gray" FontSize="13" Width="180"/>
                                 <Label Content="까지" FontSize="10" Padding="0" VerticalAlignment="Center" Margin="3"/>
                             </StackPanel>
                         </StackPanel>
@@ -161,7 +165,7 @@
                         <!--검색 탭-->
                         <Label Content="내용" VerticalAlignment="Center"/>
                         <TextBox x:Name="Search_content" Background="White" Width="180" Margin="3" IsEnabled="True"/>
-                        <Button Content="{materialDesign:PackIcon Kind=Search, Size=25}" Background="Transparent" BorderBrush="Transparent" Padding="0" Click="event_search_Btn" />
+                        <Button Content="{materialDesign:PackIcon Kind=Search, Size=25}" Background="Transparent" BorderBrush="Transparent" Padding="0" Click="event_search_time_content" />
                     </StackPanel>
                     <!--공백-->
                     <Grid Height="40">
@@ -169,24 +173,39 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Button Content="{materialDesign:PackIcon Kind=Car,Size=25}" Padding="0" Margin="10 5 10 5"
                                     Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
-                                    Click ="select_car"/>
+                                    Click ="event_search_car"/>
                             <Button Content="{materialDesign:PackIcon Kind=Person,Size=25}" Padding="0" Margin="10 5 10 5"
                                     Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
-                                    Click="select_person"/>
+                                    Click="event_search_person"/>
                             <Button Content="{materialDesign:PackIcon Kind=Fire,Size=25}" Padding="0" Margin="10 5 10 5"
                                     Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
-                                    Click="select_fire"/>
+                                    Click="event_search_fire"/>
                             <Button Content="{materialDesign:PackIcon Kind=Star,Size=25}" Padding="0" Margin="10 5 10 5"
                                     Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
-                                    Click="select_star"/>
+                                    Click="event_search_star"/>
+                            <Button Content="{materialDesign:PackIcon Kind=EyeOutline, Size=25}" Padding="0" Margin="10 5 10 5"
+                                    Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
+                                    Click="event_search_live"/>
                         </StackPanel>
                     </Grid>
                     <Grid Height="30" HorizontalAlignment="Center">
                         <!--이벤트 유형 2번째 줄-->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Button Content="메타데이터 채널" Click="OnSelect1Click" Background="Gray" BorderBrush="Transparent" Padding="2" Margin="4" FontSize="10" VerticalAlignment="Center"/>
-                            <CheckBox x:Name="event_checkbox" Content="이벤트 수신" IsEnabled="False" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" FontSize="10"/>
-                            <Button Content="{materialDesign:PackIcon Kind=EyeOutline, Size=25}" Click="select_live" Background="Transparent" BorderBrush="Transparent" Padding="0" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                            <Label Content="최대 표시 개수" FontSize="9" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="max_row_combo" SelectionChanged="max_row_combo_SelectionChanged" SelectedValuePath="Content" SelectedIndex="1">
+                                <ComboBoxItem Content="50"/>
+                                <ComboBoxItem Content="100"/>
+                                <ComboBoxItem Content="500"/>
+                                <ComboBoxItem Content="1000"/>
+                            </ComboBox>
+                            <Label Content="" />
+                            <Grid Width="10"/>
+                            <Label Content="간편 검색" FontSize="9" VerticalAlignment="Center"/>
+                            <ComboBox>
+                                <ComboBoxItem Content="하루 전 "/>
+                                <ComboBoxItem Content="일주일 전"/>
+                                <ComboBoxItem Content="한달 전"/>
+                            </ComboBox>
                         </StackPanel>
                     </Grid>
 
@@ -228,7 +247,7 @@
                     <ListView.ContextMenu>
                         <ContextMenu>
                             <!--우클릭시 이벤트 Click 속성 추가해서 함수 만들자-->
-                            <!--MenuItem Header="이벤트 시점으로 가기" Click="see_Detail_event" /-->
+                            <MenuItem Header="이미지 자세히 보기" Click="see_Detail_event" />
                             <MenuItem Header="이벤트 삭제" Click="delete_event"/>
                         </ContextMenu>
                     </ListView.ContextMenu>
@@ -243,12 +262,15 @@
                 <!--날짜,시각-->
                 <ColumnDefinition Width="*"/>
                 <!--예비-->
-                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="250"/>
                 <!--시스템 알림-->
             </Grid.ColumnDefinitions>
 
             <TextBlock x:Name="bottom_clock" Foreground="White" Background="Transparent" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"/>
             <TextBox x:Name="bottom_system_alert" Grid.Column="1" Margin="2" IsEnabled="False" Foreground="White" Background="Transparent"/>
+            <!--이벤트 페이지-->
+            <Grid Grid.Column="2">
+            </Grid>
         </Grid>
 
 

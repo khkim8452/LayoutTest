@@ -38,38 +38,32 @@ namespace LayoutTest1
         {
             SQLiteConnection.CreateFile(System.IO.Directory.GetCurrentDirectory() + @"event_DB.sqlite");
         }
-
         private void Open_DB()
         {
             conn = new SQLiteConnection("Data Source=" + System.IO.Directory.GetCurrentDirectory() + @"event_DB.sqlite" + ";Version=3;");
             conn.Open();
         }
-
         private void Create_Table()
         {
             string sql = "create table events (E_index Integer primary key autoincrement, E_image string, E_time datetime, E_content string, E_kind integer, E_star bool)";
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery();
         }
-
         public void Insert_Row(string E_image_, string E_time_, string E_content_, int kind)
         {
-            string new_time_string = "";
             string sql = "insert into events (E_image, E_time, E_content, E_kind, E_star) values (\"" + E_image_ + "\",\"" + E_time_ + "\",\"" + E_content_ + "\"," + kind + "," + false + ")";
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery(); //오류 발생 = / token 잘못된 문자열
-        }
-
-
-        public ObservableCollection<Event_> see_Query_Data(int Max_Row_Count, string sql)
+        } //데이터 추가
+        public ObservableCollection<Event_> Select_Row(string sql, int Max_Row) //데이터 추출
         {
             //최대 1000개만 보여주기
             ObservableCollection<Event_> le = new ObservableCollection<Event_>();
             last_query = sql;
-            SQLiteCommand cmd = new SQLiteCommand(sql, conn);
+            SQLiteCommand cmd = new SQLiteCommand(sql + " limit " + Max_Row, conn);
             SQLiteDataReader rdr = cmd.ExecuteReader();
 
-            if (rdr.HasRows)
+            if (rdr.HasRows && sql != "")
             {
                 while (rdr.Read())
                 {
@@ -109,15 +103,15 @@ namespace LayoutTest1
         }
         public void operate_this_query(string sql)
         {
+            //그냥 sql을 실행해주는 함수 
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery();
 
-        }
+        } //데이터 수정, 데이터 삭제 
         private void Close_Connection(object sender, RoutedEventArgs e)
         {
             conn.Close();
         }
-
         private bool string_to_bool(string str)
         {
             if (str == "True")
@@ -129,6 +123,5 @@ namespace LayoutTest1
                 return false;
             }
         }
-
     }
 }

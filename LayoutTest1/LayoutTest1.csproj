@@ -67,8 +67,11 @@
     <Compile Include="CameraCell.xaml.cs">
       <DependentUpon>CameraCell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="change_name.xaml.cs">
-      <DependentUpon>change_name.xaml</DependentUpon>
+    <Compile Include="change_ROI_name.xaml.cs">
+      <DependentUpon>change_ROI_name.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DataPaging.xaml.cs">
+      <DependentUpon>DataPaging.xaml</DependentUpon>
     </Compile>
     <Compile Include="Event_.cs" />
     <Compile Include="ROI\Set_ROI.xaml.cs">
@@ -79,13 +82,16 @@
     </Compile>
     <Compile Include="ROI\save_ROI.cs" />
     <Compile Include="save_setting.cs" />
+    <Compile Include="Show_Event_Detail.xaml.cs">
+      <DependentUpon>Show_Event_Detail.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SQLite_Event_DB.cs" />
-    <Compile Include="UserControl\DateTimePicker.xaml.cs">
+    <Compile Include="DateTimePicker\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="ListBoxItemsBag.cs" />
     <Compile Include="Layout.cs" />
-    <Compile Include="UserControl\new_DateTimePicker.xaml.cs">
+    <Compile Include="DateTimePicker\new_DateTimePicker.xaml.cs">
       <DependentUpon>new_DateTimePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="Video_playback\Playback_Viewer.xaml.cs">
@@ -106,7 +112,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="change_name.xaml">
+    <Page Include="change_ROI_name.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DataPaging.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -118,7 +128,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UserControl\DateTimePicker.xaml">
+    <Page Include="DateTimePicker\DateTimePicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -134,7 +144,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UserControl\new_DateTimePicker.xaml">
+    <Page Include="DateTimePicker\new_DateTimePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Show_Event_Detail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -249,7 +249,7 @@ namespace LayoutTest1
 
         private void change_ROI_name(object sender, RoutedEventArgs e)
         {
-            change_name cn = new change_name();
+            change_ROI_name cn = new change_ROI_name();
 
             cn.set_Name_out(ROIs_list[polygon_item.SelectedIndex].name);//현재 이름을 dialog에 toss해줌.
             cn.WindowStartupLocation = WindowStartupLocation.CenterScreen;
