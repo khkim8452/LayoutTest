@@ -319,5 +319,7 @@ namespace LayoutTest1
             }
             ROI_paper.Children.Add(Close_line); // 끝선 추가
         }
+        
+
     }
 }

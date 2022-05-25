@@ -129,7 +129,7 @@
             <!--이벤트 뷰어-->
             <Grid x:Name="event_grid" Grid.Column="2" Width="250" Margin="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="180"/>
+                    <RowDefinition Height="190"/>
                     <!--컨트롤-->
                     <RowDefinition Height="*"/>
                     <!--리스트-->
@@ -173,45 +173,45 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Button Content="{materialDesign:PackIcon Kind=Car,Size=25}" Padding="0" Margin="10 5 10 5"
                                     Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
-                                    Click ="event_search_car"/>
+                                    Click ="event_search_car" x:Name="Btn_c"/>
                             <Button Content="{materialDesign:PackIcon Kind=Person,Size=25}" Padding="0" Margin="10 5 10 5"
                                     Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
-                                    Click="event_search_person"/>
+                                    Click="event_search_person" x:Name="Btn_p"/>
                             <Button Content="{materialDesign:PackIcon Kind=Fire,Size=25}" Padding="0" Margin="10 5 10 5"
                                     Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
-                                    Click="event_search_fire"/>
+                                    Click="event_search_fire" x:Name="Btn_f"/>
                             <Button Content="{materialDesign:PackIcon Kind=Star,Size=25}" Padding="0" Margin="10 5 10 5"
                                     Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
-                                    Click="event_search_star"/>
-                            <Button Content="{materialDesign:PackIcon Kind=EyeOutline, Size=25}" Padding="0" Margin="10 5 10 5"
-                                    Width="30" Height="30" Background="Transparent" BorderBrush="Transparent"
-                                    Click="event_search_live"/>
+                                    Click="event_search_star" x:Name="Btn_s"/>
                         </StackPanel>
                     </Grid>
-                    <Grid Height="30" HorizontalAlignment="Center">
+                    <Grid Height="Auto" HorizontalAlignment="Center">
                         <!--이벤트 유형 2번째 줄-->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Button Content="{materialDesign:PackIcon Kind=EyeOutline, Size=25}" Padding="0" Margin="3"
+                                    Width="30" Height="30" VerticalAlignment="Center" Background="Transparent" BorderBrush="Transparent"
+                                    Click="event_search_live" x:Name="Btn_l"/>
                             <Label Content="최대 표시 개수" FontSize="9" VerticalAlignment="Center"/>
                             <ComboBox x:Name="max_row_combo" SelectionChanged="max_row_combo_SelectionChanged" SelectedValuePath="Content" SelectedIndex="1">
                                 <ComboBoxItem Content="50"/>
                                 <ComboBoxItem Content="100"/>
-                                <ComboBoxItem Content="500"/>
-                                <ComboBoxItem Content="1000"/>
+                                <ComboBoxItem Content="200"/>
+                                <ComboBoxItem Content="300"/>
+                                <ComboBoxItem Content="전체"/>
                             </ComboBox>
-                            <Label Content="" />
-                            <Grid Width="10"/>
-                            <Label Content="간편 검색" FontSize="9" VerticalAlignment="Center"/>
-                            <ComboBox>
-                                <ComboBoxItem Content="하루 전 "/>
-                                <ComboBoxItem Content="일주일 전"/>
-                                <ComboBoxItem Content="한달 전"/>
+                            
+                            <Grid Width="10" />
+                            <Label Content="정렬" FontSize="9" VerticalAlignment="Center"/>
+                            <ComboBox x:Name="sort_by_combo" SelectedIndex="0" SelectionChanged ="ComboBox_SelectionChanged" >
+                                <ComboBoxItem Content="내림차순"/>
+                                <ComboBoxItem Content="오름차순"/>
                             </ComboBox>
                         </StackPanel>
                     </Grid>
 
                 </StackPanel>
 
-                <ListView x:Name="event_list" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Row="1" Padding="0" SelectionChanged="ListView_SelectionChanged">
+                <ListView x:Name="event_list" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Row="1" Padding="0" SelectionChanged="ListView_SelectionChanged" SelectedIndex="0">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -246,6 +246,7 @@
                     </ListView.ItemTemplate>
                     <ListView.ContextMenu>
                         <ContextMenu>
+                            
                             <!--우클릭시 이벤트 Click 속성 추가해서 함수 만들자-->
                             <MenuItem Header="이미지 자세히 보기" Click="see_Detail_event" />
                             <MenuItem Header="이벤트 삭제" Click="delete_event"/>
@@ -272,7 +273,5 @@
             <Grid Grid.Column="2">
             </Grid>
         </Grid>
-
-
     </Grid>
 </Window>

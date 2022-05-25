@@ -56,6 +56,8 @@ namespace LayoutTest1
         private int _count;
         SQLite_Event_DB database = new SQLite_Event_DB(); //데이터베이스
         int Max_Row_Count = 100; //최대 검색 개수
+        string order_Row = ""; // 정렬방법 desc and asc
+        int search_Type = -1;
 
         public MainWindow()
         {
@@ -78,7 +80,6 @@ namespace LayoutTest1
             FillCameraListBox(); 
             event_list.ItemsSource = EventList;
             //데이터베이스
-
 
             this.KeyDown += new KeyEventHandler(HandleEsc);
         }
@@ -293,7 +294,8 @@ namespace LayoutTest1
         private void event_search_time_content(object sender, RoutedEventArgs e) //이벤트 검색(예비)   
         {
             //이벤트 검색 누르면~
-
+            Max_Row_Count = -1; //전체 표시
+            max_row_combo.SelectedIndex = 4;
             DateTime dts = event_search_start_time.returnDT();
             DateTime dte = event_search_end_time.returnDT();
 
@@ -307,6 +309,7 @@ namespace LayoutTest1
                 }
                 else if((dts > dte)||(dts==dte))
                 {
+                    MessageBox.Show("시간 형식이 맞지 않거나 잘못된 입력값 입니다. \n 내용만으로 검색한 결과를 표시합니다.");
                     string query = make_Query(1);
                     see_some_event(query);
                 }
@@ -326,33 +329,96 @@ namespace LayoutTest1
             }
 
         }
+        private void Btn_Clear() // 모든 버튼 배경 투명으로 표시
+        {
+            Btn_c.Background = System.Windows.Media.Brushes.Transparent;
+            Btn_p.Background = System.Windows.Media.Brushes.Transparent;
+            Btn_f.Background = System.Windows.Media.Brushes.Transparent;
+            Btn_s.Background = System.Windows.Media.Brushes.Transparent;
+            Btn_l.Background = System.Windows.Media.Brushes.Transparent;
+        }
         private void event_search_car(object sender, RoutedEventArgs e)//이벤트 검색 - 자동차
         {
-            //차량 
+            //차량
+            Btn_Clear();
+            if(search_Type == 0)
+            {
+                Btn_c.Background = System.Windows.Media.Brushes.Transparent;
+                search_Type = -1;
+            }
+            else
+            {
+                search_Type = 0;
+                Btn_c.Background = System.Windows.Media.Brushes.DeepSkyBlue;
+            }
             string query = make_Query(3);
             see_some_event(query);
         }   
         private void event_search_person(object sender, RoutedEventArgs e)//이벤트 검색 - 사람
         {
             //사람
+            Btn_Clear();
+            if (search_Type == 1)
+            {
+                Btn_p.Background = System.Windows.Media.Brushes.Transparent;
+                search_Type = -1;
+            }
+            else
+            {
+                search_Type = 1;
+                Btn_p.Background = System.Windows.Media.Brushes.PeachPuff;
+            }
             string query = make_Query(4);
             see_some_event(query);
         }
         private void event_search_fire(object sender, RoutedEventArgs e)//이벤트 검색 - 화재
         {
             //화재
+            Btn_Clear();
+            if (search_Type == 2)
+            {
+                Btn_f.Background = System.Windows.Media.Brushes.Transparent;
+                search_Type = -1;
+            }
+            else
+            {
+                search_Type = 2;
+                Btn_f.Background = System.Windows.Media.Brushes.Red;
+            }
             string query = make_Query(5);
             see_some_event(query);
         }
         private void event_search_star(object sender, RoutedEventArgs e)//이벤트 검색 - 좋아요
         {
             //좋아요
+            Btn_Clear();
+            if (search_Type == 3)
+            {
+                Btn_s.Background = System.Windows.Media.Brushes.Transparent;
+                search_Type = -1;
+            }
+            else
+            {
+                search_Type = 3;
+                Btn_s.Background = System.Windows.Media.Brushes.Yellow;
+            }
             string query = make_Query(6);
             see_some_event(query);
         }
         private void event_search_live(object sender, RoutedEventArgs e)//이벤트 검색 - 실시간
         {
             //실시간으로 보기 버튼
+            Btn_Clear();
+            if (search_Type == 4)
+            {
+                Btn_l.Background = System.Windows.Media.Brushes.Transparent;
+                search_Type = -1;
+            }
+            else
+            {
+                search_Type = 4;
+                Btn_l.Background = System.Windows.Media.Brushes.LimeGreen;
+            }
             string query = make_Query(7);
             see_some_event(query);
         }
@@ -361,7 +427,7 @@ namespace LayoutTest1
             string result = "";
             string _dts = event_search_start_time.returnDT().ToString("yyyy-MM-dd HH:mm:ss");
             string _dte = event_search_end_time.returnDT().ToString("yyyy-MM-dd HH:mm:ss");
-
+            
             switch (event_type)
             {
                 case 0://시간
@@ -371,7 +437,7 @@ namespace LayoutTest1
                 case 2://시간 + 내용
                     result = "select * from events where strftime('%s', E_time) between strftime('%s', '" + _dts + "') and strftime('%s', '" + _dte + "') and E_Content like '%" + Search_content.Text + "%'"; break;
                 case 3://차량
-                    result = "select * from events where E_kind=0"; break;
+                    result = "select * from events where E_kind=0 "; break;
                 case 4://사람
                     result = "select * from events where E_kind=1"; break;
                 case 5://화재
@@ -379,8 +445,23 @@ namespace LayoutTest1
                 case 6://좋아요
                     result = "select * from events where E_star=1"; break;
                 case 7://실시간 검색
-                    result = "select * from events order by E_index desc"; break;
+                    result = "select * from events "; break;
             }
+
+            switch (search_Type)
+            {
+                case -1: break;
+                case 0:
+                    result += " and E_kind=0 "; break;
+                case 1:
+                    result += " and E_kind=1 "; break;
+                case 2:
+                    result += " and E_kind=2 "; break;
+                case 3:
+                    result += " and E_star=1 "; break;
+                case 4: break;
+            }
+
             return result;
         }
         private void StarBtn(object sender, RoutedEventArgs e) //좋아요 버튼
@@ -409,23 +490,33 @@ namespace LayoutTest1
         {
             //눌린 상태면
             JObject j = JObject.Parse(json);
-            Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
-            try
+            if (j["Kind_event"].ToString() == "100")
             {
-                database.Insert_Row(e.Image_String, e.time, e.content, e.kind); //해당 이벤트를 db에 저장.
-                update_DB();//새로운 이벤트가 발생할때마다 list 업데이트 (다시 검색해서 refresh 함)
+
             }
-            catch(Exception ex)
+            else
             {
-                Console.WriteLine(ex.Message);
+                Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
+                try
+                {
+                    database.Insert_Row(e.Image_String, e.time, e.content, e.kind); //해당 이벤트를 db에 저장.
+                    update_DB();//새로운 이벤트가 발생할때마다 list 업데이트 (다시 검색해서 refresh 함)
+
+                    //ROI 영역 판별하고 화면에 차량 boundary 표시하는 부분
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
+
         }
         private void see_some_event(string query) //db에서 임의의 query에 대해 결과를 받아와 itemsource에 넣어줌.
         {
             //EventList.Clear();
-            EventList = database.Select_Row(query, Max_Row_Count); //100개만 보여준다는 뜻
-
-            //event_list.ItemsSource = EventList;
+            EventList = database.Select_Row(query, order_Row, Max_Row_Count); //100개만 보여준다는 뜻
+            event_list.ItemsSource = EventList;
             bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
         }
         public void update_DB() //db에서 실행된 마지막 query에 대해 결과를 받아와 itemsource에 넣어줌
@@ -433,16 +524,18 @@ namespace LayoutTest1
             if(database.last_query != "")
             {
                 //마지막쿼리 보여줌
-                EventList = database.Select_Row(database.last_query, Max_Row_Count);
-                //event_list.ItemsSource = EventList;
+                EventList = database.Select_Row(database.last_query, order_Row, Max_Row_Count);
+                event_list.ItemsSource = EventList;
                 bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
             }
             else
             {
                 //실시간 표시해줌
-                EventList = database.Select_Row(make_Query(7), Max_Row_Count);
-                //event_list.ItemsSource = EventList;
-                //bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
+                if (event_list == null)
+                    return;
+                EventList = database.Select_Row(make_Query(7), order_Row, Max_Row_Count);
+                event_list.ItemsSource = EventList;
+                bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
             }
         }
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e) //이벤트 listview 선택줄 변경시
@@ -483,22 +576,35 @@ namespace LayoutTest1
         private void see_Detail_event(object sender, RoutedEventArgs e)
         {
             //우클릭시 이벤트 자세히 보기
-            try
+            if(event_list.SelectedIndex != -1)
             {
                 System.Windows.Media.ImageSource i = EventList[event_list.SelectedIndex].image;
                 Show_Event_Detail sed = new Show_Event_Detail(i);
                 sed.Show();
             }
-            catch
+            else
             {
-
+                MessageBox.Show("데이터를 표시하는 도중 실패했습니다.");
             }
         }
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox combo = sender as ComboBox;
+            if (combo.SelectedIndex == 0)
+            {
+                order_Row = "desc";
+            }
+            else if (combo.SelectedIndex == 1)
+            {
+                order_Row = "asc";
+            }
+            update_DB();
+        }
 
-    #endregion
+        #endregion
 
-    #region Live Click handling
-    private void select_meta_channel(object sender, EventArgs e)
+        #region Live Click handling
+        private void select_meta_channel(object sender, EventArgs e)
         {
             if (_metadataLiveSource != null)
             {
@@ -597,10 +703,21 @@ namespace LayoutTest1
         private void max_row_combo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox combo = sender as ComboBox;
-            Max_Row_Count = int.Parse(combo.SelectedValue.ToString());
+            if(combo.SelectedValue.ToString() == "전체")
+            {
+                //최대 표시 개수가 크면 로딩에 시간이 걸릴 수 있습니다. -> popup 또는 message 창
+                Max_Row_Count = -1;
+            }
+            else
+            {
+                Max_Row_Count = int.Parse(combo.SelectedValue.ToString());
+
+            }
             update_DB();
         }
         #endregion
+
+
 
     }
 }

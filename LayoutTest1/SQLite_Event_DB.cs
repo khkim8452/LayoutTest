@@ -55,13 +55,30 @@ namespace LayoutTest1
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery(); //오류 발생 = / token 잘못된 문자열
         } //데이터 추가
-        public ObservableCollection<Event_> Select_Row(string sql, int Max_Row) //데이터 추출
+        public ObservableCollection<Event_> Select_Row(string sql, string asc_desc, int Max_Row) //데이터 추출
         {
             //최대 1000개만 보여주기
             ObservableCollection<Event_> le = new ObservableCollection<Event_>();
             last_query = sql;
-            SQLiteCommand cmd = new SQLiteCommand(sql + " limit " + Max_Row, conn);
-            SQLiteDataReader rdr = cmd.ExecuteReader();
+            SQLiteDataReader rdr;
+
+            if(asc_desc != "")
+            {
+                sql += " order by E_index " + asc_desc;
+            }
+
+            if (Max_Row == -1)
+            {
+                //전체 출력
+
+                SQLiteCommand cmd = new SQLiteCommand(sql, conn);
+                rdr = cmd.ExecuteReader();
+            }
+            else
+            {
+                SQLiteCommand cmd = new SQLiteCommand(sql + " limit " + Max_Row, conn);
+                rdr = cmd.ExecuteReader();
+            }
 
             if (rdr.HasRows && sql != "")
             {
