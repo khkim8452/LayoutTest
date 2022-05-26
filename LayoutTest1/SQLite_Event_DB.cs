@@ -33,7 +33,6 @@ namespace LayoutTest1
                 Create_Table();//테이블을 만들고
             }
         }
-
         private void Create_DB_File()
         {
             SQLiteConnection.CreateFile(System.IO.Directory.GetCurrentDirectory() + @"event_DB.sqlite");
@@ -49,13 +48,13 @@ namespace LayoutTest1
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery();
         }
-        public void Insert_Row(string E_image_, string E_time_, string E_content_, int kind)
+        public void Insert_Row(string E_image_, string E_time_, string E_content_, int kind)//데이터 추가
         {
             string sql = "insert into events (E_image, E_time, E_content, E_kind, E_star) values (\"" + E_image_ + "\",\"" + E_time_ + "\",\"" + E_content_ + "\"," + kind + "," + false + ")";
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery(); //오류 발생 = / token 잘못된 문자열
-        } //데이터 추가
-        public ObservableCollection<Event_> Select_Row(string sql, string asc_desc, int Max_Row) //데이터 추출
+        } 
+        public ObservableCollection<Event_> Select_Row(string sql, string asc_desc, int Max_Row)//데이터 추출
         {
             //최대 1000개만 보여주기
             ObservableCollection<Event_> le = new ObservableCollection<Event_>();
@@ -118,13 +117,12 @@ namespace LayoutTest1
             rdr.Close();
             return le;
         }
-        public void operate_this_query(string sql)
+        public void operate_this_query(string sql)//데이터 수정, 데이터 삭제 
         {
             //그냥 sql을 실행해주는 함수 
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery();
-
-        } //데이터 수정, 데이터 삭제 
+        } 
         private void Close_Connection(object sender, RoutedEventArgs e)
         {
             conn.Close();

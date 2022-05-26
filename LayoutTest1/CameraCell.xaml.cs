@@ -31,6 +31,7 @@ namespace LayoutTest1
     /// </summary>
     public partial class CameraCell : UserControl
     {
+        ObservableCollection<DrawROI> ROIs_list = new ObservableCollection<DrawROI>();
         int _mode = 0;
         bool _isSingleMode = false;
         bool Maintain_R = false;
@@ -373,7 +374,7 @@ namespace LayoutTest1
             //저장된걸 가지고 오기
             save_ROI save_roi = new save_ROI();
             save_roi.set_path(System.IO.Directory.GetCurrentDirectory() + _v.CameraFQID.ObjectId);
-            ObservableCollection<DrawROI> ROIs_list = new ObservableCollection<DrawROI>();
+            ROIs_list = new ObservableCollection<DrawROI>();
             cell_canvas_roi.Children.Clear();
             if (save_roi.is_savefile_exist()) //세이브파일이 있으면
             {
@@ -401,9 +402,81 @@ namespace LayoutTest1
             }
         }
 
-        public void isROIon()
+        public bool isROIon(double x, double y, double w, double h) //poly 안에 box가 50 % 이상 차있으면, true를 반환
         {
+            //하나의 box를 가지고 와서 모든 roi와 비교 해야한다. 하나라도 5개 이상 겹치면 true 아니면 false를 반환한다.
+            Point p00 = new Point(x, y);            Point p01 = new Point(x + w / 2, y);            Point p02 = new Point(x + w, y);
+            Point p10 = new Point(x, y + h / 2);    Point p11 = new Point(x + w / 2, y + h / 2);    Point p12 = new Point(x + w, y + h / 2);
+            Point p20 = new Point(x, y + h);        Point p21 = new Point(x + w / 2, y + h);        Point p22 = new Point(x + w, y + h);
 
+            int count = 0;
+
+            for(int i = 0; i< this.ROIs_list.Count; i++) //ROI 개수
+            {
+                Point[] points = new Point[ROIs_list[i].ROI_Points.Count];
+                for (int j = 0; j < ROIs_list[i].ROI_Points.Count;j++)//point 수 
+                {
+                    points[j] = ROIs_list[i].ROI_Points[j];//형변환
+                }
+                if (IsInPolygon(points, p00)) { count++; }
+                if (IsInPolygon(points, p01)) { count++; }
+                if (IsInPolygon(points, p02)) { count++; }
+                if (IsInPolygon(points, p10)) { count++; }
+                if (IsInPolygon(points, p11)) { count++; }
+                if (IsInPolygon(points, p12)) { count++; }
+                if (IsInPolygon(points, p20)) { count++; }
+                if (IsInPolygon(points, p21)) { count++; }
+                if (IsInPolygon(points, p22)) { count++; }
+                if(count >= 5)
+                {
+                    return true;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            return false;
+        }
+        public static bool IsInPolygon(Point[] poly, Point p) //p 가 poly안에 있으면 true, 없으면 false
+        {
+            Point p1, p2;
+            bool inside = false;
+
+            if (poly.Length < 3)
+            {
+                return inside;
+            }
+
+            var oldPoint = new Point(
+                poly[poly.Length - 1].X, poly[poly.Length - 1].Y);
+
+            for (int i = 0; i < poly.Length; i++)
+            {
+                var newPoint = new Point(poly[i].X, poly[i].Y);
+
+                if (newPoint.X > oldPoint.X)
+                {
+                    p1 = oldPoint;
+                    p2 = newPoint;
+                }
+                else
+                {
+                    p1 = newPoint;
+                    p2 = oldPoint;
+                }
+
+                if ((newPoint.X < p.X) == (p.X <= oldPoint.X)
+                    && (p.Y - (long)p1.Y) * (p2.X - p1.X)
+                    < (p2.Y - (long)p1.Y) * (p.X - p1.X))
+                {
+                    inside = !inside;
+                }
+
+                oldPoint = newPoint;
+            }
+
+            return inside;
         }
     }
 }

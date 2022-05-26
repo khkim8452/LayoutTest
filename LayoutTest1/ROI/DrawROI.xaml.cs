@@ -320,6 +320,9 @@ namespace LayoutTest1
             ROI_paper.Children.Add(Close_line); // 끝선 추가
         }
         
-
+        public List<Point> return_points()
+        {
+            return this.ROI_Points;
+        }
     }
 }

@@ -493,7 +493,7 @@ namespace LayoutTest1
             if (j["Kind_event"].ToString() == "100")
             {
                 l.Cells[0, 0].cell_object_border.Children.Clear();
-                Console.WriteLine("1프레임당. ");
+                Console.WriteLine("1프레임 화면 표시");
                 //카메라 그리드에 접근해야함
                 string[] xywh_ = j["xywh_event"].ToString().Split(' ');
                 for(int i = 0;i< xywh_.Length / 4; i++)
@@ -503,31 +503,40 @@ namespace LayoutTest1
                     rect.StrokeThickness = 5;
                     rect.Stroke = new SolidColorBrush(Colors.Yellow);
                     rect.Fill = new SolidColorBrush(Colors.Transparent);
-                    Canvas.SetTop(rect, double.Parse(xywh_[k+1]));
                     Canvas.SetLeft(rect, double.Parse(xywh_[k]));
+                    Canvas.SetTop(rect, double.Parse(xywh_[k+1]));
                     rect.Width = double.Parse(xywh_[k + 2]);
                     rect.Height = double.Parse(xywh_[k + 3]);
                     l.Cells[0, 0].cell_object_border.Width = l.Cells[0, 0].cell_canvas_roi.Width;
                     l.Cells[0, 0].cell_object_border.Height = l.Cells[0, 0].cell_canvas_roi.Height;
+                    if(l.Cells[0, 0].isROIon(double.Parse(xywh_[k]), double.Parse(xywh_[k+1]), double.Parse(xywh_[k + 2]), double.Parse(xywh_[k + 3])))// 차량 좌표가 ROI 좌표 위에 있는지 확인하는 함수
+                    {
+                        Console.WriteLine("겹침");
+                        rect.Stroke = new SolidColorBrush(Colors.Green);
+                    }
+                    else
+                    {
+                        Console.WriteLine("안겹침");
+                        rect.Stroke = new SolidColorBrush(Colors.Red);
+                    }
                     l.Cells[0, 0].cell_object_border.Children.Add(rect);
-                    l.Cells[0, 0].isROIon();// 차량 좌표가 ROI 좌표 위에 있는지 확인하는 함수
                 }
             }
             else
             {
-                Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
-                try
-                {
-                    database.Insert_Row(e.Image_String, e.time, e.content, e.kind); //해당 이벤트를 db에 저장.
-                    update_DB();//새로운 이벤트가 발생할때마다 list 업데이트 (다시 검색해서 refresh 함)
+                //Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
+                //try
+                //{
+                //    database.Insert_Row(e.Image_String, e.time, e.content, e.kind); //해당 이벤트를 db에 저장.
+                //    update_DB();//새로운 이벤트가 발생할때마다 list 업데이트 (다시 검색해서 refresh 함)
 
-                    //ROI 영역 판별하고 화면에 차량 boundary 표시하는 부분
+                //    //ROI 영역 판별하고 화면에 차량 boundary 표시하는 부분
 
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    Console.WriteLine(ex.Message);
+                //}
             }
 
         }
@@ -632,7 +641,6 @@ namespace LayoutTest1
                 _metadataLiveSource.Close();
                 _metadataLiveSource = null;
             }
-
 
             ItemPickerForm form = new ItemPickerForm();
             form.KindFilter = Kind.Metadata;
