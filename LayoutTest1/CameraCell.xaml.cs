@@ -401,5 +401,9 @@ namespace LayoutTest1
             }
         }
 
+        public void isROIon()
+        {
+
+        }
     }
 }

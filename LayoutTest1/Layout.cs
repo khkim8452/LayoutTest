@@ -28,7 +28,7 @@ namespace LayoutTest1
         public int Row = 4;
         public int Col = 4;
         public string LayoutName = null;
-        CameraCell[,] Cells=null;
+        public CameraCell[,] Cells=null;
 
         public bool IsSingle = false;
 

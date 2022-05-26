@@ -492,7 +492,26 @@ namespace LayoutTest1
             JObject j = JObject.Parse(json);
             if (j["Kind_event"].ToString() == "100")
             {
-
+                l.Cells[0, 0].cell_object_border.Children.Clear();
+                Console.WriteLine("1프레임당. ");
+                //카메라 그리드에 접근해야함
+                string[] xywh_ = j["xywh_event"].ToString().Split(' ');
+                for(int i = 0;i< xywh_.Length / 4; i++)
+                {
+                    int k = i * 4;
+                    System.Windows.Shapes.Rectangle rect = new System.Windows.Shapes.Rectangle();
+                    rect.StrokeThickness = 5;
+                    rect.Stroke = new SolidColorBrush(Colors.Yellow);
+                    rect.Fill = new SolidColorBrush(Colors.Transparent);
+                    Canvas.SetTop(rect, double.Parse(xywh_[k+1]));
+                    Canvas.SetLeft(rect, double.Parse(xywh_[k]));
+                    rect.Width = double.Parse(xywh_[k + 2]);
+                    rect.Height = double.Parse(xywh_[k + 3]);
+                    l.Cells[0, 0].cell_object_border.Width = l.Cells[0, 0].cell_canvas_roi.Width;
+                    l.Cells[0, 0].cell_object_border.Height = l.Cells[0, 0].cell_canvas_roi.Height;
+                    l.Cells[0, 0].cell_object_border.Children.Add(rect);
+                    l.Cells[0, 0].isROIon();// 차량 좌표가 ROI 좌표 위에 있는지 확인하는 함수
+                }
             }
             else
             {
