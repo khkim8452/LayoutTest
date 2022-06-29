@@ -11,6 +11,7 @@ using System.Data.SQLite;
 using System.IO;
 using System.Collections.ObjectModel;
 using System;
+using System.Diagnostics;
 
 namespace LayoutTest1
 {
@@ -44,18 +45,20 @@ namespace LayoutTest1
         }
         private void Create_Table()
         {
-            string sql = "create table events (E_index Integer primary key autoincrement, E_image string, E_time datetime, E_content string, E_kind integer, E_star bool)";
+            string sql = "create table events (E_index Integer primary key autoincrement, E_image string, E_time datetime, E_content string, E_kind integer, E_star bool, E_fqid string)";
             SQLiteCommand command = new SQLiteCommand(sql, conn);
             int result = command.ExecuteNonQuery();
         }
-        public void Insert_Row(string E_image_, string E_time_, string E_content_, int kind)//데이터 추가
+        public void Insert_Row(string E_image_, string E_time_, string E_content_, int kind, string fqid)//데이터 추가
         {
-            string sql = "insert into events (E_image, E_time, E_content, E_kind, E_star) values (\"" + E_image_ + "\",\"" + E_time_ + "\",\"" + E_content_ + "\"," + kind + "," + false + ")";
+            string sql = "insert into events (E_image, E_time, E_content, E_kind, E_star, E_fqid) values (\"" + E_image_ + "\",\"" + E_time_ + "\",\"" + E_content_ + "\"," + kind + "," + false + ",\"" + fqid + "\")";
             SQLiteCommand command = new SQLiteCommand(sql, conn);
-            int result = command.ExecuteNonQuery(); //오류 발생 = / token 잘못된 문자열
+            int result = command.ExecuteNonQuery();
         } 
         public ObservableCollection<Event_> Select_Row(string sql, string asc_desc, int Max_Row)//데이터 추출
         {
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             //최대 1000개만 보여주기
             ObservableCollection<Event_> le = new ObservableCollection<Event_>();
             last_query = sql;
@@ -75,12 +78,17 @@ namespace LayoutTest1
             }
             else
             {
+                Console.WriteLine($"step 1 : {sw.ElapsedMilliseconds}");
+
                 SQLiteCommand cmd = new SQLiteCommand(sql + " limit " + Max_Row, conn);
                 rdr = cmd.ExecuteReader();
+                Console.WriteLine($"step 2 : {sw.ElapsedMilliseconds}");
+
             }
 
             if (rdr.HasRows && sql != "")
             {
+                Console.WriteLine($"step 3 : {sw.ElapsedMilliseconds}");
                 while (rdr.Read())
                 {
                     Event_ eee = new Event_();
@@ -89,6 +97,7 @@ namespace LayoutTest1
                     BitmapImage bmp = new BitmapImage();
                     bmp.BeginInit();
                     bmp.StreamSource = new System.IO.MemoryStream(data);
+                    
                     bmp.EndInit();
                     eee.index = int.Parse(rdr["E_index"].ToString());
                     eee.image = bmp;
@@ -96,18 +105,19 @@ namespace LayoutTest1
                     eee.content = rdr["E_content"].ToString();
                     eee.kind = int.Parse(rdr["E_kind"].ToString());
                     eee.star = string_to_bool(rdr["E_Star"].ToString());
+                    eee.fqid = rdr["E_fqid"].ToString();
                     if(eee.star)
                     {
                         eee.Starbtn_color = Brushes.Yellow;
                     }
                     else
                     {
-                    
                         eee.Starbtn_color = Brushes.Transparent;
                     }
 
                     le.Add(eee);
                 }
+                Console.WriteLine($"step 4 : {sw.ElapsedMilliseconds}");
             }
             else
             {
@@ -115,6 +125,7 @@ namespace LayoutTest1
             }
 
             rdr.Close();
+            Console.WriteLine($"step 5: {sw.ElapsedMilliseconds}");
             return le;
         }
         public void operate_this_query(string sql)//데이터 수정, 데이터 삭제 

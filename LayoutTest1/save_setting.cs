@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using System.Windows;
 
 namespace LayoutTest1
 {
     internal class save_setting
     {
         //세이브 파일 저장할 경로
-        string save_path ;
+        string save_path;
         //Json 객체 생성
         JObject save_obj = new JObject();
         save_file_container sfc = new save_file_container();
@@ -37,10 +38,8 @@ namespace LayoutTest1
         }
         public void save_MainWindow(int arr_cam, bool full_display)
         {
-            save_obj = new JObject(
-                new JProperty("array_of_cam", arr_cam),// 카메라 배치 (ex. 3x3 4x4)
-                new JProperty("full_display", full_display)//전체 화면
-                );
+            save_obj.Add("array_of_cam", arr_cam);
+            save_obj.Add("full_display", full_display);
 
             File.WriteAllText(save_path, save_obj.ToString());
 
@@ -74,17 +73,24 @@ namespace LayoutTest1
             {
                 string json = File.ReadAllText(save_path); //파일을 가지고 와서 
                 JObject jobj = JObject.Parse(json); //파싱
-                arr_cam = int.Parse(jobj["array_of_cam"].ToString());
+                if (jobj["array_of_cam"] != null)
+                {
+                    arr_cam = int.Parse(jobj["array_of_cam"].ToString());
+                }
+                else
+                {
+                    return -1;
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
             return arr_cam;
-            
+
         }
-        
-        
+
+
         public bool load_MainWindow_2() //전체화면
         {
             bool is_full_screen = false;
@@ -121,6 +127,49 @@ namespace LayoutTest1
             return sfc;
 
         }
+        public bool have_the_main_data()
+        {
+            string json = File.ReadAllText(save_path);
+            JObject jobj = JObject.Parse(json);
+
+            if (jobj["array_of_cam"] == null )
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        public bool have_the_bell_data(string bell_id)
+        {
+            string json = File.ReadAllText(save_path);
+            JObject jobj = JObject.Parse(json);
+            if (jobj[bell_id] == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+        public string load_bell_data(string bell_id)
+        {
+            string json = File.ReadAllText(save_path);
+            JObject jobj = JObject.Parse(json);
+            string bell_fqid = jobj[bell_id].ToString();//bell_id에 저장된 fQID를 가지고 온다.
+
+            return bell_fqid;
+
+        }
+        public void save_bell_data(string bell_id, string FQID__)
+        {
+            string fqid = FQID__;
+            save_obj.Add(bell_id, FQID__);
+            File.WriteAllText(save_path, save_obj.ToString());
+        }
+
 
         private bool string_to_bool(string str)
         {

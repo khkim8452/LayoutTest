@@ -33,6 +33,9 @@
                 <!--메인 프로그램 이름-->
                 <ColumnDefinition Width="*"/>
                 <!--상단 메뉴 구성-->
+                <ColumnDefinition Width="230"/>
+                <!--상단 메뉴 구성-->
+
 
             </Grid.ColumnDefinitions>
 
@@ -40,7 +43,7 @@
             <!--메인 프로그램 로고-->
             <Image x:Name="program_name" Grid.Column="1"/>
             <!--메인 프로그램 이름-->
-            <StackPanel x:Name="top_menu_bar" Grid.Column="2" Orientation="Horizontal" >
+            <StackPanel x:Name="top_menu_bar" Grid.Column="2" Orientation="Horizontal">
                 <!--상단 메뉴 구성-->
 
                 <Button Content="{materialDesign:PackIcon Kind=Fullscreen, Size=30}" Background="Transparent" BorderBrush="Transparent" Padding="0" Click="Full_Screen_Btn_Click" />
@@ -61,6 +64,14 @@
                 <!--사용자 정의 컨트롤로 만들기 -->
 
                 <Button Content="녹화 기록" Margin="5" Click="PlayBack_Viewer" Width="Auto"/>
+
+
+            </StackPanel>
+            
+            <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Serial port :" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White"/>
+                <ComboBox x:Name="port_name" Grid.Column="1" Grid.Row="0" Margin="2" DataContext="" Width="100" Foreground="White"/>
+                <Button x:Name="serial_connect_Btn" Grid.Column="2" Grid.Row="0" Content="연결" Margin="2" Click="scb_Click" Width="60" Padding="0"/>
             </StackPanel>
 
 
@@ -91,13 +102,12 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="14*"/>
-                            <ColumnDefinition Width="61*"/>
-                        </Grid.ColumnDefinitions>
                         <!--카메라 리스트 상단표시-->
                         <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
-                            <materialDesign:PackIcon Kind="Cctv" Foreground="White" Padding="0" Width="40" Height="40"/>
+                            <Border BorderBrush="DarkGray" BorderThickness="1" Margin="1" >
+                                <materialDesign:PackIcon Kind="Cctv" Foreground="White" Padding="0" Width="40" Height="40"/>
+                            </Border>
+                            <Label Content="카메라 리스트" VerticalAlignment="Center" Foreground="White" Margin="0" FontSize="16"/>
                         </StackPanel>
                     </Grid>
                     <ListBox x:Name="camera_list_box" SelectionMode="Extended" AllowDrop="True" Grid.Row="1" 
@@ -115,6 +125,48 @@
                 </Grid>
 
                 <Grid Grid.Row="1">
+
+                    <!--ListView x:Name="parking_list" d:ItemsSource="{d:SampleData ItemCount=5}" Grid.Row="1" Padding="0" SelectionChanged="parking_list_SelectionChanged" SelectedIndex="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="145"/>
+                                        <ColumnDefinition Width="75"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="90"/>
+                                        <RowDefinition Height="20"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Canvas x:Name="event_picture" Grid.Row="0" Grid.Column="0" >
+                                        <Image Source="{Binding image, UpdateSourceTrigger=PropertyChanged}" Stretch="Uniform" Visibility="Visible"
+                                           Width="{Binding ElementName=event_picture, Path=ActualWidth}" Height="{Binding ElementName=event_picture, Path=ActualHeight}"/>
+                                    </Canvas>
+                                    <TextBlock x:Name="event_time" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding time, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Label Width="40" Content="{Binding index}" FontSize="9" VerticalAlignment="Center" Padding="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"/>
+                                            <Button Content="{materialDesign:PackIcon Kind=Star, Size=25}" Background="{Binding starbtn_color, UpdateSourceTrigger=PropertyChanged}" BorderBrush="Transparent" Click="StarBtn" Width="35" Padding="0" Cursor="Hand"/>
+
+                                        </StackPanel>
+                                        <Grid Height="5"/>
+                                        <TextBlock x:Name="event_content"  Text="{Binding content, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" />
+                                    </StackPanel>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+
+                                <MenuItem Header="이미지 자세히 보기" Click="parking_Item_detail" />
+                                <MenuItem Header="이벤트 삭제" Click="delete_event"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView-->
 
                 </Grid>
 
@@ -246,8 +298,9 @@
                     </ListView.ItemTemplate>
                     <ListView.ContextMenu>
                         <ContextMenu>
-                            
+
                             <!--우클릭시 이벤트 Click 속성 추가해서 함수 만들자-->
+                            <MenuItem Header="이벤트 시점으로 가기" Click="event_playback_view" />
                             <MenuItem Header="이미지 자세히 보기" Click="see_Detail_event" />
                             <MenuItem Header="이벤트 삭제" Click="delete_event"/>
                         </ContextMenu>

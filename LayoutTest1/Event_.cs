@@ -22,6 +22,7 @@ namespace LayoutTest1
         private string Time;
         private string Content;
         private int Kind;
+        private string FQID;
         // kind - 0 : car
         // kind - 1 : fire
         // kind - 2 : person
@@ -84,6 +85,18 @@ namespace LayoutTest1
                 OnPropertyChanged("kind");
             }
         }
+        public string fqid
+        {
+            get
+            {
+                return FQID;
+            }
+            set
+            {
+                FQID = value;
+                OnPropertyChanged("fqid");
+            }
+        }
         public ImageSource image
         {
             get
@@ -126,6 +139,7 @@ namespace LayoutTest1
             this.time = j["Time_event"].ToString();//시간 넣기
             this.content = j["Car_number_event"].ToString(); //일단
             this.kind = int.Parse(j["Kind_event"].ToString());// 이벤트 종류 넣기
+            this.FQID = j["FQID_event"].ToString();
         }
 
 

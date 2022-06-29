@@ -16,20 +16,24 @@ using System.IO;
 using VideoOS.Platform.SDK.UI.LoginDialog;
 using VideoOS.Platform.SDK.Media;
 using System.Windows.Threading;
+using System.Threading;
 using System.Data.SQLite;
-
 using VideoOS.Platform;
 using VideoOS.Platform.Live;
 using VideoOS.Platform.UI;
 using System.Diagnostics;
 using System.Globalization;
-
+using System.IO.Ports;
 
 // JSON 파일 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Drawing;
+
+// xml 파일
+using System.Xml;
+using System.Xml.Linq;
 
 namespace LayoutTest1
 {
@@ -58,6 +62,9 @@ namespace LayoutTest1
         int Max_Row_Count = 100; //최대 검색 개수
         string order_Row = ""; // 정렬방법 desc and asc
         int search_Type = -1;
+        SerialPort serial_Port = new SerialPort(); //시리얼 포트 
+        CameraCell single_cc; // 버튼 누르면 기존 single 모드 해제하기 위해 담아놓는 변수
+
 
         public MainWindow()
         {
@@ -80,8 +87,17 @@ namespace LayoutTest1
             FillCameraListBox(); 
             event_list.ItemsSource = EventList;
             //데이터베이스
-
             this.KeyDown += new KeyEventHandler(HandleEsc);
+
+            //ringobell 추가
+            string[] ports = SerialPort.GetPortNames();
+            port_name.ItemsSource = ports;
+
+
+
+            //ringobell
+
+
         }
         #region basic_function
         
@@ -126,13 +142,12 @@ namespace LayoutTest1
         {
             var loginForm = new DialogLoginForm(SetLoginResult, IntegrationId, IntegrationName, Version, ManufacturerName); //로그인 폼
 
-            //loginForm.AutoLogin = false;
+            loginForm.AutoLogin = false;
             loginForm.ShowDialog();
             if (Connected)
             {
                 loginForm.Close();
                 l = Layout.Instance;
-
             }
         }
 
@@ -254,10 +269,13 @@ namespace LayoutTest1
         {
             if (ss.is_savefile_exist())
             {
-                int a = ss.load_MainWindow_1();
-                bool b = ss.load_MainWindow_2();
-                default_rowcol = a;
-                is_fullscreen = b;
+                if(ss.load_MainWindow_1() != -1)
+                {
+                    int a = ss.load_MainWindow_1(); //스케일 가져오기
+                    bool b = ss.load_MainWindow_2();//전체화면 여부 가져오기
+                    default_rowcol = a;
+                    is_fullscreen = b;
+                }
 
             }
             else
@@ -486,85 +504,165 @@ namespace LayoutTest1
             update_DB();
             //(sender as Button).Background = System.Windows.Media.Brushes.Yellow;
         }
-        private void event_occur(string json) //이벤트가 발생하면 실행할 함수
+
+        private void draw_rect_event_received(int cell_x, int cell_y, string[] xywh) //새로 받은 영역 rectangle 칠하기.
         {
+            l.Cells[cell_x, cell_y].cell_object_border.Children.Clear();//원래 그림 지우고,
+            string[] xywh_ = xywh;
+            for (int i = 0; i < xywh_.Length / 4; i++)
+            {
+                int k = i * 4;
+                System.Windows.Shapes.Rectangle rect = new System.Windows.Shapes.Rectangle();
+                rect.StrokeThickness = 5;
+                rect.Stroke = new SolidColorBrush(Colors.Yellow);
+                rect.Fill = new SolidColorBrush(Colors.Transparent);
+                Canvas.SetLeft(rect, double.Parse(xywh_[k]));   //x 좌표
+                Canvas.SetTop(rect, double.Parse(xywh_[k + 1]));//y 좌표
+                rect.Width = double.Parse(xywh_[k + 2]);        //w 너비
+                rect.Height = double.Parse(xywh_[k + 3]);       //h 높이
+                //l.Cells[cell_x, cell_y]._cameraitem.GetRelated();//무엇을 가지고 있는지 보기 위해
+                l.Cells[cell_x, cell_y].cell_object_border.Width = l.Cells[cell_x, cell_y].cell_canvas_roi.Width;
+                l.Cells[cell_x, cell_y].cell_object_border.Height = l.Cells[cell_x, cell_y].cell_canvas_roi.Height;
+                if (l.Cells[cell_x, cell_y].isROIon(double.Parse(xywh_[k]), double.Parse(xywh_[k + 1]), double.Parse(xywh_[k + 2]), double.Parse(xywh_[k + 3])))// 차량 좌표가 ROI 좌표 위에 있는지 확인하는 함수
+                {
+                    rect.Stroke = new SolidColorBrush(Colors.Green);//ROI 안에서 그려지면 초록색으로 표시
+                }
+                else
+                {
+                    rect.Stroke = new SolidColorBrush(Colors.Red);//ROI 밖에서 그려지면 빨간색으로 표시
+                }
+                l.Cells[cell_x, cell_y].cell_object_border.Children.Add(rect);
+            }
+        }
+        private void on_the_ROI_count()
+        {
+
+            //얼마나 많이 감지된 차량인지 알려주는 함수
+            
+        }
+
+
+        private void event_occur_json(string json) //이벤트가 발생하면 실행할 함수
+        {
+
             //눌린 상태면
             JObject j = JObject.Parse(json);
             if (j["Kind_event"].ToString() == "100")
             {
-                l.Cells[0, 0].cell_object_border.Children.Clear();
-                Console.WriteLine("1프레임 화면 표시");
-                //카메라 그리드에 접근해야함
-                string[] xywh_ = j["xywh_event"].ToString().Split(' ');
-                for(int i = 0;i< xywh_.Length / 4; i++)
+                CameraCell cc = find_cam_from_FQID_object_id(j["FQID_event"].ToString());
+                string[] xywh = j["xywh_event"].ToString().Split(' ');
+                draw_rect_event_received(cc.Row, cc.Col, xywh); //rectangle 칠하기
+                on_the_ROI_count();//칠한거 count
+            }
+            else if (j["Kind_event"].ToString() == "500")
+            {
+                //주정차
+                CameraCell cc = find_cam_from_FQID_object_id(j["FQID_event"].ToString());
+                string[] xywh = j["xywh_event"].ToString().Split(' ');
+                draw_rect_event_received(cc.Row, cc.Col, xywh); //rectangle 칠하기
+                on_the_ROI_count();//칠한거 count
+            }
+            else //j["Kind_event"].ToString() == "0" 
+            {
+                Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
+                try
                 {
-                    int k = i * 4;
-                    System.Windows.Shapes.Rectangle rect = new System.Windows.Shapes.Rectangle();
-                    rect.StrokeThickness = 5;
-                    rect.Stroke = new SolidColorBrush(Colors.Yellow);
-                    rect.Fill = new SolidColorBrush(Colors.Transparent);
-                    Canvas.SetLeft(rect, double.Parse(xywh_[k]));
-                    Canvas.SetTop(rect, double.Parse(xywh_[k+1]));
-                    rect.Width = double.Parse(xywh_[k + 2]);
-                    rect.Height = double.Parse(xywh_[k + 3]);
-                    l.Cells[0, 0].cell_object_border.Width = l.Cells[0, 0].cell_canvas_roi.Width;
-                    l.Cells[0, 0].cell_object_border.Height = l.Cells[0, 0].cell_canvas_roi.Height;
-                    if(l.Cells[0, 0].isROIon(double.Parse(xywh_[k]), double.Parse(xywh_[k+1]), double.Parse(xywh_[k + 2]), double.Parse(xywh_[k + 3])))// 차량 좌표가 ROI 좌표 위에 있는지 확인하는 함수
-                    {
-                        Console.WriteLine("겹침");
-                        rect.Stroke = new SolidColorBrush(Colors.Green);
-                    }
-                    else
-                    {
-                        Console.WriteLine("안겹침");
-                        rect.Stroke = new SolidColorBrush(Colors.Red);
-                    }
-                    l.Cells[0, 0].cell_object_border.Children.Add(rect);
+                    database.Insert_Row(e.Image_String, e.time, e.content, e.kind, e.fqid); //해당 이벤트를 db에 저장.
+                    update_DB();
+                    //ROI 영역 판별하고 화면에 차량 boundary 표시하는 부분
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
                 }
             }
-            else
+        }
+        private void event_occur_xml(string xml) //이벤트가 발생하면 실행할 함수
+        {
+            //xml parsing -> truen 카메라임
+            double left = 0;
+            double top = 0;
+            double right = 0;
+            double bottom = 0;
+            xml = xml.Replace("tt:", string.Empty);//문자열 제거
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xml);
+            XmlNodeList xmlNodeList = doc.GetElementsByTagName("BoundingBox");
+            string temp = "";
+
+
+            //일단 scale 은 640 * 352 기준
+            XmlNodeList translate = doc.GetElementsByTagName("Translate");
+            XmlNodeList scale = doc.GetElementsByTagName("Scale");
+
+
+            if (xmlNodeList != null && translate != null && scale != null)
             {
-                //Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
-                //try
-                //{
-                //    database.Insert_Row(e.Image_String, e.time, e.content, e.kind); //해당 이벤트를 db에 저장.
-                //    update_DB();//새로운 이벤트가 발생할때마다 list 업데이트 (다시 검색해서 refresh 함)
+                //double scale_x = double.Parse(scale[0].Attributes["x"].Value);
+                //double scale_y = double.Parse(scale[0].Attributes["y"].Value);
+                //double meta_image_size_x = Math.Abs(2 / scale_x); //640
+                //double meta_image_size_y = Math.Abs(2 / scale_y); //352
 
-                //    //ROI 영역 판별하고 화면에 차량 boundary 표시하는 부분
+                for (int i = 0; i < xmlNodeList.Count; i++)
+                {
+                    left = double.Parse(xmlNodeList[i].Attributes["left"].Value) / 640 * 1920;
+                    top = double.Parse(xmlNodeList[i].Attributes["top"].Value) / 352 * 1080;
+                    right = double.Parse(xmlNodeList[i].Attributes["right"].Value) / 640 * 1920;
+                    bottom = double.Parse(xmlNodeList[i].Attributes["bottom"].Value) / 352 * 1080;
 
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine(ex.Message);
-                //}
+                    temp = temp + left + " " + top + " " + (right - left) + " " + (bottom - top) + " ";
+                }
             }
+            string[] xywh = temp.Split(' ');
+            draw_rect_event_received(2, 2, xywh); //rectangle 칠하기
 
         }
         private void see_some_event(string query) //db에서 임의의 query에 대해 결과를 받아와 itemsource에 넣어줌.
         {
-            //EventList.Clear();
+            EventList.Clear();
             EventList = database.Select_Row(query, order_Row, Max_Row_Count); //100개만 보여준다는 뜻
             event_list.ItemsSource = EventList;
             bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
         }
-        public void update_DB() //db에서 실행된 마지막 query에 대해 결과를 받아와 itemsource에 넣어줌
+        public async void update_DB() //db에서 실행된 마지막 query에 대해 결과를 받아와 itemsource에 넣어줌
         {
-            if(database.last_query != "")
-            {
-                //마지막쿼리 보여줌
-                EventList = database.Select_Row(database.last_query, order_Row, Max_Row_Count);
-                event_list.ItemsSource = EventList;
-                bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
-            }
-            else
-            {
-                //실시간 표시해줌
-                if (event_list == null)
-                    return;
-                EventList = database.Select_Row(make_Query(7), order_Row, Max_Row_Count);
-                event_list.ItemsSource = EventList;
-                bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
-            }
+            await Task.Run(new Action(() => {
+
+                if (database.last_query != "")
+                {
+                    
+                    //마지막쿼리 보여줌
+                    Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+                    {
+                        EventList = database.Select_Row(database.last_query, order_Row, Max_Row_Count);
+                        event_list.BeginInit();
+                        event_list.ItemsSource = EventList;
+                        event_list.EndInit();
+                        bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
+
+                    }));
+
+
+                }
+                else
+                {
+                    
+                    //실시간 표시해줌
+                    Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+                    {
+                        if (event_list == null)
+                            return;
+                        EventList = database.Select_Row(make_Query(7), order_Row, Max_Row_Count);
+                        event_list.BeginInit();
+                        event_list.ItemsSource = EventList;
+                        event_list.EndInit();
+                        bottom_system_alert.Text = EventList.Count().ToString() + "개의 이벤트를 표시중입니다.";
+
+                    }));
+                }
+            }));
+            
         }
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e) //이벤트 listview 선택줄 변경시
         {
@@ -585,8 +683,7 @@ namespace LayoutTest1
                 Debug.WriteLine("비활성화");
                 _metadataLiveSource.LiveModeStart = false;
             }
-        }
-        
+        }        
         private T FindParent<T>(DependencyObject dependencyObject) where T : DependencyObject
         {
             var parent = VisualTreeHelper.GetParent(dependencyObject);
@@ -722,7 +819,23 @@ namespace LayoutTest1
                 {
                     // Display the received metadata
                     var metadataXml = e.Content.GetMetadataString(); //날아온 json 파일
-                    event_occur(metadataXml); // 해당 json 파일을 parsing 하여 db에 저장.
+                    //xml인지 json인지 확인후 구분해주기
+                    metadataXml.Trim();
+                    if (metadataXml[0] == '<')
+                    {
+                        //xml 파일이면
+                        event_occur_xml(metadataXml);
+                    }
+                    else if (metadataXml[0] == '{')
+                    {
+                        //json 파일임
+                        event_occur_json(metadataXml); // 해당 json 파일을 parsing 하여 db에 저장.
+                    }
+                    else
+                    {
+                        Console.WriteLine("수신한 메타데이터의 형식을 알 수 없습니다.");
+                    }
+                    
                 }
             }
         }
@@ -742,9 +855,200 @@ namespace LayoutTest1
             }
             update_DB();
         }
+
+
         #endregion
 
+        private void parking_list_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
 
+        }
+
+        private void parking_Item_detail(object sender, RoutedEventArgs e)
+        {
+            //단속 이벤트 자세히 보기
+
+        }
+        #region ringo_bell
+        private void scb_Click(object sender, RoutedEventArgs e)
+        {
+            // 시리얼 포트 연결하는 버튼 
+            if (!serial_Port.IsOpen)
+            {
+                try
+                {
+                    if (port_name.Text == null)
+                    {
+                        System.Windows.MessageBox.Show("시리얼 포트를 선택해주세요");
+                        return;
+                    }
+                    serial_Port.PortName = port_name.Text.ToString();
+                    System.Console.WriteLine(serial_Port.PortName);
+                    serial_Port.BaudRate = 115200;
+                    serial_Port.DataBits = 8;
+                    serial_Port.StopBits = StopBits.One;
+                    serial_Port.Parity = Parity.None;
+                    //시리얼 통신 기본 설정.
+                    serial_Port.DataReceived += new SerialDataReceivedEventHandler(serialPort_DataReceived);
+                    //포트 연결
+                    serial_Port.Open();
+
+                    bottom_system_alert.Text = "시리얼 포트에 성공적으로 연결되었습니다.";
+                    port_name.IsEnabled = false;
+                    serial_connect_Btn.Content = "연결됨";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                    System.Windows.MessageBox.Show("시리얼 포트를 선택해주세요");
+                }
+            }
+        }
+
+
+        private void serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e) //데이터 수신시 정리, 답장해줌, bellid 반환
+        {
+            //데이터가 들어오면
+            Bell_Data bd = new Bell_Data((SerialPort)sender);
+
+            if(bd.Option == 0xA501 && bd.check_checksum())//데이터 종류 확인과 checksum 동시 확인
+            {
+                //pc연결 확인 
+                Byte[] b = { 0x03, 0x01, 0x00, 0x08, 0xC5, 0x01, 0x00, 0x2E };
+                serial_Port.Write(b, 0, b.Length); //확인 메시지 반송
+            }
+            else if(bd.Option == 0xA505 && bd.check_checksum())//데이터 종류 확인과 checksum 동시 확인
+            {
+                //bell data 받음
+                Byte[] b = { 0x03, 0x01, 0x00, 0x08, 0xC5, 0x05, 0x00, 0x2A };
+                serial_Port.Write(b, 0, b.Length);//확인 메시지 반송
+
+                string bell_id = bd.Bell_ID.ToString("x8");
+
+                if(ss.is_savefile_exist()) // 저장된 파일이 있고,
+                {
+                    if (ss.have_the_bell_data(bell_id)) // 벨 id가 저장되어있으면,
+                    {
+                        //띄워짐
+                        string loaded_FQID = ss.load_bell_data(bell_id);//저장된 json 파일로 부터 bell_id에 맞는 FQID를 가지고 오는 것
+                        CameraCell i = find_cam_from_FQID_object_id(loaded_FQID);
+                        if(i != null)
+                        {
+                            if (single_cc != null)
+                            {
+                                //띄워져있는게 있거나, 
+                                if (single_cc != i)//서로 다를경우
+                                {
+                                    Dispatcher.BeginInvoke(new Action(() => l.UnsetSingle(single_cc)));
+                                    Dispatcher.BeginInvoke(new Action(() => l.SetSingle(i)));
+                                    single_cc = i;
+                                    //띄워진거 내리고 새로운거 띄움
+                                }
+                                else if (single_cc == i)//서로 같을경우
+                                {
+                                    Dispatcher.BeginInvoke(new Action(() => l.UnsetSingle(single_cc)));
+                                    single_cc = null;
+                                    //띄워진거 내리기만 함
+                                }
+                            }
+                            else //안띄워짐
+                            {
+                                Dispatcher.BeginInvoke(new Action(() => l.SetSingle(i)));
+                                single_cc = i;
+                                //띄우고 띄워진것 체크
+                            }
+                        }
+                    }
+                    else
+                    {
+                        //데이터 없음
+                        MessageBoxResult result = MessageBox.Show("현재 bell 에 등록된 카메라가 없습니다. 등록하시겠습니까?", "등록", MessageBoxButton.YesNo);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            //등록
+                            //카메라 FQID 값을 받아 와야 함.
+                            int x = -1;
+                            int y = -1;
+                            var camera_picker = new ItemPickerForm();
+                            camera_picker.KindFilter = Kind.Camera;
+                            camera_picker.AutoAccept = true;
+                            camera_picker.Init(Configuration.Instance.GetItems());
+
+                            if (camera_picker.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                            {
+                                Item _selectItem = camera_picker.SelectedItem;
+                                string FQID_object = _selectItem.FQID.ObjectId.ToString();
+                                ss.save_bell_data(bell_id, FQID_object);
+                            }
+
+                            MessageBox.Show("등록이 완료되었습니다.");
+
+                        }
+                        else
+                        {
+                            //등록 안함.
+
+                        }
+                    }
+                }
+                else
+                {
+                    //savefile 없음
+                    MessageBox.Show("save file이 없습니다. 설정 저장후 다시 시도해주세요.");
+                    //또는 여기서 save파일을 만들자
+
+                }
+            }
+        }
+        private CameraCell find_cam_from_FQID_object_id(string FQID_object_id)
+        {
+            //벨 데이터랑 카메라 FQID랑 연결하는 부분.
+            for (int i = 0; i < l.Row; i++)
+            {
+                for (int j = 0; j < l.Col; j++)
+                {
+                    if (l.Cells[i, j]._cameraitem.FQID.ObjectId.ToString() == FQID_object_id)
+                    {
+                        //같으면 return
+                        return l.Cells[i, j];
+                    }
+                }
+            }
+            MessageBox.Show("선택한 카메라는 현재 표시되고 있지 않습니다.");
+            MessageBox.Show("카메라 object_id : " + FQID_object_id);
+            return null;
+        }
+        #endregion
+
+        private void event_playback_view(object sender, RoutedEventArgs e)
+        {
+            //이벤트 우클릭을 하면 해당 시점의 playback 영상을 보여준다.
+
+            if (event_list.SelectedIndex != -1)
+            {
+                Item camera_item = new Item();
+                string event_time = EventList[event_list.SelectedIndex].time;
+                string fqid = EventList[event_list.SelectedIndex].fqid;
+                if(fqid == "0")
+                {
+                    fqid = l.Cells[0, 0]._cameraitem.FQID.ObjectId.ToString();
+                    camera_item = find_cam_from_FQID_object_id(fqid)._cameraitem;
+
+                    if(camera_item != null)
+                    {
+                        LayoutTest1.Playback_Viewer pb = new LayoutTest1.Playback_Viewer();
+                        pb.self_on(camera_item, event_time);
+                        pb.ShowDialog();
+                    }
+                }
+                
+
+            }
+            else
+            {
+                MessageBox.Show("데이터를 표시하는 도중 실패했습니다. 선택된 데이터 항목이 없습니다.");
+            }
+        }
 
     }
 }

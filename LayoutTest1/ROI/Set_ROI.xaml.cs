@@ -220,7 +220,6 @@ namespace LayoutTest1
                 {
                     Brush b = new SolidColorBrush(color_picker.Color);
                     ROIs_list[polygon_item.SelectedIndex].main_color = b;
-
                 }
             }
         }

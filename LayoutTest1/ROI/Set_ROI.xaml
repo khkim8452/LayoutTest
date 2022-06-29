@@ -60,7 +60,7 @@
                                 </Button.Template>
                             </Button>
                             <TextBlock x:Name="list_text_block" Grid.Column="1" Text="{Binding name, UpdateSourceTrigger=PropertyChanged}" FontSize="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                            <CheckBox x:Name="list_radio_button" Grid.Column="1" Grid.Row="1" Content="이 ROI 보이기" FontSize="10" Checked="list_radio_button_Checked" Unchecked="list_radio_button_Unchecked" IsChecked="{Binding isvisible, UpdateSourceTrigger=PropertyChanged}"/>
+                            <CheckBox x:Name="list_radio_button" Grid.Column="1" Grid.Row="1" Content="이 ROI 사용" FontSize="10" Checked="list_radio_button_Checked" Unchecked="list_radio_button_Unchecked" IsChecked="{Binding isvisible, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

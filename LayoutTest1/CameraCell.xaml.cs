@@ -290,13 +290,15 @@ namespace LayoutTest1
                 //MessageBox.Show("이미지 고정을 해제합니다.");
                 _v.MaintainImageAspectRatio = false;
                 cell_view_roi.Stretch = Stretch.Fill;
+                cell_view_object.Stretch = Stretch.Fill;
             }
             else//풀린 상태이면 고정하기
             {
                 Maintain_R = true;
                 //MessageBox.Show("이미지를 고정합니다.");
                 _v.MaintainImageAspectRatio = true;
-                cell_view_roi.Stretch = Stretch.Uniform;
+                cell_view_roi.Stretch = Stretch.Uniform; 
+                cell_view_object.Stretch= Stretch.Uniform;
             }
         }
 
@@ -336,7 +338,7 @@ namespace LayoutTest1
         private void activate_PTZ(object sender, RoutedEventArgs e)
         {
             //PTZ 컨트롤을 활성화 하고 비활성화 합니다.
-            if (_cameraitem.Name.Contains("PTZ")) // 카메라 이름에 PTZ 글자가 들어가야 실행
+            if (_cameraitem.Name.Contains("")) // 카메라 이름에 PTZ 글자가 들어가야 실행
             {
                 ptzptz.set_ptz_item(this.CameraItem);
 
@@ -416,7 +418,11 @@ namespace LayoutTest1
                 Point[] points = new Point[ROIs_list[i].ROI_Points.Count];
                 for (int j = 0; j < ROIs_list[i].ROI_Points.Count;j++)//point 수 
                 {
-                    points[j] = ROIs_list[i].ROI_Points[j];//형변환
+                    if (ROIs_list[i].isvisible == true)
+                    {
+                        //보이는거면 하기
+                        points[j] = ROIs_list[i].ROI_Points[j];//형변환
+                    }
                 }
                 if (IsInPolygon(points, p00)) { count++; }
                 if (IsInPolygon(points, p01)) { count++; }
@@ -427,7 +433,7 @@ namespace LayoutTest1
                 if (IsInPolygon(points, p20)) { count++; }
                 if (IsInPolygon(points, p21)) { count++; }
                 if (IsInPolygon(points, p22)) { count++; }
-                if(count >= 5)
+                if(count >= 4)
                 {
                     return true;
                 }

@@ -62,6 +62,7 @@ namespace LayoutTest1
         public void ActivateCamera(Item item, int r, int c)
         {
             Cells[r, c].CameraItem = item;
+            Cells[r, c].CameraItem.GetRelated();
         }
         public void ActivateCameras(ListBoxItemsBag bag, int r, int c)
         {

@@ -21,12 +21,12 @@
                 <Viewbox x:Name="cell_view_roi" Stretch="Fill" Visibility="Visible" 
                      Width="{Binding ElementName=cell_top_grid_roi, Path=ActualWidth}" Height="{Binding ElementName=cell_top_grid_roi, Path=ActualHeight}" 
                      >
-                    <Canvas x:Name="cell_canvas_roi" />
+                    <Canvas x:Name="cell_canvas_roi" /> <!--roi-->
                 </Viewbox>
                 <Viewbox x:Name="cell_view_object" Stretch="Fill" Visibility="Visible" 
                      Width="{Binding ElementName=cell_top_grid_roi, Path=ActualWidth}" Height="{Binding ElementName=cell_top_grid_roi, Path=ActualHeight}" 
                      >
-                    <Canvas x:Name="cell_object_border" />
+                    <Canvas x:Name="cell_object_border" /> <!--box-->
                 </Viewbox>
             </Grid>
 

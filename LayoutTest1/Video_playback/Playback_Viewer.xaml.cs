@@ -69,10 +69,12 @@ namespace LayoutTest1
         private void _closeButton_Click(object sender, RoutedEventArgs e)
         {
             //VideoOS.Platform.SDK.Environment.RemoveAllServers();
+            EnvironmentManager.Instance.Mode = Mode.ClientLive;
             Close();
         }
 
         #region Select camera and setup controls
+
         private void SetupControls()
         {
             _imageViewerControl.Disconnect();
@@ -158,8 +160,6 @@ namespace LayoutTest1
         private void EnablePlayback()
         {
             _visibleTimeStampCheckBox.IsEnabled = true;
-            _playbackUserControl.Visibility = Visibility.Visible;
-            _playbackUserControl.SetEnabled(true);
             _imageViewerControl.StartBrowse();
             EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
                                                         VideoOS.Platform.Messaging.MessageId.System.ModeChangeCommand,
@@ -265,12 +265,20 @@ namespace LayoutTest1
         private void DatePicker_SelectedDateChanged(object sender, EventArgs e)
         {
 
+            //EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
+            //                                            MessageId.SmartClient.PlaybackCommand,
+            //                                            new PlaybackCommandData() { Command = PlaybackData.PlayStop }), _imageViewerControl.PlaybackControllerFQID);
+            //EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
+            //                                            MessageId.SmartClient.PlaybackCommand,
+            //                                            new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = _dateTimePicker.returnDT().ToUniversalTime() }), _imageViewerControl.PlaybackControllerFQID);
+
             EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
                                                         MessageId.SmartClient.PlaybackCommand,
                                                         new PlaybackCommandData() { Command = PlaybackData.PlayStop }), _imageViewerControl.PlaybackControllerFQID);
             EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
                                                         MessageId.SmartClient.PlaybackCommand,
                                                         new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = _dateTimePicker.returnDT().ToUniversalTime() }), _imageViewerControl.PlaybackControllerFQID);
+
 
         }
         #endregion
@@ -327,5 +335,27 @@ namespace LayoutTest1
 
         }
 
+
+        //외부에서 자동으로 켜주는 함수 ( main -> 이벤트 시점으로 가기)
+        public void self_on(Item i, string t) //f = fqid, t = time
+        {
+            SetupControls();
+            _selectItem = i;
+            LoadCamera(_selectItem);
+            var relatedItems = _selectItem.GetRelated();
+            LoadMicrophone(relatedItems);
+            LoadSpeaker(relatedItems);
+            _playbackUserControl.SetCameras(new List<FQID>() { _selectItem.FQID });
+
+            DateTime date_time_obj = DateTime.Parse(t);
+
+
+            EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
+                                                        MessageId.SmartClient.PlaybackCommand,
+                                                        new PlaybackCommandData() { Command = PlaybackData.PlayStop }), _imageViewerControl.PlaybackControllerFQID);
+            EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
+                                                        MessageId.SmartClient.PlaybackCommand,
+                                                        new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = date_time_obj.ToUniversalTime() }), _imageViewerControl.PlaybackControllerFQID);
+        }
     }
 }

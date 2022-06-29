@@ -64,14 +64,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Bell_Data.cs" />
     <Compile Include="CameraCell.xaml.cs">
       <DependentUpon>CameraCell.xaml</DependentUpon>
     </Compile>
     <Compile Include="change_ROI_name.xaml.cs">
       <DependentUpon>change_ROI_name.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DataPaging.xaml.cs">
-      <DependentUpon>DataPaging.xaml</DependentUpon>
     </Compile>
     <Compile Include="Event_.cs" />
     <Compile Include="ROI\Set_ROI.xaml.cs">
@@ -113,10 +111,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="change_ROI_name.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DataPaging.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -221,6 +215,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="DateTimePicker.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Image1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
