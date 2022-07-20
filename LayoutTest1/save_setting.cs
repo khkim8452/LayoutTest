@@ -38,8 +38,13 @@ namespace LayoutTest1
         }
         public void save_MainWindow(int arr_cam, bool full_display)
         {
-            save_obj.Add("array_of_cam", arr_cam);
-            save_obj.Add("full_display", full_display);
+            if(have_the_main_data())
+            {
+                save_obj["Bots"][0]["array_of_cam"] = arr_cam;
+
+                save_obj.Add("array_of_cam", arr_cam);
+                save_obj.Add("full_display", full_display);
+            }
 
             File.WriteAllText(save_path, save_obj.ToString());
 

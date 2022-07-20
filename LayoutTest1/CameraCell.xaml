@@ -129,7 +129,7 @@
                 <ContextMenu>
                     <MenuItem Header = "load video" Click="LoadVideo_Click"/>
                     <MenuItem x:Name="VideoClose" Header = "close" Click="VideoClose_Click"/>
-                    <MenuItem Header = "Menu item 3"/>
+                    <MenuItem Header = "Get Related" Click="Get_Related"/>
                 </ContextMenu>
             </Grid.ContextMenu>
 

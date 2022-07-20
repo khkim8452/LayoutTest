@@ -77,12 +77,19 @@ namespace LayoutTest1
             _v.EnableVisibleHeader = false;
             _v.MaintainImageAspectRatio = false;
             _v.ConnectResponseReceived += _v_ConnectResponseReceived;
+            _v.ImageOrPaintInfoChanged += _v_ImageOrPaintInfoChanged;
             _isConnected = false;
             _v.PlaybackControllerFQID = V.CommonPlaybackFQID;
             ContentGrid.Visibility = Visibility.Collapsed;
-            
+
             this.MouseDoubleClick += CameraCell_MouseDoubleClick;
             this.MouseDown += CameraCell_MouseDown;
+        }
+
+        private void _v_ImageOrPaintInfoChanged(object sender, ImageOrPaintInfoChangedEventArgs e)
+        {
+            cell_object_border.Width = _v.ImageSize.Width;
+            cell_object_border.Height = _v.ImageSize.Height;
         }
 
         private void CameraCell_MouseDown(object sender, MouseButtonEventArgs e)
@@ -483,6 +490,11 @@ namespace LayoutTest1
             }
 
             return inside;
+        }
+
+        private void Get_Related(object sender, RoutedEventArgs e)
+        {
+             this._cameraitem.GetRelated();
         }
     }
 }

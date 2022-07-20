@@ -64,6 +64,7 @@
                 <!--사용자 정의 컨트롤로 만들기 -->
 
                 <Button Content="녹화 기록" Margin="5" Click="PlayBack_Viewer" Width="Auto"/>
+                <Button Content="주정차 단속" Margin="5" Click="LPR_window" Width="Auto"/>
 
 
             </StackPanel>

@@ -56,7 +56,7 @@ namespace LayoutTest1
         ObservableCollection<Event_> EventList = new ObservableCollection<Event_>(); //이벤트 리스트 (전체 담기)
         SQLiteConnection connection = new SQLiteConnection();
         private Item _selectItem1; //메타데이터 채널 설정 아이템
-        private MetadataLiveSource _metadataLiveSource; 
+        private MetadataLiveSource _metadataLiveSource; //메타 채널
         private int _count;
         SQLite_Event_DB database = new SQLite_Event_DB(); //데이터베이스
         int Max_Row_Count = 100; //최대 검색 개수
@@ -94,8 +94,6 @@ namespace LayoutTest1
             port_name.ItemsSource = ports;
 
 
-
-            //ringobell
 
 
         }
@@ -271,12 +269,9 @@ namespace LayoutTest1
             {
                 if(ss.load_MainWindow_1() != -1)
                 {
-                    int a = ss.load_MainWindow_1(); //스케일 가져오기
-                    bool b = ss.load_MainWindow_2();//전체화면 여부 가져오기
-                    default_rowcol = a;
-                    is_fullscreen = b;
+                    default_rowcol = ss.load_MainWindow_1(); //스케일 가져오기
+                    is_fullscreen = ss.load_MainWindow_2();//전체화면 여부 가져오기
                 }
-
             }
             else
             {
@@ -284,7 +279,6 @@ namespace LayoutTest1
                 Console.WriteLine("저장된 세이브 파일이 없습니다. ");
                 return;
             }
-
         }
         private void HandleEsc(object sender, KeyEventArgs e)
         {
@@ -737,6 +731,7 @@ namespace LayoutTest1
                 _metadataLiveSource.LiveContentEvent -= OnLiveContentEvent;
                 _metadataLiveSource.Close();
                 _metadataLiveSource = null;
+                //이미 다른 메타데이터가 있을때 메타데이터 비워주는 사전 작업
             }
 
             ItemPickerForm form = new ItemPickerForm();
@@ -1050,5 +1045,36 @@ namespace LayoutTest1
             }
         }
 
+        private void LPR_window(object sender, RoutedEventArgs e) //주수석님이 부탁하신 새로운 LPR UI
+        {
+            var form_camera = new ItemPickerForm();
+            var form_meta = new ItemPickerForm(); 
+            Item cam = null;
+            Item meta = null;
+
+            form_camera.KindFilter = Kind.Camera;
+            form_camera.AutoAccept = true;
+            form_meta.KindFilter = Kind.Metadata;
+            form_meta.AutoAccept = true;
+
+            form_camera.Init(Configuration.Instance.GetItems());
+            form_meta.Init(Configuration.Instance.GetItems());
+
+            if (form_camera.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                cam = form_camera.SelectedItem;
+            }
+            else return;
+
+            if (form_meta.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                meta = form_meta.SelectedItem;
+            }
+            else return;
+
+            LPR_window lw = new LPR_window(cam, meta);
+            lw.ShowDialog();
+
+        }
     }
 }

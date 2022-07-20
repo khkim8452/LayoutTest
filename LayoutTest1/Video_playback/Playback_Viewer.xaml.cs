@@ -60,7 +60,7 @@ namespace LayoutTest1
             }
             else
             {
-                System.Windows.MessageBox.Show("저장된 파일이 없거나, 불러오는데 오류가 발생했습니다.\n");
+                //System.Windows.MessageBox.Show("저장된 파일이 없거나, 불러오는데 오류가 발생했습니다.\n");
                 return;
             }
 
@@ -71,6 +71,10 @@ namespace LayoutTest1
             //VideoOS.Platform.SDK.Environment.RemoveAllServers();
             EnvironmentManager.Instance.Mode = Mode.ClientLive;
             Close();
+        }
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            EnvironmentManager.Instance.Mode = Mode.ClientLive;
         }
 
         #region Select camera and setup controls
@@ -182,43 +186,6 @@ namespace LayoutTest1
         {
             _imageViewerControl.EnableVisibleHeader = _visibleHeaderCheckBox.IsChecked.Value;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -348,7 +315,8 @@ namespace LayoutTest1
             _playbackUserControl.SetCameras(new List<FQID>() { _selectItem.FQID });
 
             DateTime date_time_obj = DateTime.Parse(t);
-
+            TimeSpan ts = new TimeSpan(3000000000); //5분 앞당기기
+            date_time_obj = date_time_obj.Subtract(ts);
 
             EnvironmentManager.Instance.SendMessage(new VideoOS.Platform.Messaging.Message(
                                                         MessageId.SmartClient.PlaybackCommand,
@@ -357,5 +325,6 @@ namespace LayoutTest1
                                                         MessageId.SmartClient.PlaybackCommand,
                                                         new PlaybackCommandData() { Command = PlaybackData.Goto, DateTime = date_time_obj.ToUniversalTime() }), _imageViewerControl.PlaybackControllerFQID);
         }
+
     }
 }

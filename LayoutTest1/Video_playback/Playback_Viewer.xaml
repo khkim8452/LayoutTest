@@ -6,7 +6,7 @@
         xmlns:winformHost="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
         xmlns:winform="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
         xmlns:platformclient="clr-namespace:VideoOS.Platform.Client;assembly=VideoOS.Platform"
-        
+        Closed="Window_Closed"
         xmlns:local="clr-namespace:LayoutTest1"
         mc:Ignorable="d"
         Title="녹화 다시보기" Height="700" Width="1000" MinHeight="650" MinWidth="800">
