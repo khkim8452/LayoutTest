@@ -103,6 +103,7 @@ namespace LayoutTest1
             }
             
         }
+        #region System
         private void Clock_Tick(object sender, EventArgs e)
         {
             Datetime_.Text = DateTime.Now.ToString();
@@ -154,6 +155,35 @@ namespace LayoutTest1
                 {
                     System_.Text = exception.ToString();
                 }
+            }
+        }
+        private void LPR_RATIO_Click(object sender, RoutedEventArgs e)
+        {
+            if (ratio_)//고정상태이면 풀어주기
+            {
+                ratio_ = false;
+                LPR_camera.MaintainImageAspectRatio = false;
+                roi_event.Stretch = Stretch.Fill;
+                box_event.Stretch = Stretch.Fill;
+            }
+            else//풀린 상태이면 고정하기
+            {
+                ratio_ = true;
+                LPR_camera.MaintainImageAspectRatio = true;
+                roi_event.Stretch = Stretch.Uniform;
+                box_event.Stretch = Stretch.Uniform;
+            }
+        }
+        private void Change_crack_down_timer(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.crack_down_time = double.Parse(set_crack_down.Text);
+                System_.Text = System_.Text + "\n" + $"주차 단속 기준이 {crack_down_time}초로 수정되었습니다.";
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString());
             }
         }
 
@@ -290,22 +320,6 @@ namespace LayoutTest1
                 //    Console.WriteLine(ex.Message);
                 //}
             }
-            //==========================================================================================================
-            else //j["Kind_event"].ToString() == "0" 
-            {
-                //Event_ e = new Event_(j);// 새로운 event를 json 에서 가지고 옴
-                //try
-                //{
-                //    license_.Text = e.content;
-                //    new_sql.Insert_Row(e.Image_String, e.time, e.content, e.kind, e.fqid); //해당 이벤트를 db에 저장.
-                //    update_DB();
-                //    //ROI 영역 판별하고 화면에 차량 boundary 표시하는 부분
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine(ex.Message);
-                //}
-            }
 
         }
 
@@ -358,7 +372,7 @@ namespace LayoutTest1
                 BOX_canvas.Children.Add(rect);
                 BOX_canvas.Children.Add(panel);
             }
-            
+
         }
         private void auto_delete_LPR()
         {
@@ -366,28 +380,31 @@ namespace LayoutTest1
             //쌓인 데이터 중 최근 (20초) 데이터가 없는 데이터 삭제 
             while(true)
             {
-                for (int i = 0; i < Stacked_Car_List.Length; i++)
-                {
-                    if (Stacked_Car_List[i].flag2)
-                    {
-                        //삭제하기
-                        Stacked_Car_List[i].Abort(); // thread 삭제
-                        Stacked_Car_List[i] = null;
-                        //삭제후 비어있는 배열 index 삭제 빈 값 삭제
-                        Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
-                    }
-                }
+                //lock(Stacked_Car_List)
+                //{
+                //    for (int i = 0; i < Stacked_Car_List.Length; i++)
+                //    {
+                //        if (Stacked_Car_List[i].flag2)
+                //        {
+                //            //삭제하기
+                //            Stacked_Car_List[i].Abort(); // thread 삭제
+                //            Stacked_Car_List[i] = null;
+                //            //삭제후 비어있는 배열 index 삭제 빈 값 삭제
+                //            Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
+                //        }
+                //    }
 
-                //최종 정리된 데이터 listview 에 표시
-                Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                {
-                    LPR_current_car.ItemsSource = Stacked_Car_List;//끊김.
-                }));
+                //    //최종 정리된 데이터 listview 에 표시
+                //    Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+                //    {
+                //        LPR_current_car.ItemsSource = Stacked_Car_List;//끊김.
+                //    }));
+                //}
                 Thread.Sleep(100);
             }
 
         }
-
+        #endregion
         #region Search_DB
 
         private void event_search_time_content(object sender, RoutedEventArgs e) //이벤트 검색(예비)   
@@ -445,7 +462,6 @@ namespace LayoutTest1
         #region LPR_Algorithm
 
         #endregion
-
         #region mouse_right_click
         private void LPR_event_playback_view(object sender, RoutedEventArgs e)
         {
@@ -481,7 +497,6 @@ namespace LayoutTest1
 
         
         #endregion
-
         #region ROI
         private void LPR_ROI_Click(object sender, RoutedEventArgs e)
         {
@@ -597,37 +612,6 @@ namespace LayoutTest1
             return inside;
         }
         #endregion
-
-        private void LPR_RATIO_Click(object sender, RoutedEventArgs e)
-        {
-            if (ratio_)//고정상태이면 풀어주기
-            {
-                ratio_ = false;
-                LPR_camera.MaintainImageAspectRatio = false;
-                roi_event.Stretch = Stretch.Fill;
-                box_event.Stretch = Stretch.Fill;
-            }
-            else//풀린 상태이면 고정하기
-            {
-                ratio_ = true;
-                LPR_camera.MaintainImageAspectRatio = true;
-                roi_event.Stretch = Stretch.Uniform;
-                box_event.Stretch = Stretch.Uniform;
-            }
-        }
-
-        private void Change_crack_down_timer(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                this.crack_down_time = double.Parse(set_crack_down.Text);
-                System_.Text = System_.Text + "\n" + $"주차 단속 기준이 {crack_down_time}초로 수정되었습니다.";
-            }
-            catch(Exception ex)
-            {
-                System.Windows.MessageBox.Show(ex.ToString());
-            }
-        }
 
     }
 }

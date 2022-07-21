@@ -211,40 +211,36 @@ namespace LayoutTest1
         private void Run()
         {
             while(true)
-            {
-                if(flag)
+            { 
+                if (flag)
                 {
                     break;
                 }
-                if(stop_state)
+                TimeSpan elapse_t2 = DateTime.Now - last_receive_time;
+
+                if (elapse_t2 > TimeSpan.FromSeconds(2))
+                {
+                    //2초 이상 데이터가 안들어오면
+                    stop_state = false;
+                    this.elapse_time = "감지 안됨";
+                    continue;
+                    if (elapse_t2 > TimeSpan.FromSeconds(20))
+                    {
+                        //20초 이상 데이터가 안들어오면
+                        this.flag2 = true;
+                    }
+                }
+
+                if (stop_state)
                 {
                     //차가 멈췄다면, 카운트
                     TimeSpan elapse_t1 = DateTime.Now - first_stop_time;
-                    TimeSpan elapse_t2 = DateTime.Now - last_receive_time;
-                    if(elapse_t2 > TimeSpan.FromSeconds(2))
-                    {
-                        //2초 이상 데이터가 안들어오면
-                        this.elapse_time = "감지 안됨";
-                        if(elapse_t2 > TimeSpan.FromSeconds(20))
-                        {
-                            this.flag2 = true;
-                        }
-                    }
-                    else
-                    {
-                        DateTime dt = new DateTime() + elapse_t1;
-                        this.elapse_time = "정차 " + Convert.ToDateTime(dt).ToString("m분s초");
-                    }
+                    DateTime dt = new DateTime() + elapse_t1;
+                    this.elapse_time = "정차 " + Convert.ToDateTime(dt).ToString("m분s초");
                 }
                 else
                 {
                     this.elapse_time = "상태 확인중";
-                    TimeSpan elapse_t2 = DateTime.Now - last_receive_time;
-                    if (elapse_t2 > TimeSpan.FromSeconds(2))
-                    {
-                        //2초 이상 데이터가 안들어오면
-                        this.elapse_time = "감지 안됨";
-                    }
                 }
                 Thread.Sleep(100);
             }
