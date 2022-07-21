@@ -79,9 +79,7 @@ namespace LayoutTest1
             LPR_current_car.BeginInit();
             LPR_current_car.ItemsSource = Stacked_Car_List;
             LPR_current_car.EndInit();
-            //데이터 감지후 삭제용 Thread
-            Thread t = new Thread(new ThreadStart(auto_delete_LPR));
-            t.Start();
+            
             
             System_.Text = System_.Text + "기존 데이터를 불러오는데 성공하였습니다.";
             //TTS 세팅
@@ -286,22 +284,25 @@ namespace LayoutTest1
                     }
                 }
 
-                ////쌓인 데이터 중 최근 (20초) 데이터가 없는 데이터 삭제 
-                //for(int i = 0; i < Stacked_Car_List.Length; i++)
-                //{
-                //    DateTime early = Stacked_Car_List[i].last_receive_time;
-                //    DateTime lately = DateTime.Now;
-                //    TimeSpan ts = lately - early;
-                //    if (ts.TotalSeconds > 20)
-                //    {
-                //        //삭제하기
-                //        Stacked_Car_List[i].Abort(); // thread 삭제
-                //        Stacked_Car_List[i] = null;
-                //    }
-                //}
+                //쌓인 데이터 중 최근 (20초) 데이터가 없는 데이터 삭제 
+                for (int i = 0; i < Stacked_Car_List.Length; i++)
+                {
+                    DateTime early = Stacked_Car_List[i].last_receive_time;
+                    DateTime lately = DateTime.Now;
+                    TimeSpan ts = lately - early;
+                    if (ts.TotalSeconds > 20)
+                    {
+                        //삭제하기
+                        Stacked_Car_List[i].Abort(); // thread 삭제
+                        Stacked_Car_List[i] = null;
+                    }
+                }
 
-                ////삭제후 비어있는 배열 index 삭제 빈 값 삭제
-                //Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
+                //삭제후 비어있는 배열 index 삭제 빈 값 삭제
+                Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
+
+                //리스트에 
+                LPR_current_car.ItemsSource = Stacked_Car_List;
 
             }
             //==========================================================================================================
@@ -371,36 +372,6 @@ namespace LayoutTest1
                 
                 BOX_canvas.Children.Add(rect);
                 BOX_canvas.Children.Add(panel);
-            }
-
-        }
-        private void auto_delete_LPR()
-        {
-
-            //쌓인 데이터 중 최근 (20초) 데이터가 없는 데이터 삭제 
-            while(true)
-            {
-                //lock(Stacked_Car_List)
-                //{
-                //    for (int i = 0; i < Stacked_Car_List.Length; i++)
-                //    {
-                //        if (Stacked_Car_List[i].flag2)
-                //        {
-                //            //삭제하기
-                //            Stacked_Car_List[i].Abort(); // thread 삭제
-                //            Stacked_Car_List[i] = null;
-                //            //삭제후 비어있는 배열 index 삭제 빈 값 삭제
-                //            Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
-                //        }
-                //    }
-
-                //    //최종 정리된 데이터 listview 에 표시
-                //    Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
-                //    {
-                //        LPR_current_car.ItemsSource = Stacked_Car_List;//끊김.
-                //    }));
-                //}
-                Thread.Sleep(100);
             }
 
         }

@@ -7,6 +7,8 @@ using System.Windows;
 using System.Threading;
 using System.Windows.Media;
 using System.ComponentModel;
+using System.Diagnostics;//디버깅용 stopwatch
+
 
 namespace LayoutTest1
 {
@@ -211,19 +213,18 @@ namespace LayoutTest1
         private void Run()
         {
             while(true)
-            { 
+            {
                 if (flag)
                 {
                     break;
                 }
-                TimeSpan elapse_t2 = DateTime.Now - last_receive_time;
+                TimeSpan elapse_t2 = DateTime.Now - this.last_receive_time;
 
                 if (elapse_t2 > TimeSpan.FromSeconds(2))
                 {
                     //2초 이상 데이터가 안들어오면
                     stop_state = false;
                     this.elapse_time = "감지 안됨";
-                    continue;
                     if (elapse_t2 > TimeSpan.FromSeconds(20))
                     {
                         //20초 이상 데이터가 안들어오면
@@ -242,6 +243,7 @@ namespace LayoutTest1
                 {
                     this.elapse_time = "상태 확인중";
                 }
+
                 Thread.Sleep(100);
             }
         }
