@@ -45,18 +45,30 @@
             </StackPanel>
         </Grid>
         <Grid x:Name="event_grid" Grid.Row="1" Grid.Column="0" Margin="5">
-            <mipsdk:ImageViewerWpfControl x:Name="LPR_camera" IsHitTestVisible="False" FontFamily="Pretendard Variable" /> <!--영상-->
-            <Viewbox x:Name="box_event" Stretch="Fill" Visibility="Visible" 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <mipsdk:ImageViewerWpfControl Grid.ColumnSpan="2" Grid.RowSpan="2" x:Name="LPR_camera" IsHitTestVisible="False" FontFamily="Pretendard Variable" /> <!--영상-->
+            <Viewbox x:Name="box_event" Stretch="Fill" Visibility="Visible"  Grid.ColumnSpan="2" Grid.RowSpan="2"
                      Width="{Binding ElementName=event_grid, Path=ActualWidth}" Height="{Binding ElementName=event_grid, Path=ActualHeight}" >
                 <Canvas x:Name="BOX_canvas" /><!--BOX-->
             </Viewbox>
-            <Viewbox x:Name="roi_event" Stretch="Fill" Visibility="Visible"
+            <Viewbox x:Name="roi_event" Stretch="Fill" Visibility="Visible" Grid.ColumnSpan="2" Grid.RowSpan="2"
                      Width="{Binding ElementName=event_grid, Path=ActualWidth}" Height="{Binding ElementName=event_grid, Path=ActualHeight}" >
                 <Canvas x:Name="ROI_canvas" /><!--ROI-->
             </Viewbox>
-            <Canvas> <!--주차 이벤트 발생 애니메이션-->
-                
-            </Canvas>
+            <Grid Grid.Column="0" Grid.Row="1" x:Name="alert_red" Visibility="Hidden" Margin="10">
+                <!--주차 이벤트 발생 애니메이션-->
+                <Rectangle Width="{Binding ElementName=alert_red, Path=ActualWidth}" Height="{Binding ElementName=alert_red, Path=ActualHeight}"
+                           Fill="Red" Opacity="0.7" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                           RadiusX="20" RadiusY="20"/>
+                <TextBlock Text="주차" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="100" Foreground="White"/>
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="2" Grid.Column="0" Margin="5">

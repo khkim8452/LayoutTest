@@ -46,8 +46,6 @@ namespace LayoutTest1
         LPR_SQLite new_sql = new LPR_SQLite(); //SQL 데이터
         int Max_Row_Count = 200; //최대 검색 개수 -1이면 전체 보여줌.
 
-        //TTS
-        SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer();
 
         public LPR_window(Item cam, Item meta)
         {
@@ -69,6 +67,7 @@ namespace LayoutTest1
             LPR_camera.ImageOrPaintInfoChanged += LPR_camera_ImageOrPaintInfoChanged;
             LPR_camera.Initialize();
             LPR_camera.Connect();
+            LPR_camera.SetVideoQuality(100, 4);
             LPR_camera.StartLive();
             //SQL 초반 불러오기
             EventList = new_sql.Select_Row("select * from events", Max_Row_Count);
@@ -79,13 +78,10 @@ namespace LayoutTest1
             LPR_current_car.BeginInit();
             LPR_current_car.ItemsSource = Stacked_Car_List;
             LPR_current_car.EndInit();
+            //리스트 삭제 Thread
+            Thread delete_Thread = new Thread(new ThreadStart(Auto_delete));
+            delete_Thread.Start();
             
-            
-            System_.Text = System_.Text + "기존 데이터를 불러오는데 성공하였습니다.";
-            //TTS 세팅
-            speechSynthesizer.SetOutputToDefaultAudioDevice();
-            speechSynthesizer.SelectVoice("Microsoft Heami Desktop");
-
             _metadataLiveSource = new MetadataLiveSource(meta);
             try
             {
@@ -99,7 +95,8 @@ namespace LayoutTest1
                 MessageBox.Show(@"Could not Init:" + ex.Message);
                 _metadataLiveSource = null;
             }
-            
+
+            System_.Text = System_.Text + "기존 데이터를 불러오는데 성공하였습니다.";
         }
         #region System
         private void Clock_Tick(object sender, EventArgs e)
@@ -184,7 +181,35 @@ namespace LayoutTest1
                 System.Windows.MessageBox.Show(ex.ToString());
             }
         }
+        private void Auto_delete()
+        {
+            //Thread
 
+            //flag2를 보고있다가, true가 되면 삭제
+            while(true)
+            {
+                //쌓인 데이터 중 최근 (20초) 데이터가 없는 데이터 삭제 
+                for (int i = 0; i < Stacked_Car_List.Length; i++)
+                {
+                    if(Stacked_Car_List[i].flag2)
+                    {
+                        Stacked_Car_List[i].Abort(); // thread 삭제
+                        Stacked_Car_List[i] = null;
+                    }
+
+                }
+                Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+                {
+                    //삭제후 비어있는 배열 index 삭제 빈 값 삭제
+                    Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
+                    //리스트에 표시
+                    LPR_current_car.ItemsSource = Stacked_Car_List;
+                }));
+
+
+                Thread.Sleep(333);//1초에 3번
+            }
+        }
 
         private void event_occur_json(string json) //이벤트가 발생하면 실행할 함수
         {
@@ -242,7 +267,8 @@ namespace LayoutTest1
                                                 //화면 효과 추가 요망
 
                                                 //TTS
-                                                //speechSynthesizer.Speak("자동차가 단속되었습니다."); //말하는 도중 프로그램 멈춤
+                                                Thread speak = new Thread(new ThreadStart(Alarm_Stop));
+                                                speak.Start();
                                                 //System Alert
                                                 System_.Text = System_.Text + "\n" + $"{Stacked_Car_List[j].Main_Lincense} 자동차가 단속되었습니다.";
 
@@ -284,25 +310,25 @@ namespace LayoutTest1
                     }
                 }
 
-                //쌓인 데이터 중 최근 (20초) 데이터가 없는 데이터 삭제 
-                for (int i = 0; i < Stacked_Car_List.Length; i++)
-                {
-                    DateTime early = Stacked_Car_List[i].last_receive_time;
-                    DateTime lately = DateTime.Now;
-                    TimeSpan ts = lately - early;
-                    if (ts.TotalSeconds > 20)
-                    {
-                        //삭제하기
-                        Stacked_Car_List[i].Abort(); // thread 삭제
-                        Stacked_Car_List[i] = null;
-                    }
-                }
+                ////쌓인 데이터 중 최근 (20초) 데이터가 없는 데이터 삭제 
+                //for (int i = 0; i < Stacked_Car_List.Length; i++)
+                //{
+                //    DateTime early = Stacked_Car_List[i].last_receive_time;
+                //    DateTime lately = DateTime.Now;
+                //    TimeSpan ts = lately - early;
+                //    if (ts.TotalSeconds > 20)
+                //    {
+                //        //삭제하기
+                //        Stacked_Car_List[i].Abort(); // thread 삭제
+                //        Stacked_Car_List[i] = null;
+                //    }
+                //}
 
-                //삭제후 비어있는 배열 index 삭제 빈 값 삭제
-                Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
+                ////삭제후 비어있는 배열 index 삭제 빈 값 삭제
+                //Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
 
-                //리스트에 
-                LPR_current_car.ItemsSource = Stacked_Car_List;
+                ////리스트에 
+                //LPR_current_car.ItemsSource = Stacked_Car_List;
 
             }
             //==========================================================================================================
@@ -324,6 +350,30 @@ namespace LayoutTest1
 
         }
 
+        private void Alarm_Stop()
+        {
+            //TTS 와 주차 알림
+            SpeechSynthesizer speechSynthesizer = new SpeechSynthesizer();
+            //TTS 세팅
+            speechSynthesizer.SetOutputToDefaultAudioDevice();
+            speechSynthesizer.SelectVoice("Microsoft Heami Desktop");
+
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+            {
+                alert_red.Visibility = Visibility.Visible;
+            }));
+
+
+            //말하기
+            speechSynthesizer.Speak("자동차가 단속되었습니다.");
+
+
+            Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+            {
+                alert_red.Visibility = Visibility.Hidden;
+            }));
+
+        }
         private void draw_rect_event_received(string[] xywh, string[] license, string[] plate_xy) //새로 받은 영역 rectangle 칠하기.
         {
             int count_xywh = 0;
@@ -373,7 +423,6 @@ namespace LayoutTest1
                 BOX_canvas.Children.Add(rect);
                 BOX_canvas.Children.Add(panel);
             }
-
         }
         #endregion
         #region Search_DB

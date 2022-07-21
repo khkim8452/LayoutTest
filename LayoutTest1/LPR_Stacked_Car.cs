@@ -220,7 +220,7 @@ namespace LayoutTest1
                 }
                 TimeSpan elapse_t2 = DateTime.Now - this.last_receive_time;
 
-                if (elapse_t2 > TimeSpan.FromSeconds(2))
+                if (elapse_t2 > TimeSpan.FromSeconds(10))
                 {
                     //2초 이상 데이터가 안들어오면
                     stop_state = false;
