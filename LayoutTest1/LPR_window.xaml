@@ -205,9 +205,9 @@
 
                             <StackPanel Grid.Column="1">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-                                    <Label Content="{materialDesign:PackIcon Kind=Timer, Size=35}" Foreground="Wheat"/>
+                                    <Label Content="{materialDesign:PackIcon Kind=Timer, Size=30}" Foreground="Wheat"/>
                                     <TextBlock x:Name="event_time" Grid.Column="1" Text="{Binding time, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="25"/>
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20"/>
                                 </StackPanel>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">

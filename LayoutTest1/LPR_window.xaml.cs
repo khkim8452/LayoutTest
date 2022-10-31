@@ -46,6 +46,10 @@ namespace LayoutTest1
         LPR_SQLite new_sql = new LPR_SQLite(); //SQL 데이터
         int Max_Row_Count = 200; //최대 검색 개수 -1이면 전체 보여줌.
 
+        //box clear time Thread
+        DateTime Last_receive_json = DateTime.Now;
+        bool removed = false;
+
 
         public LPR_window(Item cam, Item meta)
         {
@@ -64,10 +68,10 @@ namespace LayoutTest1
             LPR_camera.EnableVisibleHeader = false;
             LPR_camera.MaintainImageAspectRatio = false;
             LPR_camera.CameraFQID = cam.FQID;
+            List<Item> i = cam.GetRelated();
             LPR_camera.ImageOrPaintInfoChanged += LPR_camera_ImageOrPaintInfoChanged;
             LPR_camera.Initialize();
             LPR_camera.Connect();
-            LPR_camera.SetVideoQuality(100, 4);
             LPR_camera.StartLive();
             //SQL 초반 불러오기
             EventList = new_sql.Select_Row("select * from events", Max_Row_Count);
@@ -81,7 +85,10 @@ namespace LayoutTest1
             //리스트 삭제 Thread
             Thread delete_Thread = new Thread(new ThreadStart(Auto_delete));
             delete_Thread.Start();
-            
+            //box
+            Last_receive_json = DateTime.Now;
+
+
             _metadataLiveSource = new MetadataLiveSource(meta);
             try
             {
@@ -184,10 +191,10 @@ namespace LayoutTest1
         private void Auto_delete()
         {
             //Thread
-
             //flag2를 보고있다가, true가 되면 삭제
             while(true)
             {
+
                 //쌓인 데이터 중 최근 (20초) 데이터가 없는 데이터 삭제 
                 for (int i = 0; i < Stacked_Car_List.Length; i++)
                 {
@@ -196,7 +203,18 @@ namespace LayoutTest1
                         Stacked_Car_List[i].Abort(); // thread 삭제
                         Stacked_Car_List[i] = null;
                     }
-
+                }
+                TimeSpan t = DateTime.Now - this.Last_receive_json;
+                if (t > TimeSpan.FromSeconds(0.5))
+                {
+                    if(!removed)
+                    {
+                        removed = true;
+                        Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
+                        {
+                            BOX_canvas.Children.Clear();
+                        }));
+                    }
                 }
                 Dispatcher.Invoke(DispatcherPriority.Background, new Action(delegate
                 {
@@ -204,8 +222,8 @@ namespace LayoutTest1
                     Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
                     //리스트에 표시
                     LPR_current_car.ItemsSource = Stacked_Car_List;
+                    
                 }));
-
 
                 Thread.Sleep(333);//1초에 3번
             }
@@ -221,6 +239,9 @@ namespace LayoutTest1
             if (jobj["Kind_event"].ToString() == "100") // box data
             {
                 //데이터가 들어오면
+                Last_receive_json = DateTime.Now;
+                removed = false;
+
                 string[] License = jobj["Car_number_event"].ToString().Split(' ');
                 string[] xywh = jobj["xywh_event"].ToString().Split(' ');
                 string[] plate_xy = jobj["plate_event"].ToString().Split(' ');
@@ -228,6 +249,7 @@ namespace LayoutTest1
 
                 //rectangle 표시
                 draw_rect_event_received(xywh,License,plate_xy); //rectangle 칠하기
+                
                 
                 //들어온 데이터와 쌓인 데이터를 비교 -> 기존에 있으면 표시, 없으면 새로 추가
                 for(int i = 0; i < License.Length; i++)
@@ -241,58 +263,65 @@ namespace LayoutTest1
                     bool list_exist = false;
                     for (int j = 0; j < Stacked_Car_List.Length; j++) //들어온 차번 하나하나 마다(i) 저장된번호판 하나하나(j)비교
                     {
-
-                        if (Stacked_Car_List[j].is_same_license(License[i])) 
+                        if (Stacked_Car_List[j] == null)
                         {
-                            //.is_same_license 함수는 같은 번호판이면, 새로들어온 정보를 다시 쌓아 저장한다.
-                            //같은 번호면 
-                            Stacked_Car_List[j].update_main_license(License[i]);//대표 번호판 업데이트     같은 번호판이 있음.
-                            list_exist = true;
+                            //스레드에서 지워서 null 일 수 있음
+                            continue;
+                        }
+                        else
+                        {
 
-                            if (Stacked_Car_List[j].is_same_position(x, y, w, h)) //.is_same_position 함수는 움직임,정차 상태를 판단하여 bool형식으로 가지고 온다.
+                            if (Stacked_Car_List[j].is_same_license(License[i]))
                             {
-                                // 확실한 주정차 (10프레임 이상)
-                                if (Stacked_Car_List[j].stop_state)
+                                //.is_same_license 함수는 같은 번호판이면, 새로들어온 정보를 다시 쌓아 저장한다.
+                                //같은 번호면 
+                                Stacked_Car_List[j].update_main_license(License[i]);//대표 번호판 업데이트     같은 번호판이 있음.
+                                list_exist = true;
+
+                                if (Stacked_Car_List[j].is_same_position(x, y, w, h)) //.is_same_position 함수는 움직임,정차 상태를 판단하여 bool형식으로 가지고 온다.
                                 {
-                                    TimeSpan ts = DateTime.Now - Stacked_Car_List[j].first_stop_time;  // 정차한 차량을 찾음.
-                                    if (ts.TotalSeconds > crack_down_time) //5분
+                                    // 확실한 주정차 (10프레임 이상)
+                                    if (Stacked_Car_List[j].stop_state)
                                     {
-                                        //확실한 단속 
-                                        //SQL 저장
-                                        if (!Stacked_Car_List[j].is_cracked_down && isROIon(x, y, w, h)) // 5분이상 정차했을 때.
+                                        TimeSpan ts = DateTime.Now - Stacked_Car_List[j].first_stop_time;  // 정차한 차량을 찾음.
+                                        if (ts.TotalSeconds > crack_down_time) //5분
                                         {
-                                            Stacked_Car_List[j].is_cracked_down = true; //이전에 걸린적 없고, ROI안에 있어.
-                                            try
+                                            //확실한 단속 
+                                            //SQL 저장
+                                            if (!Stacked_Car_List[j].is_cracked_down && isROIon(x, y, w, h)) // 5분이상 정차했을 때.
                                             {
-                                                //화면 효과 추가 요망
+                                                Stacked_Car_List[j].is_cracked_down = true; //이전에 걸린적 없고, ROI안에 있어.
+                                                try
+                                                {
+                                                    //화면 효과 추가 요망
 
-                                                //TTS
-                                                Thread speak = new Thread(new ThreadStart(Alarm_Stop));
-                                                speak.Start();
-                                                //System Alert
-                                                System_.Text = System_.Text + "\n" + $"{Stacked_Car_List[j].Main_Lincense} 자동차가 단속되었습니다.";
+                                                    //TTS
+                                                    Thread speak = new Thread(new ThreadStart(Alarm_Stop));
+                                                    speak.Start();
+                                                    //System Alert
+                                                    System_.Text = System_.Text + "\n" + $"{Stacked_Car_List[j].Main_Lincense} 자동차가 단속되었습니다.";
 
-                                                new_sql.Insert_Row(img[i], DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Stacked_Car_List[j].main_Lincense, 0, LPR_camera.CameraFQID.ObjectId.ToString()); //해당 이벤트를 db에 저장할거야.
-                                                EventList = new_sql.Select_Row("select * from events ", Max_Row_Count);
-                                                LPR_event_list.ItemsSource = EventList;
+                                                    new_sql.Insert_Row(img[i], DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), Stacked_Car_List[j].main_Lincense, 0, LPR_camera.CameraFQID.ObjectId.ToString()); //해당 이벤트를 db에 저장할거야.
+                                                    EventList = new_sql.Select_Row("select * from events ", Max_Row_Count);
+                                                    LPR_event_list.ItemsSource = EventList;
 
-                                                //ROI 영역 판별하고 화면에 차량 boundary 표시하는 부분
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Console.WriteLine(ex.Message);
+                                                    //ROI 영역 판별하고 화면에 차량 boundary 표시하는 부분
+                                                }
+                                                catch (Exception ex)
+                                                {
+                                                    Console.WriteLine(ex.Message);
+                                                }
                                             }
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    //움직임
+                                }
+                                break; //찾았으니 다음걸로 넘어가
                             }
-                            else
-                            {
-                                //움직임
-                            }
-                            break; //찾았으니 다음걸로 넘어가
                         }
-
                     }
                     if (!list_exist)//안들어있으면           
                     {
@@ -309,43 +338,13 @@ namespace LayoutTest1
                         Stacked_Car_List = Stacked_Car_List.Append(new_stack).ToArray();
                     }
                 }
-
-                ////쌓인 데이터 중 최근 (20초) 데이터가 없는 데이터 삭제 
-                //for (int i = 0; i < Stacked_Car_List.Length; i++)
-                //{
-                //    DateTime early = Stacked_Car_List[i].last_receive_time;
-                //    DateTime lately = DateTime.Now;
-                //    TimeSpan ts = lately - early;
-                //    if (ts.TotalSeconds > 20)
-                //    {
-                //        //삭제하기
-                //        Stacked_Car_List[i].Abort(); // thread 삭제
-                //        Stacked_Car_List[i] = null;
-                //    }
-                //}
-
-                ////삭제후 비어있는 배열 index 삭제 빈 값 삭제
-                //Stacked_Car_List = Stacked_Car_List.Where(x => x != null).ToArray();
-
-                ////리스트에 
-                //LPR_current_car.ItemsSource = Stacked_Car_List;
+                //Thread.Sleep(100);
+                //BOX_canvas.Children.Clear();
 
             }
             //==========================================================================================================
             else if (jobj["Kind_event"].ToString() == "500") //주정차 data
             {
-                //Event_ e = new Event_(jobj);// 새로운 event를 json 에서 가지고 옴
-                //try
-                //{
-                //    license_.Text = e.content;
-                //    new_sql.Insert_Row(e.Image_String, e.time, e.content, e.kind, e.fqid); //해당 이벤트를 db에 저장.
-                //    update_DB();
-                //    //ROI 영역 판별하고 화면에 차량 boundary 표시하는 부분
-                //}
-                //catch (Exception ex)
-                //{
-                //    Console.WriteLine(ex.Message);
-                //}
             }
 
         }
@@ -407,6 +406,7 @@ namespace LayoutTest1
                 rect_license.Stroke = Brushes.Black;
                 rect_license.StrokeThickness = 3;
                 rect_license.Fill = Brushes.White;
+                rect_license.Tag = "dd";
                 
                 TextBlock text = new TextBlock();
                 text.Text = license[i];

@@ -13,8 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
-using VideoOS.Platform.SDK.UI.LoginDialog;
 using VideoOS.Platform.SDK.Media;
+using VideoOS.Platform.SDK.UI.LoginDialog;
 using System.Windows.Threading;
 using System.Threading;
 using System.Data.SQLite;
@@ -584,7 +584,6 @@ namespace LayoutTest1
             doc.LoadXml(xml);
             XmlNodeList xmlNodeList = doc.GetElementsByTagName("BoundingBox");
             string temp = "";
-
 
             //일단 scale 은 640 * 352 기준
             XmlNodeList translate = doc.GetElementsByTagName("Translate");

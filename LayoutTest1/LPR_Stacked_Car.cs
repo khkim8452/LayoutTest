@@ -37,7 +37,9 @@ namespace LayoutTest1
         public bool is_cracked_down = false;
 
         private bool flag = false;
-        public bool flag2 = false;
+        public bool flag2 = false; 
+        
+        public TimeSpan elapse_t2 = TimeSpan.Zero;
 
 
         public ImageSource Current_image; //실시간 - 대표이미지 
@@ -218,12 +220,13 @@ namespace LayoutTest1
                 {
                     break;
                 }
-                TimeSpan elapse_t2 = DateTime.Now - this.last_receive_time;
+                elapse_t2 = DateTime.Now - this.last_receive_time;
 
-                if (elapse_t2 > TimeSpan.FromSeconds(10))
+                if (elapse_t2 > TimeSpan.FromSeconds(15))
                 {
-                    //2초 이상 데이터가 안들어오면
+                    //15초 이상 데이터가 안들어오면
                     stop_state = false;
+                    stop_count = 0;
                     this.elapse_time = "감지 안됨";
                     if (elapse_t2 > TimeSpan.FromSeconds(20))
                     {
